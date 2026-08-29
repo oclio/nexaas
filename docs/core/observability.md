@@ -1,10 +1,10 @@
 # Observability
 
-nexaas uses [Axiom](https://axiom.co) for structured logging, request tracing, and web vitals collection.
+nexaas uses [Axiom](https://axiom.co) for structured logging, request tracing, and web vitals collection, and [Sentry](https://sentry.io) for error tracking and session replays.
 
 ## Setup
 
-Add these environment variables to your `.env`:
+### Axiom
 
 ```bash
 AXIOM_TOKEN=xaat-your-token-here
@@ -18,7 +18,19 @@ LOG_LEVEL=info
 | `AXIOM_DATASET` | No       | Dataset name where logs are stored. If unset, ingestion is skipped.                                                                                |
 | `LOG_LEVEL`     | No       | Minimum log level. One of `error`, `warn`, `info`, `debug`, `off`. Defaults to `info`.                                                             |
 
-> **Tip:** You can run nexaas locally without any Axiom account. Simply leave `AXIOM_TOKEN` and `AXIOM_DATASET` unset — everything works, just without telemetry.
+### Sentry
+
+```bash
+NEXT_PUBLIC_SENTRY_DSN=https://sentry.io/your-project-dsn
+SENTRY_AUTH_TOKEN=sntryu-your-auth-token
+```
+
+| Variable                 | Required | Description                                                                                                                                                |
+| ------------------------ | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SENTRY_DSN` | No       | Sentry DSN (client-side accessible). If unset, **Sentry is fully bypassed** — no errors are captured, no replays, and the health check reports `disabled`. |
+| `SENTRY_AUTH_TOKEN`      | No       | Sentry auth token for source map uploads during build. Place in `.env.sentry-build-plugin`.                                                                |
+
+> **Tip:** You can run nexaas locally without any Axiom or Sentry account. Simply leave the env vars unset — everything works, just without telemetry.
 
 ## Server-side logging
 
@@ -40,6 +52,8 @@ The `withAxiom` middleware (`src/core/observability/axiom/middlewares/with-axiom
 3. Sets `x-trace-id` cookie (non-httpOnly) so client-side web vitals can correlate
 4. Logs the incoming request and the completed request with duration and status
 
+All logs emitted during a request (middleware, route handlers, `onRequestError`) carry the same `traceId`. In Axiom, filter by `traceId` to see the full log trail of a single request — from entry to response, including any errors.
+
 The middleware is registered in `src/proxy.ts`:
 
 ```ts
@@ -57,14 +71,56 @@ The `WebVitals` component (`src/core/observability/axiom/components/web-vitals.t
 
 The `/api/web-vitals` endpoint ingests the metric into Axiom with the correlated `traceId` from the cookie.
 
+## Error tracking and performance
+
+Sentry captures unhandled errors, stack traces, session replays, and distributed traces (performance monitoring).
+
+### Traces
+
+Sentry traces instrument Next.js server components, API routes, middleware, and external calls (DB, fetch). Each trace is a tree of spans showing where time is spent. The sample rate is configurable:
+
+- **Development**: 100% of traces captured (`tracesSampleRate: 1`)
+- **Production**: 10% of traces captured (`tracesSampleRate: 0.1`)
+
+Adjust `tracesSampleRate` in `src/core/observability/sentry/config/index.ts` based on your traffic volume.
+
+### Server-side
+
+`src/instrumentation.ts` is the Next.js instrumentation hook entrypoint. It dynamically imports `sentry.server.config.ts` (nodejs runtime) or `sentry.edge.config.ts` (edge runtime), which call `initSentry()` from `src/core/observability/sentry/config/index.ts`.
+
+The `onRequestError` export captures unhandled request errors in both Sentry and Axiom:
+
+- **Sentry**: stack traces, source maps, error grouping
+- **Axiom**: structured logs with request context, searchable alongside middleware logs
+
+### Client-side
+
+`src/instrumentation-client.ts` initializes Sentry with session replay integration in production only (when `NEXT_PUBLIC_SENTRY_DSN` is set). In development, Sentry is not initialized on the client.
+
+### Configuration
+
+| Setting                    | Development | Production |
+| -------------------------- | ----------- | ---------- |
+| DSN                        | unset       | from env   |
+| `tracesSampleRate`         | 1           | 0.1        |
+| `enableLogs`               | true        | true       |
+| `sendDefaultPii`           | false       | true       |
+| Session replay             | disabled    | enabled    |
+| `replaysSessionSampleRate` | —           | 0.1        |
+| `replaysOnErrorSampleRate` | —           | 1          |
+
+If `NEXT_PUBLIC_SENTRY_DSN` is unset, Sentry is not initialized — no errors are captured and no replays are recorded.
+
 ## Health check
 
-The `/api/health` endpoint (`src/app/api/health/route.ts`) provides a lightweight health check for load balancers and monitoring tools.
+The `/api/health` endpoint (`src/app/api/health/route.ts`) provides a lightweight health check for load balancers and monitoring tools. It checks both Axiom (`logs`) and Sentry (`errorsCapture`) services.
 
-| Scenario                                | Response                                                                                                                                          |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| No `HEALTH_CHECK_SECRET` set            | `{ "status": "ok" }` — 200                                                                                                                        |
-| Missing or wrong `Authorization` header | `{ "status": "ok" }` — 200                                                                                                                        |
-| Valid `Authorization: Bearer <secret>`  | `{ "status": "ok" \| "degraded", "timestamp": "...", "services": { "logs": { "status": "healthy" \| "unhealthy" \| "disabled" } } }` — 200 or 503 |
+| Scenario                                | Response                                                                                                                   |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| No `HEALTH_CHECK_SECRET` set            | `{ "status": "ok" }` — 200                                                                                                 |
+| Missing or wrong `Authorization` header | `{ "status": "ok" }` — 200                                                                                                 |
+| Valid `Authorization: Bearer <secret>`  | `{ "status": "ok" \| "degraded", "timestamp": "...", "services": { "logs": {...}, "errorsCapture": {...} } }` — 200 or 503 |
+
+Each service returns one of: `healthy`, `unhealthy`, or `disabled` (when the corresponding env vars are not set).
 
 Set `HEALTH_CHECK_SECRET` to enable detailed service checks. Without it, the endpoint always returns `ok` without checking upstream services.

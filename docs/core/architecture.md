@@ -11,7 +11,7 @@ src/core/
   errors/            → AppError class, error codes, message helpers
   helpers/           → shared utilities (string formatting)
   middlewares/       → composable middleware chain + proxy entrypoint
-  observability/     → Axiom logging, request tracing, web vitals, health checks
+  observability/     → Axiom logging, Sentry error tracking, request tracing, web vitals, health checks
 ```
 
 ## config/env
@@ -82,7 +82,9 @@ The chain runs middlewares in order, unwinds in reverse, and wraps any non-`AppE
 
 ## observability
 
-Structured logging, request tracing, and web vitals via [Axiom](https://axiom.co). See [Observability](./observability) for the full guide.
+Structured logging, request tracing, web vitals via [Axiom](https://axiom.co), and error tracking via [Sentry](https://sentry.io). See [Observability](./observability) for the full guide.
+
+### Axiom
 
 | File                              | Purpose                                                                   |
 | --------------------------------- | ------------------------------------------------------------------------- |
@@ -92,4 +94,13 @@ Structured logging, request tracing, and web vitals via [Axiom](https://axiom.co
 | `axiom/components/web-vitals.tsx` | Client component: collects Core Web Vitals and sends to `/api/web-vitals` |
 | `axiom/health/index.ts`           | Health check logic: queries Axiom dataset status with timeout             |
 
-If `AXIOM_TOKEN` or `AXIOM_DATASET` is unset, all observability is bypassed — no logs are sent, the middleware passes through, and the health check reports `disabled`.
+If `AXIOM_TOKEN` or `AXIOM_DATASET` is unset, Axiom is bypassed — no logs are sent, the middleware passes through, and the health check reports `disabled`.
+
+### Sentry
+
+| File                     | Purpose                                                       |
+| ------------------------ | ------------------------------------------------------------- |
+| `sentry/config/index.ts` | `initSentry()` — configures traces, logs, PII based on env    |
+| `sentry/health/index.ts` | Health check logic: pings Sentry ingest endpoint with timeout |
+
+Sentry is initialized via `src/instrumentation.ts` (server) and `src/instrumentation-client.ts` (client). If `NEXT_PUBLIC_SENTRY_DSN` is unset, Sentry is not initialized — no errors are captured, and the health check reports `disabled`.

@@ -35,6 +35,9 @@ Without authentication, the endpoint returns a simple `ok` without checking upst
   "services": {
     "logs": {
       "status": "healthy"
+    },
+    "errorsCapture": {
+      "status": "healthy"
     }
   }
 }
@@ -52,12 +55,22 @@ Without authentication, the endpoint returns a simple `ok` without checking upst
     "logs": {
       "status": "unhealthy",
       "error": "connection refused"
+    },
+    "errorsCapture": {
+      "status": "disabled"
     }
   }
 }
 ```
 
 `503 Service Unavailable` · `Cache-Control: no-store, max-age=0`
+
+### Services
+
+| Key             | Service | Env vars                       |
+| --------------- | ------- | ------------------------------ |
+| `logs`          | Axiom   | `AXIOM_TOKEN`, `AXIOM_DATASET` |
+| `errorsCapture` | Sentry  | `NEXT_PUBLIC_SENTRY_DSN`       |
 
 ### Service statuses
 
