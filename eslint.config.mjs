@@ -22,7 +22,7 @@ const eslintConfig = defineConfig([
   promise.configs['flat/recommended'],
   unicorn.configs['recommended'],
   prettier,
-  globalIgnores(ignore),
+  globalIgnores([...ignore, 'docs']),
   {
     files: ['**/*.{ts,tsx,js,jsx,mjs,mts,cjs,cts}'],
     languageOptions: {

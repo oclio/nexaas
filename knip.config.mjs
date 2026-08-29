@@ -1,11 +1,10 @@
 const knipConfig = {
   $schema: 'https://unpkg.com/knip@6/schema.json',
-  ignore: ['commitlint.config.mjs'],
+  ignore: ['commitlint.config.mjs', 'docs/**'],
   ignoreBinaries: ['gitleaks'],
   ignoreDependencies: [
     '@axe-core/cli',
     '@commitlint/config-conventional',
-    'cross-env',
     'gitleaks',
   ],
   tags: ['-lintignore'],
