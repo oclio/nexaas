@@ -34,7 +34,7 @@ const config = {
   thresholds: {
     high: 95,
     low: 80,
-    break: 0, /
+    break: 0, // TODO: To replace
   },
   vitest: {
     configFile: 'vitest.config.mjs',
