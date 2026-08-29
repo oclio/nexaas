@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "SonarSource.sonarlint-vscode",
+    "yoavbls.pretty-ts-errors",
+    "vitest.explorer",
+    "stkb.rewrap",
+    "Sheryians.custom-icons",
+    "EditorConfig.EditorConfig",
+    "intellsmi.comment-translate",
+    "usernamehw.errorlens",
+    "eamodio.gitlens",
+    "mikestead.dotenv",
+    "wix.vscode-import-cost",
+    "stivo.tailwind-fold"
+  ]
+}

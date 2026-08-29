@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
-import { fontHeading, fontSans } from "@/ui/fonts";
-import "@/ui/styles/globals.css";
-import { app } from "@/core/config";
-import { ReactNode } from "react";
+import type { Metadata } from 'next';
+import { fontHeading, fontSans } from '@/ui/fonts';
+import '@/ui/styles/globals.css';
+import { app } from '@/core/config';
+import { ReactNode } from 'react';
 
 export const metadata: Metadata = {
   title: app.title,
@@ -20,9 +20,9 @@ export default function RootLayout({ children }: Readonly<Props>) {
   return (
     <html
       lang="en"
-      className={`${fontSans.variable} ${fontHeading.variable} h-full antialiased font-sans`}
+      className={`${fontSans.variable} ${fontHeading.variable} h-full font-sans antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
 }

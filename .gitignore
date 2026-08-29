@@ -5,6 +5,12 @@
 .temp/
 AGENTS.md
 
+# vscode
+.vscode/*
+!.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
 # dependencies
 /node_modules
 /.pnp
