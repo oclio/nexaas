@@ -8,6 +8,7 @@ const ignore = [
   '.windsurf/**',
   'commitlint.config.mjs',
   'coverage/**',
+  'docs/**',
   'logs/**',
   'next-env.d.ts',
   'node_modules/**',
