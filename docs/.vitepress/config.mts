@@ -24,7 +24,8 @@ export default defineConfig({
 
     nav: [
       { text: 'Guide', link: '/getting-started/' },
-      { text: 'Core', link: '/core/env' },
+      { text: 'Core', link: '/core/architecture' },
+      { text: 'API', link: '/api/health' },
     ],
 
     sidebar: {
@@ -42,7 +43,12 @@ export default defineConfig({
           items: [
             { text: 'Architecture', link: '/core/architecture' },
             { text: 'Environment Variables', link: '/core/env' },
+            { text: 'Observability', link: '/core/observability' },
           ],
+        },
+        {
+          text: 'API',
+          items: [{ text: 'Endpoints', link: '/api/health' }],
         },
       ],
     },
