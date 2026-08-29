@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "check:types": "tsc --noEmit",
     "check:fast": "pnpm check:types && pnpm lint:fix && pnpm knip && true",
-    "check:all": "pnpm check:fast && pnpm build && true",
+    "check:all": "pnpm check:fast && pnpm check:secrets && pnpm build && true",
+    "check:secrets": "gitleaks protect --staged --verbose",
     "knip": "knip --config knip.config.mjs"
   },
   "dependencies": {
@@ -29,6 +30,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^10.9.1",
     "eslint-plugin-react-hooks": "7.1.1",
+    "gitleaks": "^1.0.0",
     "knip": "^6.32.3",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",

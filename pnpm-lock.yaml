@@ -42,6 +42,9 @@ importers:
       eslint-plugin-react-hooks:
         specifier: 7.1.1
         version: 7.1.1(eslint@10.9.1(jiti@2.7.0)(supports-color@7.2.0))(supports-color@7.2.0)
+      gitleaks:
+        specifier: ^1.0.0
+        version: 1.0.0
       knip:
         specifier: ^6.32.3
         version: 6.32.3
@@ -991,6 +994,9 @@ packages:
 
   get-tsconfig@4.14.1:
     resolution: {integrity: sha512-Dz/6HxkrxgNehhxLVeyv8sad9UzF2xBVeaKBQNDfJ5XiSXmp2gTR0eO0RWiT2NCKS5aGP9jjkOMggTN90qU50A==}
+
+  gitleaks@1.0.0:
+    resolution: {integrity: sha512-mTtKkWCAeHnTiBmRzjKnot8D8zX/JVDuRffuvSCr+z93vuBXygeifGZ7lXOB8Hjxto+DikSoF0XXfxntd1BZSQ==}
 
   glob-parent@5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
@@ -2251,6 +2257,8 @@ snapshots:
   get-tsconfig@4.14.1:
     dependencies:
       resolve-pkg-maps: 1.0.0
+
+  gitleaks@1.0.0: {}
 
   glob-parent@5.1.2:
     dependencies:
