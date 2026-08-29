@@ -1,4 +1,5 @@
 import '@/ui/styles/globals.css';
+import '@/core/config/env';
 
 import type { Metadata } from 'next';
 import { ReactNode } from 'react';
