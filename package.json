@@ -1,7 +1,8 @@
 {
   "name": "nexaas",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
+  "description": "A scalable, production-ready SaaS boilerplate built for high performance and rapid prototyping in Next.js.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
