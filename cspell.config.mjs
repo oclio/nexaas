@@ -9,7 +9,7 @@ const config = {
     'pnpm-workspace.yaml',
   ],
   language: 'en,fr',
-  words: ['nexaas', 'turbopack'],
+  words: ['nexaas', 'oclio', 'turbopack'],
 };
 
 export default config;
