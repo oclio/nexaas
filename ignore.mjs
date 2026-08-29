@@ -1,11 +1,22 @@
-const ignores = [
+const ignore = [
   '.agents/**',
   '.next/**',
   '.ops/**',
+  '.stryker-tmp/**',
   '.temp/**',
   '.vscode/**',
+  '.windsurf/**',
+  'commitlint.config.mjs',
+  'coverage/**',
+  'logs/**',
   'next-env.d.ts',
   'node_modules/**',
+  'playwright-report/**',
+  'playwright.config.mjs',
+  'reports/**',
+  'src/ui/components/ui/**',
+  'stryker.config.mjs',
+  'test-results/**',
 ];
 
-export default ignores;
+export default ignore;
