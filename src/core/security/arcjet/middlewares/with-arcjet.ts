@@ -43,6 +43,34 @@ export const withArcjet: CustomMiddleware = async (request, event, next) => {
     const decision = await aj.protect(request, { requested: 1 });
 
     if (decision.isDenied()) {
+      let reason: string;
+      if (decision.reason.isBot()) {
+        reason = 'bot';
+      } else if (decision.reason.isRateLimit()) {
+        reason = 'rate_limit';
+      } else {
+        reason = 'other';
+      }
+      const ip = request.headers.get('x-forwarded-for') ?? 'unknown';
+      const statusCode = decision.reason.isRateLimit() ? 429 : 403;
+
+      logger.warn('Request denied by Arcjet', {
+        event: 'security.arcjet.denied',
+        reason,
+        ip,
+        method: request.method,
+        path: request.nextUrl.pathname,
+        statusCode,
+      });
+
+      Sentry.captureMessage('Request denied by Arcjet', {
+        level: 'warning',
+        tags: { service: 'arcjet', reason },
+        extra: { ip, method: request.method, path: request.nextUrl.pathname },
+      });
+
+      event.waitUntil(logger.flush());
+
       if (decision.reason.isBot()) {
         return new NextResponse('Automated clients are not permitted', {
           status: 403,

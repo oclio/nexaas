@@ -13,11 +13,13 @@ vi.mock('@arcjet/next', () => ({
 
 vi.mock('@sentry/nextjs', () => ({
   captureException: vi.fn(),
+  captureMessage: vi.fn(),
 }));
 
 vi.mock('@/core/observability/axiom/server', () => ({
   logger: {
     error: vi.fn(),
+    warn: vi.fn(),
     flush: vi.fn().mockResolvedValue(undefined),
   },
 }));
@@ -33,6 +35,8 @@ const { withArcjet } = await import('../with-arcjet');
 const arcjetModule = await import('@arcjet/next');
 const arcjetDefault = arcjetModule.default as ReturnType<typeof vi.fn>;
 const { captureException } = await import('@sentry/nextjs');
+const { captureMessage } = await import('@sentry/nextjs');
+const { logger } = await import('@/core/observability/axiom/server');
 
 function mockRequest(): NextRequest {
   return {
@@ -89,12 +93,29 @@ describe('withArcjet', () => {
       reason: { isBot: () => true, isRateLimit: () => false },
     });
     const next = nextMock();
+    const event = mockEvent();
 
-    const response = await withArcjet(mockRequest(), mockEvent(), next);
+    const response = await withArcjet(mockRequest(), event, next);
 
     expect(response.status).toBe(403);
     expect(await response.text()).toBe('Automated clients are not permitted');
     expect(next).not.toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledWith(
+      'Request denied by Arcjet',
+      expect.objectContaining({
+        event: 'security.arcjet.denied',
+        reason: 'bot',
+        statusCode: 403,
+      }),
+    );
+    expect(captureMessage).toHaveBeenCalledWith(
+      'Request denied by Arcjet',
+      expect.objectContaining({
+        level: 'warning',
+        tags: expect.objectContaining({ reason: 'bot' }),
+      }),
+    );
+    expect(event.waitUntil).toHaveBeenCalled();
   });
 
   it('returns 429 when rate limit is exceeded', async () => {
@@ -103,12 +124,27 @@ describe('withArcjet', () => {
       reason: { isBot: () => false, isRateLimit: () => true },
     });
     const next = nextMock();
+    const event = mockEvent();
 
-    const response = await withArcjet(mockRequest(), mockEvent(), next);
+    const response = await withArcjet(mockRequest(), event, next);
 
     expect(response.status).toBe(429);
     expect(await response.text()).toBe('Rate limit exceeded');
     expect(next).not.toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledWith(
+      'Request denied by Arcjet',
+      expect.objectContaining({
+        event: 'security.arcjet.denied',
+        reason: 'rate_limit',
+        statusCode: 429,
+      }),
+    );
+    expect(captureMessage).toHaveBeenCalledWith(
+      'Request denied by Arcjet',
+      expect.objectContaining({
+        tags: expect.objectContaining({ reason: 'rate_limit' }),
+      }),
+    );
   });
 
   it('returns 403 forbidden for other denial reasons', async () => {
@@ -117,12 +153,27 @@ describe('withArcjet', () => {
       reason: { isBot: () => false, isRateLimit: () => false },
     });
     const next = nextMock();
+    const event = mockEvent();
 
-    const response = await withArcjet(mockRequest(), mockEvent(), next);
+    const response = await withArcjet(mockRequest(), event, next);
 
     expect(response.status).toBe(403);
     expect(await response.text()).toBe('Forbidden');
     expect(next).not.toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalledWith(
+      'Request denied by Arcjet',
+      expect.objectContaining({
+        event: 'security.arcjet.denied',
+        reason: 'other',
+        statusCode: 403,
+      }),
+    );
+    expect(captureMessage).toHaveBeenCalledWith(
+      'Request denied by Arcjet',
+      expect.objectContaining({
+        tags: expect.objectContaining({ reason: 'other' }),
+      }),
+    );
   });
 
   it('fails open and calls next when protect throws', async () => {
