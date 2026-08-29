@@ -1,8 +1,17 @@
 import { render, screen } from '@testing-library/react';
+import { vi } from 'vitest';
 
 import RootLayout from '../layout';
 
 describe('RootLayout', () => {
+  beforeEach(() => {
+    vi.spyOn(console, 'error').mockImplementation(vi.fn());
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('renders children inside main landmark', () => {
     render(
       <RootLayout>

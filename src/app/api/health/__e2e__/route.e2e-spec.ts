@@ -46,8 +46,12 @@ test.describe('/api/health', () => {
     expect(body.timestamp).toBeDefined();
     expect(body.services).toBeDefined();
     expect(body.services.logs).toBeDefined();
+    expect(body.services.errorsCapture).toBeDefined();
     expect(['healthy', 'unhealthy', 'disabled']).toContain(
       body.services.logs.status,
+    );
+    expect(['healthy', 'unhealthy', 'disabled']).toContain(
+      body.services.errorsCapture.status,
     );
     expect(response.headers()['cache-control']).toBe('no-store, max-age=0');
   });

@@ -9,7 +9,6 @@ const exclude = [
   'src/core/helpers/index.ts',
   'src/core/observability/axiom/client.ts',
   'src/core/observability/axiom/server.ts',
-
 ];
 
 export default exclude;

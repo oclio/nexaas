@@ -1,4 +1,5 @@
 allowBuilds:
+  '@sentry/cli': true
   chromedriver: true
   esbuild: true
   sharp: false
