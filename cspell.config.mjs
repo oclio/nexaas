@@ -12,8 +12,10 @@ const config = {
   words: [
     'arcjet',
     'axiomhq',
+    'credentialless',
     'nexaas',
     'nojekyll',
+    'nosniff',
     'oclio',
     'sonarqube',
     'ttfb',

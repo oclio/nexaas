@@ -2,11 +2,11 @@ import bundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
 import type { NextConfig } from 'next';
 
+import { securityHeaders } from '@/core/security/headers';
+
 const nextConfig: NextConfig = {
-  /*
-  config options here
-  */
   reactCompiler: true,
+  headers: () => [{ source: '/:path*', headers: securityHeaders }],
 };
 
 const withBundleAnalyzer = bundleAnalyzer({
