@@ -21,7 +21,9 @@ export default dsn
   ? withSentryConfig(composedConfig, {
       org: 'oclio',
       project: 'nexaas',
-      ...(commitSha && { release: { name: commitSha } }),
+      ...(commitSha && {
+        release: { name: commitSha, create: true, finalize: true },
+      }),
       silent: !process.env.CI,
       widenClientFileUpload: !!process.env.CI,
       tunnelRoute: '/monitoring',
