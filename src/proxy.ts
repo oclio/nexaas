@@ -2,8 +2,9 @@ import { NextFetchEvent, NextRequest } from 'next/server';
 
 import { chain } from '@/core/middlewares/chain';
 import type { CustomMiddleware } from '@/core/middlewares/types';
+import { withAxiom } from '@/core/observability/axiom/middlewares/with-axiom';
 
-const proxies: CustomMiddleware[] = [];
+const proxies: CustomMiddleware[] = [withAxiom];
 
 export const proxy = async (request: NextRequest, event: NextFetchEvent) => {
   const handler = chain(proxies);

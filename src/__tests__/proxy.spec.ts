@@ -1,10 +1,32 @@
 import type { NextFetchEvent, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { config, proxy } from '@/proxy';
+vi.mock('@/core/observability/axiom/server', () => ({
+  logger: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
+vi.mock('@/core/observability/axiom/middlewares/with-axiom', () => ({
+  withAxiom: async (
+    _req: NextRequest,
+    _event: NextFetchEvent,
+    next: () => Promise<Response | NextResponse>,
+  ) => next(),
+}));
+
+const { config, proxy } = await import('@/proxy');
 
 function mockRequest(): NextRequest {
-  return { headers: new Headers() } as unknown as NextRequest;
+  return {
+    headers: new Headers(),
+    url: 'http://localhost:3000/test',
+    method: 'GET',
+    nextUrl: { pathname: '/test' },
+  } as unknown as NextRequest;
 }
 
 function mockEvent(): NextFetchEvent {
@@ -12,7 +34,7 @@ function mockEvent(): NextFetchEvent {
 }
 
 describe('proxy', () => {
-  it('returns a NextResponse when no proxies are registered', async () => {
+  it('returns a NextResponse when proxies run', async () => {
     const response = await proxy(mockRequest(), mockEvent());
 
     expect(response).toBeInstanceOf(NextResponse);

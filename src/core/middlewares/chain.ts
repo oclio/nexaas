@@ -4,6 +4,7 @@ import { AppError } from '@/core/errors/app-error';
 import { getErrorMessage } from '@/core/errors/helpers';
 import { MiddlewareChainError } from '@/core/middlewares/errors/middleware-chain-error';
 import type { CustomMiddleware } from '@/core/middlewares/types';
+import { logger } from '@/core/observability/axiom/server';
 
 export function chain(middlewares: CustomMiddleware[]) {
   return async (request: NextRequest, event: NextFetchEvent) => {
@@ -32,6 +33,17 @@ export function chain(middlewares: CustomMiddleware[]) {
                 { originalError: getErrorMessage(error) },
                 error,
               );
+
+        logger.error(appError.message, {
+          err: appError,
+          code: appError.code,
+          statusCode: appError.statusCode,
+          context: appError.context,
+          url: request.url,
+          method: request.method,
+          pathname: request.nextUrl.pathname,
+          traceId: request.headers.get('x-trace-id') ?? undefined,
+        });
 
         throw appError;
       }

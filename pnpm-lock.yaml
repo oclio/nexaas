@@ -8,6 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@axiomhq/js':
+        specifier: ^2.0.0
+        version: 2.0.0
+      '@axiomhq/logging':
+        specifier: ^0.4.0
+        version: 0.4.0(@axiomhq/js@2.0.0)
+      '@axiomhq/nextjs':
+        specifier: ^0.4.0
+        version: 0.4.0(@axiomhq/logging@0.4.0(@axiomhq/js@2.0.0))(next@16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.55.0)(@types/node@26.4.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
       '@t3-oss/env-nextjs':
         specifier: ^0.13.11
         version: 0.13.11(typescript@6.0.3)(zod@4.4.3)
@@ -265,6 +274,26 @@ packages:
     resolution: {integrity: sha512-FKNgdOA7gYPhak0M18j5aMth8ZQRDvKhpDvINwzM2SbdffnuLFgW3bXmCibps9dGAhUej14l2pwAiAP+yiyA+Q==}
     peerDependencies:
       selenium-webdriver: '>3.0.0-beta  || >=2.53.1 || >4.0.0-alpha'
+
+  '@axiomhq/js@2.0.0':
+    resolution: {integrity: sha512-mhDH0KLFkDko9ytoltgmch2gOiwE6kY6VWhCmTux9lzL9hmjTej68JeQKwq9GGqOY7xwDsya88bNiTnp/zc8+Q==}
+    engines: {node: '>=20'}
+
+  '@axiomhq/logging@0.4.0':
+    resolution: {integrity: sha512-exb1qV5pt15ydSX5iIB9AQ0xv+O5iHmslHoyGJAmCgehFlHESivbuiFyb6Kbk0y4MW+zz8/aD5N0dHQLfUb4TA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@axiomhq/js': ^1.0.0
+    peerDependenciesMeta:
+      '@axiomhq/js':
+        optional: true
+
+  '@axiomhq/nextjs@0.4.0':
+    resolution: {integrity: sha512-vMelY5nPL0L3I/TFpTczhgZE7hEUil6jaqyKgrZt5RmNZc21eUX2hcbxq/s5oXNctVaioPoFX1BcqZU0AQPEeA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@axiomhq/logging': 0.4.0
+      next: '>=13'
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -3785,6 +3814,9 @@ packages:
       picomatch:
         optional: true
 
+  fetch-retry@6.0.0:
+    resolution: {integrity: sha512-BUFj1aMubgib37I3v4q78fYo63Po7t4HUPTpQ6/QE6yK6cIQrP+W43FYToeTEyg5m2Y7eFUtijUuAv/PDlWuag==}
+
   figures@3.2.0:
     resolution: {integrity: sha512-yaduQFRKLXYOGgEn6AZau90j3ggSOyiqXU0F9JZfeXYhNa+Jk4X+s45A2zg5jns87GAFa34BBm2kXw4XpNcbdg==}
     engines: {node: '>=8'}
@@ -6294,6 +6326,19 @@ snapshots:
     dependencies:
       axe-core: 4.13.0
       selenium-webdriver: 4.44.0
+
+  '@axiomhq/js@2.0.0':
+    dependencies:
+      fetch-retry: 6.0.0
+
+  '@axiomhq/logging@0.4.0(@axiomhq/js@2.0.0)':
+    optionalDependencies:
+      '@axiomhq/js': 2.0.0
+
+  '@axiomhq/nextjs@0.4.0(@axiomhq/logging@0.4.0(@axiomhq/js@2.0.0))(next@16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.55.0)(@types/node@26.4.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))':
+    dependencies:
+      '@axiomhq/logging': 0.4.0(@axiomhq/js@2.0.0)
+      next: 16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.55.0)(@types/node@26.4.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
 
   '@babel/code-frame@7.29.7':
     dependencies:
@@ -9852,6 +9897,8 @@ snapshots:
   fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
       picomatch: 4.0.7
+
+  fetch-retry@6.0.0: {}
 
   figures@3.2.0:
     dependencies:

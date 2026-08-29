@@ -7,6 +7,15 @@ import { chain } from '@/core/middlewares/chain';
 import { MiddlewareChainError } from '@/core/middlewares/errors/middleware-chain-error';
 import type { CustomMiddleware } from '@/core/middlewares/types';
 
+vi.mock('@/core/observability/axiom/server', () => ({
+  logger: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 // ─── helpers ───────────────────────────────────────────────────────────────
 
 const passthroughMiddleware: CustomMiddleware = async (_req, _event, next) =>
@@ -26,7 +35,12 @@ const doubleNextMiddleware: CustomMiddleware = async (_req, _event, next) => {
 };
 
 function mockRequest(): NextRequest {
-  return { headers: new Headers() } as unknown as NextRequest;
+  return {
+    headers: new Headers(),
+    url: 'http://localhost:3000/test',
+    method: 'GET',
+    nextUrl: { pathname: '/test' },
+  } as unknown as NextRequest;
 }
 
 function mockEvent(): NextFetchEvent {

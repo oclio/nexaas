@@ -11,16 +11,13 @@ export default defineConfig({
     },
   },
   title: 'nexaas',
-  description:
-    'The opinionated Next.js SaaS starter for senior devs.',
+  description: 'The opinionated Next.js SaaS starter for senior devs.',
 
   base: '/',
   cleanUrls: true,
   ignoreDeadLinks: true,
 
-  head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
-  ],
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }]],
 
   themeConfig: {
     logo: '/logo.svg',
@@ -43,6 +40,7 @@ export default defineConfig({
         {
           text: 'Core',
           items: [
+            { text: 'Architecture', link: '/core/architecture' },
             { text: 'Environment Variables', link: '/core/env' },
           ],
         },
@@ -60,9 +58,7 @@ export default defineConfig({
         'Copyright © 2026 <a href="https://oclio.dev">@oclio</a> — TypeScript Engineer',
     },
 
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/oclio/nexaas' },
-    ],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/oclio/nexaas' }],
 
     editLink: {
       pattern: 'https://github.com/oclio/nexaas/edit/main/docs/:path',
