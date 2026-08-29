@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: ⬇️ Checkout Repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
 
       - name: 🏗️ Setup pnpm
         uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
@@ -39,9 +41,7 @@ jobs:
 
       - name: 📝 Commitlint
         if: github.event_name == 'pull_request'
-        run: |
-          git fetch origin ${{ github.base_ref }}
-          pnpm commitlint --from origin/${{ github.base_ref }} --to HEAD
+        run: pnpm commitlint --from origin/${{ github.base_ref }} --to HEAD
 
       - name: 📝 Markdown Lint
         run: pnpm exec markdownlint '**/*.md' --ignore **/node_modules/** --ignore **/.next/**
