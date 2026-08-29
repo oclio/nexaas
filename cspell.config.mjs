@@ -10,9 +10,13 @@ const config = {
   ],
   language: 'en,fr',
   words: [
+    'arcjet',
     'axiomhq',
+    'credentialless',
+    'httponly',
     'nexaas',
     'nojekyll',
+    'nosniff',
     'oclio',
     'sonarqube',
     'ttfb',

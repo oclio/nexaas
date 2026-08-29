@@ -18,6 +18,46 @@ vi.mock('@/core/observability/axiom/middlewares/with-axiom', () => ({
   ) => next(),
 }));
 
+vi.mock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
+  withArcjet: async (
+    _req: NextRequest,
+    _event: NextFetchEvent,
+    next: () => Promise<Response | NextResponse>,
+  ) => next(),
+}));
+
+vi.mock('@/core/security/csp/middlewares/with-csp', () => ({
+  withCsp: async (
+    _req: NextRequest,
+    _event: NextFetchEvent,
+    next: () => Promise<Response | NextResponse>,
+  ) => next(),
+}));
+
+vi.mock('@/core/security/csrf/middlewares/with-csrf', () => ({
+  withCsrf: async (
+    _req: NextRequest,
+    _event: NextFetchEvent,
+    next: () => Promise<Response | NextResponse>,
+  ) => next(),
+}));
+
+vi.mock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+  withBodySizeLimit: async (
+    _req: NextRequest,
+    _event: NextFetchEvent,
+    next: () => Promise<Response | NextResponse>,
+  ) => next(),
+}));
+
+vi.mock('@/core/security/cookies/middlewares/with-secure-cookies', () => ({
+  withSecureCookies: async (
+    _req: NextRequest,
+    _event: NextFetchEvent,
+    next: () => Promise<Response | NextResponse>,
+  ) => next(),
+}));
+
 function mockRequest(headers: Record<string, string> = {}): NextRequest {
   return {
     headers: new Headers(headers),
@@ -52,6 +92,44 @@ describe('proxy', () => {
         throw new Error('middleware failed');
       },
     }));
+    vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
+      withArcjet: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
+      withCsp: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csrf/middlewares/with-csrf', () => ({
+      withCsrf: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+      withBodySizeLimit: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock(
+      '@/core/security/cookies/middlewares/with-secure-cookies',
+      () => ({
+        withSecureCookies: async (
+          _req: NextRequest,
+          _event: NextFetchEvent,
+          next: () => Promise<Response | NextResponse>,
+        ) => next(),
+      }),
+    );
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(
@@ -72,6 +150,44 @@ describe('proxy', () => {
         throw new Error('middleware failed');
       },
     }));
+    vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
+      withArcjet: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
+      withCsp: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csrf/middlewares/with-csrf', () => ({
+      withCsrf: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+      withBodySizeLimit: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock(
+      '@/core/security/cookies/middlewares/with-secure-cookies',
+      () => ({
+        withSecureCookies: async (
+          _req: NextRequest,
+          _event: NextFetchEvent,
+          next: () => Promise<Response | NextResponse>,
+        ) => next(),
+      }),
+    );
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(mockRequest(), mockEvent());
@@ -89,6 +205,44 @@ describe('proxy', () => {
         throw new AppError(ErrorCode.UNKNOWN_ERROR, 'Bad request', 400);
       },
     }));
+    vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
+      withArcjet: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
+      withCsp: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csrf/middlewares/with-csrf', () => ({
+      withCsrf: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+      withBodySizeLimit: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock(
+      '@/core/security/cookies/middlewares/with-secure-cookies',
+      () => ({
+        withSecureCookies: async (
+          _req: NextRequest,
+          _event: NextFetchEvent,
+          next: () => Promise<Response | NextResponse>,
+        ) => next(),
+      }),
+    );
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(mockRequest(), mockEvent());
@@ -103,6 +257,44 @@ describe('proxy', () => {
         throw new Error('middleware failed');
       },
     }));
+    vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
+      withArcjet: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
+      withCsp: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csrf/middlewares/with-csrf', () => ({
+      withCsrf: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+      withBodySizeLimit: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock(
+      '@/core/security/cookies/middlewares/with-secure-cookies',
+      () => ({
+        withSecureCookies: async (
+          _req: NextRequest,
+          _event: NextFetchEvent,
+          next: () => Promise<Response | NextResponse>,
+        ) => next(),
+      }),
+    );
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(mockRequest(), mockEvent());

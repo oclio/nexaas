@@ -8,6 +8,13 @@ export const env = createEnv({
       .enum(['development', 'test', 'production'])
       .default('development'),
 
+    // ─── SECURITY ────────────────────────────────────────────────────────────
+    ARCJET_KEY: z.string().min(10).optional(),
+    ARCJET_ENV: z
+      .enum(['development', 'production', 'staging'])
+      .default('development'),
+    EMAIL_WHITELIST: z.string().default(''),
+
     // ─── OBSERVABILITY ───────────────────────────────────────────────────────
     AXIOM_TOKEN: z.string().min(10).optional(),
     AXIOM_DATASET: z.string().min(1).optional(),

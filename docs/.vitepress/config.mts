@@ -47,6 +47,7 @@ export default defineConfig({
           items: [
             { text: 'Architecture', link: '/core/architecture' },
             { text: 'Environment Variables', link: '/core/env' },
+            { text: 'Security', link: '/core/security' },
             { text: 'Observability', link: '/core/observability' },
           ],
         },

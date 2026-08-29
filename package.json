@@ -51,6 +51,7 @@
     "docs:build": "vitepress build docs"
   },
   "dependencies": {
+    "@arcjet/next": "^1.11.0",
     "@axiomhq/js": "^2.0.0",
     "@axiomhq/logging": "^0.4.0",
     "@axiomhq/nextjs": "^0.4.0",
