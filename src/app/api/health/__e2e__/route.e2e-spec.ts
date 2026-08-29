@@ -45,8 +45,12 @@ test.describe('/api/health', () => {
     expect(body.status).toBe('ok');
     expect(body.timestamp).toBeDefined();
     expect(body.services).toBeDefined();
+    expect(body.services.security).toBeDefined();
     expect(body.services.logs).toBeDefined();
     expect(body.services.errorsCapture).toBeDefined();
+    expect(['healthy', 'unhealthy', 'disabled']).toContain(
+      body.services.security.status,
+    );
     expect(['healthy', 'unhealthy', 'disabled']).toContain(
       body.services.logs.status,
     );

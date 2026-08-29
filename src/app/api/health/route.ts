@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { env } from '@/core/config/env';
 import { checkAxiomService } from '@/core/observability/axiom/health';
 import { checkSentryService } from '@/core/observability/sentry/health';
+import { checkArcjetService } from '@/core/security/arcjet/health';
 
 enum Status {
   healthy = 'healthy',
@@ -12,12 +13,17 @@ enum Status {
 }
 
 async function checkServices() {
-  const [logs, errorsCapture] = await Promise.allSettled([
+  const [security, logs, errorsCapture] = await Promise.allSettled([
+    checkArcjetService(),
     checkAxiomService(),
     checkSentryService(),
   ]);
 
   const services = {
+    security:
+      security.status === Status.fulfilled
+        ? security.value
+        : { status: Status.unhealthy },
     logs:
       logs.status === Status.fulfilled
         ? logs.value
