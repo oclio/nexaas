@@ -98,8 +98,8 @@ export default defineConfig({
   */
   webServer: {
     command: process.env.CI
-      ? 'cross-env PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm build && cross-env PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm start'
-      : 'cross-env PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm dev',
+      ? 'cross-env NEXT_PUBLIC_APP_URL=http://localhost:3000 PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm build && cross-env NEXT_PUBLIC_APP_URL=http://localhost:3000 PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm start'
+      : 'cross-env NEXT_PUBLIC_APP_URL=http://localhost:3000 PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
