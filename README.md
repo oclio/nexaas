@@ -33,6 +33,7 @@ A scalable, production-ready SaaS boilerplate built for high performance and rap
 | [Vitest](https://vitest.dev) 4                                    | Unit testing & coverage v8              |
 | [@testing-library/react](https://testing-library.com/docs/react)  | React component testing utilities       |
 | [Playwright](https://playwright.dev) 1.55                         | E2E testing (chromium)                  |
+| [Stryker](https://stryker-mutator.io) 10                          | Mutation testing                        |
 
 ## Scripts
 

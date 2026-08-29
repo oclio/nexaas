@@ -24,6 +24,8 @@ AGENTS.md
 # testing
 /coverage
 /playwright-report/
+/reports/
+/.stryker-tmp/
 /test-results/
 
 # next.js

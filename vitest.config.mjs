@@ -2,6 +2,7 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vitest/config';
 
 import ignore from './ignore.mjs';
+import testExclude from './test-exclude.mjs';
 
 export default defineConfig({
   plugins: [react()],
@@ -26,11 +27,7 @@ export default defineConfig({
       reporter: ['text', 'json', 'html', 'lcov'],
       include: ['src/**/*.ts', 'src/**/*.tsx'],
       exclude: [
-        '**/*.d.ts',
-        'src/__tests__/**',
-        'src/**/__tests__/**',
-        'src/**/__e2e__/**',
-        'src/**/types/**',
+        ...testExclude,
         'src/ui/components/ui/**',
         'src/core/config/index.ts',
         'src/ui/fonts/index.ts',

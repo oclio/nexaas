@@ -93,7 +93,12 @@ const eslintConfig = defineConfig([
   },
   // KEYS AUTO-SORT
   {
-    files: ['cspell.config.mjs', 'ignore.mjs', 'knip.config.mjs'],
+    files: [
+      'cspell.config.mjs',
+      'ignore.mjs',
+      'knip.config.mjs',
+      'test-exclude.mjs',
+    ],
     plugins: { perfectionist },
     rules: {
       'perfectionist/sort-objects': [
