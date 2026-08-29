@@ -84,6 +84,13 @@ const eslintConfig = defineConfig([
       'unicorn/prefer-string-raw': 'off',
     },
   },
+  // TESTS — allow non-kebab filenames (e.g. page.spec.tsx, page.e2e-spec.ts)
+  {
+    files: ['**/__e2e__/**/*.{ts,tsx}', '**/__tests__/**/*.{ts,tsx}'],
+    rules: {
+      'unicorn/filename-case': 'off',
+    },
+  },
   // KEYS AUTO-SORT
   {
     files: ['cspell.config.mjs', 'ignore.mjs', 'knip.config.mjs'],
