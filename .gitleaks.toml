@@ -1,0 +1,7 @@
+title = "gitleaks config"
+
+[allowlist]
+description = "Allowlist for example/template files that contain placeholder secrets"
+paths = [
+  '''\.env\.example$''',
+]
