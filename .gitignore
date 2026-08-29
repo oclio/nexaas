@@ -1,5 +1,16 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+.agents
+.ops/
+.temp/
+AGENTS.md
+
+# vscode
+.vscode/*
+!.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
 # dependencies
 /node_modules
 /.pnp
@@ -12,6 +23,10 @@
 
 # testing
 /coverage
+/playwright-report/
+/reports/
+/.stryker-tmp/
+/test-results/
 
 # next.js
 /.next/
