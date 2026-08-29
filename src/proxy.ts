@@ -4,8 +4,9 @@ import { AppError } from '@/core/errors/app-error';
 import { chain } from '@/core/middlewares/chain';
 import type { CustomMiddleware } from '@/core/middlewares/types';
 import { withAxiom } from '@/core/observability/axiom/middlewares/with-axiom';
+import { withArcjet } from '@/core/security/arcjet/middlewares/with-arcjet';
 
-const proxies: CustomMiddleware[] = [withAxiom];
+const proxies: CustomMiddleware[] = [withAxiom, withArcjet];
 
 export const proxy = async (request: NextRequest, event: NextFetchEvent) => {
   const handler = chain(proxies);
