@@ -13,7 +13,7 @@ export const env = createEnv({
     ARCJET_ENV: z
       .enum(['development', 'production', 'staging'])
       .default('development'),
-    ALLOWED_EMAILS: z.string().default(''),
+    EMAIL_WHITELIST: z.string().default(''),
 
     // ─── OBSERVABILITY ───────────────────────────────────────────────────────
     AXIOM_TOKEN: z.string().min(10).optional(),
