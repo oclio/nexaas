@@ -12,6 +12,7 @@ src/core/
   helpers/           → shared utilities (string formatting)
   middlewares/       → composable middleware chain + proxy entrypoint
   observability/     → Axiom logging, Sentry error tracking, request tracing, web vitals, health checks
+  security/          → Arcjet, CSP, CSRF, body size limit, secure cookies, email whitelist
 ```
 
 ## config/env
@@ -79,6 +80,19 @@ const proxies: CustomMiddleware[] = [myMiddleware];
 ```
 
 The chain runs middlewares in order, unwinds in reverse, and wraps any non-`AppError` into a `MiddlewareChainError` with the original message preserved in `context.originalError`.
+
+## security
+
+Defense-in-depth via composable middleware. Each layer can be independently enabled or disabled via environment variables. See [Security](./security) for the full guide.
+
+| File                                                  | Purpose                                                                             |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `security/arcjet/middlewares/with-arcjet.ts`          | Rate limiting, bot detection, shield (SQLi/XSS). Bypassed if `ARCJET_KEY` is unset. |
+| `security/csp/middlewares/with-csp.ts`                | Content-Security-Policy header with nonce generation and Sentry reporting           |
+| `security/csrf/middlewares/with-csrf.ts`              | CSRF protection via Origin header check on state-changing methods                   |
+| `security/body/middlewares/with-body-size-limit.ts`   | Rejects request bodies larger than 1MB (413)                                        |
+| `security/cookies/middlewares/with-secure-cookies.ts` | Enforces HttpOnly, Secure, SameSite=Strict on all response cookies                  |
+| `security/email-whitelist.ts`                         | `isAuthorizedEmail()` — restricts access to whitelisted emails (dev/testing)        |
 
 ## observability
 
