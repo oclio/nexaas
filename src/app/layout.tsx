@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
-import { fontHeading, fontSans } from '@/ui/fonts';
 import '@/ui/styles/globals.css';
-import { app } from '@/core/config';
+
+import type { Metadata } from 'next';
 import { ReactNode } from 'react';
+
+import { app } from '@/core/config';
+import { fontHeading, fontSans } from '@/ui/fonts';
 
 export const metadata: Metadata = {
   title: app.title,
