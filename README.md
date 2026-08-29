@@ -39,6 +39,7 @@ A scalable, production-ready SaaS boilerplate built for high performance and rap
 | [commitlint](https://commitlint.js.org) 21                        | Conventional commits enforcement        |
 | [Commitizen](https://commitizen-tools.github.io/commitizen) 4     | Interactive commit prompts              |
 | [Changesets](https://github.com/changesets/changesets) 3          | Versioning & changelog management       |
+| [@next/bundle-analyzer](https://github.com/vercel/next.js) 16     | Bundle analysis & visualization         |
 
 ## Scripts
 
