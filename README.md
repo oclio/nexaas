@@ -20,14 +20,15 @@ A scalable, production-ready SaaS boilerplate built for high performance and rap
 
 ## Tooling
 
-| Tool                                                | Purpose                                 |
-| --------------------------------------------------- | --------------------------------------- |
-| [ESLint](https://eslint.org) 10                     | Linting (flat config)                   |
-| [Prettier](https://prettier.io) 3                   | Code formatting                         |
-| [typescript-eslint](https://typescript-eslint.io) 8 | TypeScript-specific lint rules          |
-| [Knip](https://knip.dev) 6                          | Dead code & unused dependency detection |
-| [Gitleaks](https://github.com/gitleaks/gitleaks)    | Secret scanning                         |
-| [axe-core](https://github.com/dequelabs/axe-core)   | Accessibility auditing                  |
+| Tool                                                              | Purpose                                 |
+| ----------------------------------------------------------------- | --------------------------------------- |
+| [ESLint](https://eslint.org) 10                                   | Linting (flat config)                   |
+| [Prettier](https://prettier.io) 3                                 | Code formatting                         |
+| [typescript-eslint](https://typescript-eslint.io) 8               | TypeScript-specific lint rules          |
+| [Knip](https://knip.dev) 6                                        | Dead code & unused dependency detection |
+| [Gitleaks](https://github.com/gitleaks/gitleaks)                  | Secret scanning                         |
+| [axe-core](https://github.com/dequelabs/axe-core)                 | Accessibility auditing                  |
+| [markdownlint](https://github.com/igorshubovych/markdownlint-cli) | Markdown linting                        |
 
 ## Scripts
 

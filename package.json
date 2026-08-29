@@ -12,9 +12,10 @@
     "format": "prettier --write .",
     "check:types": "tsc --noEmit",
     "check:fast": "pnpm check:types && pnpm lint:fix && pnpm knip && true",
-    "check:all": "pnpm check:fast && pnpm check:secrets && pnpm build && true",
+    "check:all": "pnpm check:fast && pnpm check:secrets && pnpm check:md && pnpm build && true",
     "check:secrets": "gitleaks protect --staged --verbose",
     "check:a11y": "node scripts/check-a11y.mjs",
+    "check:md": "markdownlint '**/*.md' --fix --ignore **/node_modules/** --ignore **/.next/**",
     "knip": "knip --config knip.config.mjs"
   },
   "dependencies": {
@@ -41,6 +42,7 @@
     "eslint-plugin-unicorn": "^73.0.0",
     "gitleaks": "^1.0.0",
     "knip": "^6.32.3",
+    "markdownlint-cli": "^0.49.1",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",

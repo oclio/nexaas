@@ -2,7 +2,6 @@
 
 import { execSync } from 'node:child_process';
 
-const BASE_URL = 'http://localhost:3000';
 const cliArguments = process.argv.slice(2);
 
 if (cliArguments.length === 0) {
@@ -11,6 +10,7 @@ if (cliArguments.length === 0) {
   process.exit(1);
 }
 
+const BASE_URL = 'http://localhost:3000';
 const urls = cliArguments.map((argument) =>
   argument.startsWith('http') ? argument : `${BASE_URL}${argument}`,
 );
