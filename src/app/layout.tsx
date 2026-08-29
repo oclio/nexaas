@@ -24,7 +24,9 @@ export default function RootLayout({ children }: Readonly<Props>) {
       lang="en"
       className={`${fontSans.variable} ${fontHeading.variable} h-full font-sans antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        <main className="flex flex-1 flex-col">{children}</main>
+      </body>
     </html>
   );
 }

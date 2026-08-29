@@ -86,10 +86,7 @@ const eslintConfig = defineConfig([
   },
   // KEYS AUTO-SORT
   {
-    files: [
-      'ignore.mjs',
-      'knip.config.mjs',
-    ],
+    files: ['ignore.mjs', 'knip.config.mjs'],
     plugins: { perfectionist },
     rules: {
       'perfectionist/sort-objects': [
