@@ -1,6 +1,8 @@
-# nexaas
-
-A scalable, production-ready SaaS boilerplate built for high performance and rapid prototyping in Next.js.
+<div align="center">
+  <img src="./docs/images/logo.svg" alt="Logo" width="45" />
+  <h1>nexaas</h1>
+  <p>A scalable, production-ready SaaS boilerplate built for high performance and rapid prototyping in Next.js.</p>
+</div>
 
 ## Requirements
 
@@ -47,3 +49,33 @@ A scalable, production-ready SaaS boilerplate built for high performance and rap
 | ------------------------ | ---------------------------------------------------------------------------------- |
 | `scripts/check-a11y.mjs` | Runs axe-core against one or more routes. Requires `pnpm dev` running.             |
 |                          | Usage: `pnpm check:a11y / /about` or `pnpm check:a11y http://localhost:3000/login` |
+
+## Contributing
+
+Contributions are welcome! See [`CONTRIBUTING.md`](.github/CONTRIBUTING.md) for guidelines and [`CODING_RULES.md`](.github/CODING_RULES.md) for coding conventions.
+
+## Support the project
+
+```text
+As an: independent developer,
+I want: to receive recurring funding,
+So that: I can keep building tools you didn't know you needed.
+```
+
+<div align="center">
+  <a href="https://github.com/sponsors/oclio"><img src="https://img.shields.io/badge/GitHub-Sponsors-purple?logo=github&logoColor=white" alt="GitHub Sponsors" /></a>
+  <a href="https://buymeacoffee.com/oclio"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee" /></a>
+</div>
+
+## License
+
+[MIT](LICENSE)
+
+<p align="center">
+  <img src="docs/images/oclio_logo.svg" alt="oclio logo" width="48" />
+</p>
+
+<p align="center">
+  <a href="https://oclio.dev">@oclio</a> — TypeScript Engineer<br>
+  Lean, pragmatic, test-driven.
+</p>

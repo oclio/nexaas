@@ -2,6 +2,25 @@
   "name": "nexaas",
   "version": "0.1.0",
   "description": "A scalable, production-ready SaaS boilerplate built for high performance and rapid prototyping in Next.js.",
+  "keywords": [
+    "nextjs",
+    "nextjs-boilerplate",
+    "saas",
+    "saas-boilerplate",
+    "starter",
+    "template",
+    "typescript",
+    "react",
+    "tailwindcss",
+    "production-ready"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "oclio",
+    "email": "hello@oclio.dev",
+    "url": "https://oclio.dev"
+  },
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
