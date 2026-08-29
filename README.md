@@ -38,6 +38,7 @@ A scalable, production-ready SaaS boilerplate built for high performance and rap
 | [lint-staged](https://github.com/lint-staged/lint-staged) 17      | Staged files linting                    |
 | [commitlint](https://commitlint.js.org) 21                        | Conventional commits enforcement        |
 | [Commitizen](https://commitizen-tools.github.io/commitizen) 4     | Interactive commit prompts              |
+| [Changesets](https://github.com/changesets/changesets) 3          | Versioning & changelog management       |
 
 ## Scripts
 
