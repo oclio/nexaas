@@ -42,6 +42,22 @@ vi.mock('@/core/security/csrf/middlewares/with-csrf', () => ({
   ) => next(),
 }));
 
+vi.mock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+  withBodySizeLimit: async (
+    _req: NextRequest,
+    _event: NextFetchEvent,
+    next: () => Promise<Response | NextResponse>,
+  ) => next(),
+}));
+
+vi.mock('@/core/security/cookies/middlewares/with-secure-cookies', () => ({
+  withSecureCookies: async (
+    _req: NextRequest,
+    _event: NextFetchEvent,
+    next: () => Promise<Response | NextResponse>,
+  ) => next(),
+}));
+
 function mockRequest(headers: Record<string, string> = {}): NextRequest {
   return {
     headers: new Headers(headers),
@@ -97,6 +113,23 @@ describe('proxy', () => {
         next: () => Promise<Response | NextResponse>,
       ) => next(),
     }));
+    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+      withBodySizeLimit: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock(
+      '@/core/security/cookies/middlewares/with-secure-cookies',
+      () => ({
+        withSecureCookies: async (
+          _req: NextRequest,
+          _event: NextFetchEvent,
+          next: () => Promise<Response | NextResponse>,
+        ) => next(),
+      }),
+    );
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(
@@ -138,6 +171,23 @@ describe('proxy', () => {
         next: () => Promise<Response | NextResponse>,
       ) => next(),
     }));
+    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+      withBodySizeLimit: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock(
+      '@/core/security/cookies/middlewares/with-secure-cookies',
+      () => ({
+        withSecureCookies: async (
+          _req: NextRequest,
+          _event: NextFetchEvent,
+          next: () => Promise<Response | NextResponse>,
+        ) => next(),
+      }),
+    );
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(mockRequest(), mockEvent());
@@ -176,6 +226,23 @@ describe('proxy', () => {
         next: () => Promise<Response | NextResponse>,
       ) => next(),
     }));
+    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+      withBodySizeLimit: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock(
+      '@/core/security/cookies/middlewares/with-secure-cookies',
+      () => ({
+        withSecureCookies: async (
+          _req: NextRequest,
+          _event: NextFetchEvent,
+          next: () => Promise<Response | NextResponse>,
+        ) => next(),
+      }),
+    );
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(mockRequest(), mockEvent());
@@ -211,6 +278,23 @@ describe('proxy', () => {
         next: () => Promise<Response | NextResponse>,
       ) => next(),
     }));
+    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
+      withBodySizeLimit: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock(
+      '@/core/security/cookies/middlewares/with-secure-cookies',
+      () => ({
+        withSecureCookies: async (
+          _req: NextRequest,
+          _event: NextFetchEvent,
+          next: () => Promise<Response | NextResponse>,
+        ) => next(),
+      }),
+    );
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(mockRequest(), mockEvent());

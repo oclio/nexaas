@@ -13,6 +13,7 @@ const config = {
     'arcjet',
     'axiomhq',
     'credentialless',
+    'httponly',
     'nexaas',
     'nojekyll',
     'nosniff',
