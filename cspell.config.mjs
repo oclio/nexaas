@@ -12,6 +12,7 @@ const config = {
   words: [
     'axiomhq',
     'nexaas',
+    'nojekyll',
     'oclio',
     'sonarqube',
     'ttfb',
