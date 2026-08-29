@@ -10,7 +10,7 @@ importers:
     dependencies:
       next:
         specifier: 16.3.3
-        version: 16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.55.0)(@types/node@26.4.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.62.1)(@types/node@26.4.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -31,8 +31,8 @@ importers:
         specifier: ^16.3.3
         version: 16.3.3
       '@playwright/test':
-        specifier: ^1.55.0
-        version: 1.55.0
+        specifier: ^1.62.1
+        version: 1.62.1
       '@stryker-mutator/api':
         specifier: ^10.0.0
         version: 10.0.0
@@ -1284,6 +1284,9 @@ packages:
     resolution: {integrity: sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==}
     engines: {node: '>=6.0.0'}
 
+  '@jridgewell/sourcemap-codec@1.5.5':
+    resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
+
   '@jridgewell/sourcemap-codec@1.6.0':
     resolution: {integrity: sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==}
 
@@ -1623,9 +1626,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@playwright/test@1.55.0':
-    resolution: {integrity: sha512-04IXzPwHrW69XusN/SIdDdKZBzMfOT9UNT/YiJit/xpy2VuAoB8NHc8Aplb96zsWDddLnbkPL3TsmrS04ZU2xQ==}
-    engines: {node: '>=18'}
+  '@playwright/test@1.62.1':
+    resolution: {integrity: sha512-DTcUc8qii+cpHvtOwggMtBRMjKZHXYWdw8syRYu2vtzuq4Wxphqq4NfCs5Zt44L6mA8rfDfj+PHnxFc/FeK6mQ==}
+    engines: {node: '>=20'}
     hasBin: true
 
   '@pnpm/deps.graph-sequencer@1100.0.1':
@@ -2516,8 +2519,8 @@ packages:
   chardet@2.2.0:
     resolution: {integrity: sha512-rddelWYNPRrXq6PtNEN2S3f6t9ILzvqaN5pVgi4kqt9jHQaXIial9PznB5iSPVlQSLNaaH22ItWz3EJtQ10+OA==}
 
-  chromedriver@152.0.2:
-    resolution: {integrity: sha512-w/trjzSjQC8vHHwl4e+WXBGPRN3XnrsY14q/FdxCY8GtTUIlB+wH1gn/Kz3CHpdmbsouUEGal6E8bjEEz72pZg==}
+  chromedriver@152.0.1:
+    resolution: {integrity: sha512-8zet2yPAFOSlYxUIcQ/1yOOC1xP4ooPZiKFRdlJhFawBKvlZIHDU6qv4LDOfPEw1yXbyu+tQTzbL0Vfb+vHdQQ==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -4437,14 +4440,14 @@ packages:
     resolution: {integrity: sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA==}
     engines: {node: '>=12'}
 
-  playwright-core@1.55.0:
-    resolution: {integrity: sha512-GvZs4vU3U5ro2nZpeiwyb0zuFaqb9sUiAJuyrWpcGouD8y9/HLgGbNRjIph7zU9D3hnPaisMl9zG9CgFi/biIg==}
-    engines: {node: '>=18'}
+  playwright-core@1.62.1:
+    resolution: {integrity: sha512-wPYSwEBJY9GHraISXqyqtx0na0LpO3XEX7jNDhntbex7tzUS7kLnZsOlFruFJB4Hi/rhDMjXGqHewDZ68nYZVw==}
+    engines: {node: '>=20'}
     hasBin: true
 
-  playwright@1.55.0:
-    resolution: {integrity: sha512-sdCWStblvV1YU909Xqx0DhOjPZE4/5lJsIS84IfN9dAZfcl/CIZ5O8l3o0j7hPMjDvqoTF8ZUcc+i/GL5erstA==}
-    engines: {node: '>=18'}
+  playwright@1.62.1:
+    resolution: {integrity: sha512-0M+L3LAD8/nm554LOla9Ayx0j0tmFZ0FBcoQ7F1VuVHpM/XpiC8RcDzBQB8W5+hA8L22THxELzeF+2WcUzvcLg==}
+    engines: {node: '>=20'}
     hasBin: true
 
   pluralize@8.0.0:
@@ -5397,7 +5400,7 @@ snapshots:
     dependencies:
       '@axe-core/webdriverjs': 4.13.0(selenium-webdriver@4.44.0)
       axe-core: 4.13.0
-      chromedriver: 152.0.2(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
+      chromedriver: 152.0.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
       colors: 1.4.0
       commander: 9.5.0
       dotenv: 17.4.2
@@ -6563,7 +6566,7 @@ snapshots:
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.6.0
+      '@jridgewell/sourcemap-codec': 1.5.5
       '@jridgewell/trace-mapping': 0.3.31
 
   '@jridgewell/remapping@2.3.5':
@@ -6573,12 +6576,14 @@ snapshots:
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
+  '@jridgewell/sourcemap-codec@1.5.5': {}
+
   '@jridgewell/sourcemap-codec@1.6.0': {}
 
   '@jridgewell/trace-mapping@0.3.31':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.6.0
+      '@jridgewell/sourcemap-codec': 1.5.5
 
   '@manypkg/find-root@3.1.0':
     dependencies:
@@ -6794,9 +6799,9 @@ snapshots:
   '@oxc-resolver/binding-win32-x64-msvc@11.24.2':
     optional: true
 
-  '@playwright/test@1.55.0':
+  '@playwright/test@1.62.1':
     dependencies:
-      playwright: 1.55.0
+      playwright: 1.62.1
 
   '@pnpm/deps.graph-sequencer@1100.0.1': {}
 
@@ -7659,7 +7664,7 @@ snapshots:
 
   chardet@2.2.0: {}
 
-  chromedriver@152.0.2(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0):
+  chromedriver@152.0.1(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:
       '@testim/chrome-version': 1.1.4
       adm-zip: 0.6.0
@@ -9682,7 +9687,7 @@ snapshots:
 
   netmask@2.1.1: {}
 
-  next@16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.55.0)(@types/node@26.4.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  next@16.3.3(@babel/core@7.29.7(supports-color@7.2.0))(@playwright/test@1.62.1)(@types/node@26.4.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
       '@next/env': 16.3.3
       '@swc/helpers': 0.5.23
@@ -9701,7 +9706,7 @@ snapshots:
       '@next/swc-linux-x64-musl': 16.3.3
       '@next/swc-win32-arm64-msvc': 16.3.3
       '@next/swc-win32-x64-msvc': 16.3.3
-      '@playwright/test': 1.55.0
+      '@playwright/test': 1.62.1
       babel-plugin-react-compiler: 1.0.0
       sharp: 0.35.4(@types/node@26.4.0)
     transitivePeerDependencies:
@@ -9936,11 +9941,11 @@ snapshots:
 
   picomatch@4.0.7: {}
 
-  playwright-core@1.55.0: {}
+  playwright-core@1.62.1: {}
 
-  playwright@1.55.0:
+  playwright@1.62.1:
     dependencies:
-      playwright-core: 1.55.0
+      playwright-core: 1.62.1
     optionalDependencies:
       fsevents: 2.3.2
 
