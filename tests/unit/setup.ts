@@ -6,4 +6,9 @@ vi.mock('next/font/google', () => ({
     className: 'mocked-inter-class',
     variable: '--font-inter-mocked',
   }),
+  Montserrat: () => ({
+    style: { fontFamily: 'montserrat' },
+    className: 'mocked-montserrat-class',
+    variable: '--font-heading-mocked',
+  }),
 }));

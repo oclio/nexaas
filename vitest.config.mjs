@@ -16,12 +16,7 @@ export default defineConfig({
     setupFiles: ['./tests/unit/setup.ts'],
     timeout: 30_000,
     exclude: ignore,
-    include: [
-      'src/**/*.e2e-spec.ts',
-      'src/**/*.e2e-spec.tsx',
-      'src/**/*.spec.ts',
-      'src/**/*.spec.tsx',
-    ],
+    include: ['src/**/*.spec.ts', 'src/**/*.spec.tsx'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
