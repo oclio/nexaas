@@ -5,8 +5,9 @@ import { chain } from '@/core/middlewares/chain';
 import type { CustomMiddleware } from '@/core/middlewares/types';
 import { withAxiom } from '@/core/observability/axiom/middlewares/with-axiom';
 import { withArcjet } from '@/core/security/arcjet/middlewares/with-arcjet';
+import { withCsp } from '@/core/security/csp/middlewares/with-csp';
 
-const proxies: CustomMiddleware[] = [withAxiom, withArcjet];
+const proxies: CustomMiddleware[] = [withAxiom, withCsp, withArcjet];
 
 export const proxy = async (request: NextRequest, event: NextFetchEvent) => {
   const handler = chain(proxies);

@@ -26,6 +26,14 @@ vi.mock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
   ) => next(),
 }));
 
+vi.mock('@/core/security/csp/middlewares/with-csp', () => ({
+  withCsp: async (
+    _req: NextRequest,
+    _event: NextFetchEvent,
+    next: () => Promise<Response | NextResponse>,
+  ) => next(),
+}));
+
 function mockRequest(headers: Record<string, string> = {}): NextRequest {
   return {
     headers: new Headers(headers),
@@ -67,6 +75,13 @@ describe('proxy', () => {
         next: () => Promise<Response | NextResponse>,
       ) => next(),
     }));
+    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
+      withCsp: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(
@@ -89,6 +104,13 @@ describe('proxy', () => {
     }));
     vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
       withArcjet: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
+      withCsp: async (
         _req: NextRequest,
         _event: NextFetchEvent,
         next: () => Promise<Response | NextResponse>,
@@ -118,6 +140,13 @@ describe('proxy', () => {
         next: () => Promise<Response | NextResponse>,
       ) => next(),
     }));
+    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
+      withCsp: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
 
     const { proxy: failingProxy } = await import('@/proxy');
     const response = await failingProxy(mockRequest(), mockEvent());
@@ -134,6 +163,13 @@ describe('proxy', () => {
     }));
     vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
       withArcjet: async (
+        _req: NextRequest,
+        _event: NextFetchEvent,
+        next: () => Promise<Response | NextResponse>,
+      ) => next(),
+    }));
+    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
+      withCsp: async (
         _req: NextRequest,
         _event: NextFetchEvent,
         next: () => Promise<Response | NextResponse>,
