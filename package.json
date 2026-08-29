@@ -11,8 +11,9 @@
     "lint:fix": "eslint --fix",
     "format": "prettier --write .",
     "check:types": "tsc --noEmit",
-    "check:fast": "pnpm check:types && pnpm lint:fix && true",
-    "check:all": "pnpm check:fast && pnpm build && true"
+    "check:fast": "pnpm check:types && pnpm lint:fix && pnpm knip && true",
+    "check:all": "pnpm check:fast && pnpm build && true",
+    "knip": "knip --config knip.config.mjs"
   },
   "dependencies": {
     "next": "16.3.3",
@@ -28,6 +29,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^10.9.1",
     "eslint-plugin-react-hooks": "7.1.1",
+    "knip": "^6.32.3",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",
