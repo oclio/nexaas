@@ -25,7 +25,9 @@
     "check:a11y": "node scripts/check-a11y.mjs",
     "check:md": "markdownlint '**/*.md' --fix --ignore **/node_modules/** --ignore **/.next/**",
     "check:spell": "cspell '**/*.{ts,md,json,yml,yaml}' --no-progress --gitignore",
-    "knip": "knip --config knip.config.mjs"
+    "knip": "knip --config knip.config.mjs",
+    "prepare": "husky",
+    "commit": "cz"
   },
   "dependencies": {
     "next": "16.3.3",
@@ -34,6 +36,7 @@
   },
   "devDependencies": {
     "@axe-core/cli": "^4.13.0",
+    "@commitlint/config-conventional": "^21.2.2",
     "@playwright/test": "^1.55.0",
     "@stryker-mutator/api": "^10.0.0",
     "@stryker-mutator/core": "^10.0.0",
@@ -48,8 +51,11 @@
     "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "^4.1.11",
     "babel-plugin-react-compiler": "1.0.0",
+    "commitizen": "^4.3.2",
+    "commitlint": "^21.2.2",
     "cross-env": "^10.1.0",
     "cspell": "^10.1.1",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^10.9.1",
     "eslint-config-next": "^16.3.3",
     "eslint-config-prettier": "^10.1.8",
@@ -61,8 +67,10 @@
     "eslint-plugin-tsdoc": "^0.5.2",
     "eslint-plugin-unicorn": "^73.0.0",
     "gitleaks": "^1.0.0",
+    "husky": "^9.1.7",
     "jsdom": "^30.0.1",
     "knip": "^6.32.3",
+    "lint-staged": "^17.4.1",
     "markdownlint-cli": "^0.49.1",
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
@@ -70,6 +78,23 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.68.0",
     "vitest": "^4.1.11"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.md": [
+      "markdownlint --fix --ignore CHANGELOG.md"
+    ],
+    "*.{ts,tsx,json,md,yml,yaml}": [
+      "prettier --write",
+      "cspell --no-must-find-files"
+    ]
   },
   "packageManager": "pnpm@11.20.0",
   "engines": {

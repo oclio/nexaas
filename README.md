@@ -34,6 +34,10 @@ A scalable, production-ready SaaS boilerplate built for high performance and rap
 | [@testing-library/react](https://testing-library.com/docs/react)  | React component testing utilities       |
 | [Playwright](https://playwright.dev) 1.55                         | E2E testing (chromium)                  |
 | [Stryker](https://stryker-mutator.io) 10                          | Mutation testing                        |
+| [Husky](https://typicode.github.io/husky) 9                       | Git hooks                               |
+| [lint-staged](https://github.com/lint-staged/lint-staged) 17      | Staged files linting                    |
+| [commitlint](https://commitlint.js.org) 21                        | Conventional commits enforcement        |
+| [Commitizen](https://commitizen-tools.github.io/commitizen) 4     | Interactive commit prompts              |
 
 ## Scripts
 
