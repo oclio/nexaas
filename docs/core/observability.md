@@ -97,6 +97,8 @@ The `onRequestError` export captures unhandled request errors in both Sentry and
 
 `src/instrumentation-client.ts` initializes Sentry with session replay integration in production only (when `NEXT_PUBLIC_SENTRY_DSN` is set). In development, Sentry is not initialized on the client.
 
+Unhandled client-side errors are caught by `src/app/global-error.tsx` — a Next.js error boundary that captures the exception to Sentry via `Sentry.captureException` and renders the default Next.js error page.
+
 ### Configuration
 
 | Setting                    | Development | Production |

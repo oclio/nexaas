@@ -104,3 +104,5 @@ If `AXIOM_TOKEN` or `AXIOM_DATASET` is unset, Axiom is bypassed — no logs are 
 | `sentry/health/index.ts` | Health check logic: pings Sentry ingest endpoint with timeout |
 
 Sentry is initialized via `src/instrumentation.ts` (server) and `src/instrumentation-client.ts` (client). If `NEXT_PUBLIC_SENTRY_DSN` is unset, Sentry is not initialized — no errors are captured, and the health check reports `disabled`.
+
+Unhandled client-side errors are caught by `src/app/global-error.tsx`, which captures the exception to Sentry and renders the Next.js error page.
