@@ -29,6 +29,7 @@ A scalable, production-ready SaaS boilerplate built for high performance and rap
 | [Gitleaks](https://github.com/gitleaks/gitleaks)                  | Secret scanning                         |
 | [axe-core](https://github.com/dequelabs/axe-core)                 | Accessibility auditing                  |
 | [markdownlint](https://github.com/igorshubovych/markdownlint-cli) | Markdown linting                        |
+| [cspell](https://cspell.org)                                      | Spell checking                          |
 
 ## Scripts
 
