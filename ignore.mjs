@@ -4,6 +4,7 @@ const ignore = [
   '.ops/**',
   '.stryker-tmp/**',
   '.temp/**',
+  '.vitepress/**',
   '.vscode/**',
   '.windsurf/**',
   'commitlint.config.mjs',

@@ -84,6 +84,13 @@ const eslintConfig = defineConfig([
       'unicorn/prefer-string-raw': 'off',
     },
   },
+  // TESTS
+  {
+    files: ['**/*.spec.{ts,tsx}', '**/*.e2e-spec.{ts,tsx}', 'tests/unit/**'],
+    rules: {
+      'unicorn/no-null': 'off',
+    },
+  },
   // TESTS — allow non-kebab filenames (e.g. page.spec.tsx, page.e2e-spec.ts)
   {
     files: ['**/__e2e__/**/*.{ts,tsx}', '**/__tests__/**/*.{ts,tsx}'],

@@ -14,6 +14,7 @@ const config = {
     'axiomhq',
     'credentialless',
     'httponly',
+    'hugeicons',
     'nexaas',
     'nojekyll',
     'nosniff',

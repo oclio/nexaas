@@ -28,7 +28,6 @@ describe('getErrorMessage', () => {
   });
 
   it('returns Unknown error for null', () => {
-    // eslint-disable-next-line unicorn/no-null
     expect(getErrorMessage(null)).toBe('Unknown error');
   });
 

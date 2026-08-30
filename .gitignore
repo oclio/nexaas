@@ -5,6 +5,7 @@ docs/.vitepress/cache/
 docs/.vitepress/deps/
 .ops/
 .temp/
+.vitepress/
 AGENTS.md
 
 # vscode
