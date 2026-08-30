@@ -6,6 +6,8 @@ export const sentryMocks = {
   captureRouterTransitionStart: vi.fn(),
   captureRequestError: vi.fn(),
   captureException: vi.fn(),
+  captureMessage: vi.fn(),
+  getClient: vi.fn(),
 };
 
 vi.mock('@sentry/nextjs', () => sentryMocks);

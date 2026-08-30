@@ -1,7 +1,6 @@
 import { vi } from 'vitest';
 
 const envDefaults: Record<string, unknown> = {
-  ARCJET_ENV: 'development',
   EMAIL_WHITELIST: '',
   LOG_LEVEL: 'info',
   NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
