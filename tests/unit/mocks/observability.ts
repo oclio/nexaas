@@ -10,6 +10,16 @@ export const sentryMocks = {
 
 vi.mock('@sentry/nextjs', () => sentryMocks);
 
+const useReportWebVitalsMock = vi.fn();
+
+vi.mock('next/web-vitals', () => ({
+  useReportWebVitals: (callback: (metric: Record<string, unknown>) => void) => {
+    useReportWebVitalsMock(callback);
+  },
+}));
+
+export { useReportWebVitalsMock };
+
 export const axiomLoggerMock = {
   error: vi.fn(),
   warn: vi.fn(),

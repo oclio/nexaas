@@ -2,33 +2,6 @@ import { render, screen } from '@testing-library/react';
 
 import RootLayout, { generateStaticParams } from '../layout';
 
-const messagesMock = { pages: { landing: { title: 'Welcome!' } } };
-
-vi.mock('next-intl/server', () => ({
-  getMessages: vi.fn(async () => messagesMock),
-}));
-
-vi.mock('next-intl', () => ({
-  hasLocale: (locales: readonly string[], locale: string) =>
-    locales.includes(locale),
-  NextIntlClientProvider: ({ children }: { children: React.ReactNode }) =>
-    children,
-}));
-
-vi.mock('next/navigation', () => ({
-  notFound: vi.fn(() => {
-    throw new Error('NEXT_NOT_FOUND');
-  }),
-}));
-
-vi.mock('next-themes', () => ({
-  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
-}));
-
-vi.mock('next/web-vitals', () => ({
-  useReportWebVitals: vi.fn(),
-}));
-
 const localeParameters = (locale: string) => ({
   params: Promise.resolve({ locale }),
 });
@@ -64,6 +37,20 @@ describe('RootLayout', () => {
     );
 
     expect(document.documentElement).toHaveAttribute('lang', 'en');
+  });
+
+  it('applies layout classes to html element', async () => {
+    render(
+      await RootLayout({
+        children: <div>Content</div>,
+        ...localeParameters('en'),
+      }),
+    );
+
+    const html = document.documentElement;
+    expect(html).toHaveClass('h-full');
+    expect(html).toHaveClass('antialiased');
+    expect(html).toHaveClass('font-sans');
   });
 
   it('fetches messages for the given locale', async () => {

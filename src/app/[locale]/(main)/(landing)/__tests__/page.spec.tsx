@@ -2,30 +2,9 @@ import { render, screen } from '@testing-library/react';
 
 import LandingPage, { generateMetadata } from '../page';
 
-const translationMock = vi.fn((key: string) => {
-  const messages: Record<string, string> = {
-    title: 'Welcome!',
-  };
-  return messages[key] ?? key;
-});
-const returnKey = (key: string) => key;
-
-vi.mock('next-intl/server', () => ({
-  getTranslations: vi.fn(async () => translationMock),
-}));
-
-vi.mock('next-intl', () => ({
-  useLocale: () => 'en',
-  useTranslations: () => returnKey,
-}));
-
 vi.mock('@/core/i18n/navigation', () => ({
   usePathname: () => '/',
   useRouter: () => ({ push: vi.fn() }),
-}));
-
-vi.mock('next-themes', () => ({
-  useTheme: () => ({ theme: 'light', setTheme: vi.fn() }),
 }));
 
 describe('LandingPage', () => {

@@ -1,20 +1,6 @@
 import { render } from '@testing-library/react';
 
-vi.mock('@/core/observability/axiom/server', () => ({
-  logger: {
-    error: vi.fn(),
-    warn: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  },
-}));
-
-const useReportWebVitalsMock = vi.fn();
-vi.mock('next/web-vitals', () => ({
-  useReportWebVitals: (callback: (metric: Record<string, unknown>) => void) => {
-    useReportWebVitalsMock(callback);
-  },
-}));
+import { useReportWebVitalsMock } from '@/tests/unit/mocks/observability';
 
 const sendBeaconSpy = vi.fn();
 const fetchSpy = vi.fn();

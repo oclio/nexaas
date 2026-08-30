@@ -26,3 +26,9 @@ vi.mock('next/font/google', () => ({
     variable: '--font-heading-mocked',
   }),
 }));
+
+vi.mock('next-themes', () => ({
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
+  NextThemesProvider: ({ children }: { children: React.ReactNode }) => children,
+  useTheme: () => ({ theme: 'light', setTheme: vi.fn() }),
+}));
