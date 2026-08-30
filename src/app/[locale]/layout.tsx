@@ -2,13 +2,21 @@ import '@/ui/styles/globals.css';
 import '@/core/config/env';
 
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { hasLocale, NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { ThemeProvider } from '@/app/(main)/_components/theme-provider';
+import { ThemeProvider } from '@/app/[locale]/(main)/_components/theme-provider';
 import { app } from '@/core/config';
+import { routing } from '@/core/i18n/routing';
 import { WebVitals } from '@/core/observability/axiom/components/web-vitals';
 import { fontHeading, fontSans } from '@/ui/fonts';
 import { cn } from '@/ui/helpers';
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export const metadata: Metadata = {
   title: app.title,
@@ -20,9 +28,19 @@ export const metadata: Metadata = {
 
 interface Props {
   children: ReactNode;
+  params: Promise<{ locale: string }>;
 }
 
-export default function RootLayout({ children }: Readonly<Props>) {
+export default async function RootLayout({
+  children,
+  params,
+}: Readonly<Props>) {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+  const messages = await getMessages({ locale });
+
   return (
     <html
       lang="en"
@@ -37,7 +55,9 @@ export default function RootLayout({ children }: Readonly<Props>) {
     >
       <body className="flex min-h-full flex-col">
         <ThemeProvider>
-          <main className="flex flex-1 flex-col">{children}</main>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <main className="flex flex-1 flex-col">{children}</main>
+          </NextIntlClientProvider>
           <WebVitals />
         </ThemeProvider>
       </body>

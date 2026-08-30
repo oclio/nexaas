@@ -1,6 +1,7 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 
 import { AppError } from '@/core/errors/app-error';
+import { withIntl } from '@/core/i18n/middlewares/with-intl';
 import { chain } from '@/core/middlewares/chain';
 import type { CustomMiddleware } from '@/core/middlewares/types';
 import { withAxiom } from '@/core/observability/axiom/middlewares/with-axiom';
@@ -11,6 +12,7 @@ import { withCsp } from '@/core/security/csp/middlewares/with-csp';
 import { withCsrf } from '@/core/security/csrf/middlewares/with-csrf';
 
 const proxies: CustomMiddleware[] = [
+  withIntl,
   withAxiom,
   withCsp,
   withCsrf,

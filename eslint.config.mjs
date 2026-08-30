@@ -104,6 +104,8 @@ const eslintConfig = defineConfig([
       'cspell.config.mjs',
       'ignore.mjs',
       'knip.config.mjs',
+      'messages/**',
+      'src/ui/icons/index.ts',
       'test-exclude.mjs',
     ],
     plugins: { perfectionist },

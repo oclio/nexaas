@@ -1,6 +1,7 @@
 'use client';
 
 import { HugeiconsIcon } from '@hugeicons/react';
+import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { type ComponentProps, useSyncExternalStore } from 'react';
 
@@ -19,6 +20,7 @@ export default function ThemeToggle({
   ...props
 }: Readonly<ComponentProps<typeof Button>>) {
   const { theme, setTheme } = useTheme();
+  const t = useTranslations('components.themeToggle');
 
   const mounted = useSyncExternalStore(
     emptySubscribe,
@@ -38,7 +40,7 @@ export default function ThemeToggle({
         mounted &&
         setTheme((previous) => (previous === 'dark' ? 'light' : 'dark'))
       }
-      aria-label="Toggle theme"
+      aria-label={t(isDark ? 'toggleLight' : 'toggleDark')}
       data-testid="theme-toggle"
     >
       <HugeiconsIcon

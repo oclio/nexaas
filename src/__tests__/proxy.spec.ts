@@ -1,6 +1,18 @@
 import type { NextFetchEvent, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+import { AppError, ErrorCode } from '@/core/errors';
+
+async function passThrough(
+  _req: NextRequest,
+  _event: NextFetchEvent,
+  next: () => Promise<Response | NextResponse>,
+) {
+  return next();
+}
+
+const { chainMock } = vi.hoisted(() => ({ chainMock: vi.fn() }));
+
 vi.mock('@/core/observability/axiom/server', () => ({
   logger: {
     error: vi.fn(),
@@ -10,52 +22,36 @@ vi.mock('@/core/observability/axiom/server', () => ({
   },
 }));
 
+vi.mock('@/core/middlewares/chain', () => ({
+  chain: chainMock,
+}));
+
+vi.mock('@/core/i18n/middlewares/with-intl', () => ({
+  withIntl: passThrough,
+}));
+
 vi.mock('@/core/observability/axiom/middlewares/with-axiom', () => ({
-  withAxiom: async (
-    _req: NextRequest,
-    _event: NextFetchEvent,
-    next: () => Promise<Response | NextResponse>,
-  ) => next(),
+  withAxiom: passThrough,
 }));
 
 vi.mock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
-  withArcjet: async (
-    _req: NextRequest,
-    _event: NextFetchEvent,
-    next: () => Promise<Response | NextResponse>,
-  ) => next(),
+  withArcjet: passThrough,
 }));
 
 vi.mock('@/core/security/csp/middlewares/with-csp', () => ({
-  withCsp: async (
-    _req: NextRequest,
-    _event: NextFetchEvent,
-    next: () => Promise<Response | NextResponse>,
-  ) => next(),
+  withCsp: passThrough,
 }));
 
 vi.mock('@/core/security/csrf/middlewares/with-csrf', () => ({
-  withCsrf: async (
-    _req: NextRequest,
-    _event: NextFetchEvent,
-    next: () => Promise<Response | NextResponse>,
-  ) => next(),
+  withCsrf: passThrough,
 }));
 
 vi.mock('@/core/security/body/middlewares/with-body-size-limit', () => ({
-  withBodySizeLimit: async (
-    _req: NextRequest,
-    _event: NextFetchEvent,
-    next: () => Promise<Response | NextResponse>,
-  ) => next(),
+  withBodySizeLimit: passThrough,
 }));
 
 vi.mock('@/core/security/cookies/middlewares/with-secure-cookies', () => ({
-  withSecureCookies: async (
-    _req: NextRequest,
-    _event: NextFetchEvent,
-    next: () => Promise<Response | NextResponse>,
-  ) => next(),
+  withSecureCookies: passThrough,
 }));
 
 function mockRequest(headers: Record<string, string> = {}): NextRequest {
@@ -72,11 +68,18 @@ function mockEvent(): NextFetchEvent {
 }
 
 describe('proxy', () => {
-  it('returns a NextResponse when proxies run', async () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('returns a NextResponse when handler succeeds', async () => {
+    const successResponse = NextResponse.next();
+    chainMock.mockReturnValue(async () => successResponse);
+
     const { proxy } = await import('@/proxy');
     const response = await proxy(mockRequest(), mockEvent());
 
-    expect(response).toBeInstanceOf(NextResponse);
+    expect(response).toBe(successResponse);
   });
 
   it('is the default export', async () => {
@@ -85,54 +88,13 @@ describe('proxy', () => {
     expect(defaultExport).toBe(proxy);
   });
 
-  it('returns error response with traceId when chain throws', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/observability/axiom/middlewares/with-axiom', () => ({
-      withAxiom: async () => {
-        throw new Error('middleware failed');
-      },
-    }));
-    vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
-      withArcjet: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
-      withCsp: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/csrf/middlewares/with-csrf', () => ({
-      withCsrf: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
-      withBodySizeLimit: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock(
-      '@/core/security/cookies/middlewares/with-secure-cookies',
-      () => ({
-        withSecureCookies: async (
-          _req: NextRequest,
-          _event: NextFetchEvent,
-          next: () => Promise<Response | NextResponse>,
-        ) => next(),
-      }),
-    );
+  it('returns error response with traceId when handler throws', async () => {
+    chainMock.mockReturnValue(async () => {
+      throw new Error('middleware failed');
+    });
 
-    const { proxy: failingProxy } = await import('@/proxy');
-    const response = await failingProxy(
+    const { proxy } = await import('@/proxy');
+    const response = await proxy(
       mockRequest({ 'x-trace-id': 'trace-123' }),
       mockEvent(),
     );
@@ -144,53 +106,12 @@ describe('proxy', () => {
   });
 
   it('returns error response with undefined traceId when header is missing', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/observability/axiom/middlewares/with-axiom', () => ({
-      withAxiom: async () => {
-        throw new Error('middleware failed');
-      },
-    }));
-    vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
-      withArcjet: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
-      withCsp: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/csrf/middlewares/with-csrf', () => ({
-      withCsrf: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
-      withBodySizeLimit: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock(
-      '@/core/security/cookies/middlewares/with-secure-cookies',
-      () => ({
-        withSecureCookies: async (
-          _req: NextRequest,
-          _event: NextFetchEvent,
-          next: () => Promise<Response | NextResponse>,
-        ) => next(),
-      }),
-    );
+    chainMock.mockReturnValue(async () => {
+      throw new Error('middleware failed');
+    });
 
-    const { proxy: failingProxy } = await import('@/proxy');
-    const response = await failingProxy(mockRequest(), mockEvent());
+    const { proxy } = await import('@/proxy');
+    const response = await proxy(mockRequest(), mockEvent());
     const body = await response.json();
 
     expect(response.status).toBe(500);
@@ -198,108 +119,39 @@ describe('proxy', () => {
   });
 
   it('uses statusCode from AppError when thrown', async () => {
-    vi.resetModules();
-    const { AppError, ErrorCode } = await import('@/core/errors');
-    vi.doMock('@/core/observability/axiom/middlewares/with-axiom', () => ({
-      withAxiom: async () => {
-        throw new AppError(ErrorCode.UNKNOWN_ERROR, 'Bad request', 400);
-      },
-    }));
-    vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
-      withArcjet: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
-      withCsp: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/csrf/middlewares/with-csrf', () => ({
-      withCsrf: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
-      withBodySizeLimit: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock(
-      '@/core/security/cookies/middlewares/with-secure-cookies',
-      () => ({
-        withSecureCookies: async (
-          _req: NextRequest,
-          _event: NextFetchEvent,
-          next: () => Promise<Response | NextResponse>,
-        ) => next(),
-      }),
-    );
+    chainMock.mockReturnValue(async () => {
+      throw new AppError(ErrorCode.UNKNOWN_ERROR, 'Bad request', 400);
+    });
 
-    const { proxy: failingProxy } = await import('@/proxy');
-    const response = await failingProxy(mockRequest(), mockEvent());
+    const { proxy } = await import('@/proxy');
+    const response = await proxy(
+      mockRequest({ 'x-trace-id': 'trace-456' }),
+      mockEvent(),
+    );
 
     expect(response.status).toBe(400);
   });
 
   it('defaults to 500 when a non-AppError is thrown', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/observability/axiom/middlewares/with-axiom', () => ({
-      withAxiom: async () => {
-        throw new Error('middleware failed');
-      },
-    }));
-    vi.doMock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
-      withArcjet: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/csp/middlewares/with-csp', () => ({
-      withCsp: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/csrf/middlewares/with-csrf', () => ({
-      withCsrf: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock('@/core/security/body/middlewares/with-body-size-limit', () => ({
-      withBodySizeLimit: async (
-        _req: NextRequest,
-        _event: NextFetchEvent,
-        next: () => Promise<Response | NextResponse>,
-      ) => next(),
-    }));
-    vi.doMock(
-      '@/core/security/cookies/middlewares/with-secure-cookies',
-      () => ({
-        withSecureCookies: async (
-          _req: NextRequest,
-          _event: NextFetchEvent,
-          next: () => Promise<Response | NextResponse>,
-        ) => next(),
-      }),
-    );
+    chainMock.mockReturnValue(async () => {
+      throw new TypeError('plain error');
+    });
 
-    const { proxy: failingProxy } = await import('@/proxy');
-    const response = await failingProxy(mockRequest(), mockEvent());
+    const { proxy } = await import('@/proxy');
+    const response = await proxy(mockRequest(), mockEvent());
 
     expect(response.status).toBe(500);
+  });
+
+  it('passes all proxies to chain in correct order', async () => {
+    chainMock.mockReturnValue(async () => NextResponse.next());
+
+    const { proxy } = await import('@/proxy');
+    await proxy(mockRequest(), mockEvent());
+
+    expect(chainMock).toHaveBeenCalledOnce();
+    const passedProxies = chainMock.mock.calls[0][0];
+    expect(passedProxies).toHaveLength(7);
   });
 });
 

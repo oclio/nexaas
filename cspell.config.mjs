@@ -5,14 +5,17 @@ const config = {
   ignorePaths: [
     ...ignore,
     '**/docs/**',
+    'messages/fr/**',
     'pnpm-lock.yaml',
     'pnpm-workspace.yaml',
+    'src/app/[locale]/**/__e2e__/**',
   ],
   language: 'en,fr',
   words: [
     'arcjet',
     'axiomhq',
     'credentialless',
+    'français',
     'httponly',
     'hugeicons',
     'nexaas',

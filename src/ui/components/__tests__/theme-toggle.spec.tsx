@@ -7,11 +7,23 @@ const { themeRef, setThemeMock } = vi.hoisted(() => ({
   setThemeMock: vi.fn(),
 }));
 
+function translateThemeToggle(key: string): string {
+  const labels: Record<string, string> = {
+    toggleDark: 'Toggle theme',
+    toggleLight: 'Toggle theme',
+  };
+  return labels[key] ?? key;
+}
+
 vi.mock('next-themes', () => ({
   useTheme: () => ({
     theme: themeRef.current,
     setTheme: setThemeMock,
   }),
+}));
+
+vi.mock('next-intl', () => ({
+  useTranslations: () => translateThemeToggle,
 }));
 
 describe('ThemeToggle', () => {
