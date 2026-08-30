@@ -6,6 +6,7 @@ import { ErrorCode } from '@/core/errors/codes';
 import { chain } from '@/core/middlewares/chain';
 import { MiddlewareChainError } from '@/core/middlewares/errors/middleware-chain-error';
 import type { CustomMiddleware } from '@/core/middlewares/types';
+import { logger } from '@/core/observability/axiom/server';
 import {
   mockNextFetchEvent,
   mockNextRequest,
@@ -124,12 +125,52 @@ describe('chain', () => {
     await expect(handler(mockRequest(), mockEvent())).rejects.toBe(appError);
   });
 
+  it('logs error context with request metadata and traceId', async () => {
+    const appError = new AppError(ErrorCode.UNKNOWN_ERROR, 'custom', 400);
+    const failing: CustomMiddleware = async () => {
+      throw appError;
+    };
+    const handler = chain([failing]);
+    const req = mockRequest();
+    req.headers.set('x-trace-id', 'trace-123');
+
+    await expect(handler(req, mockEvent())).rejects.toBe(appError);
+
+    expect(logger.error).toHaveBeenCalledWith('custom', {
+      err: appError,
+      code: appError.code,
+      statusCode: appError.statusCode,
+      context: appError.context,
+      url: req.url,
+      method: req.method,
+      pathname: req.nextUrl.pathname,
+      traceId: 'trace-123',
+    });
+  });
+
   it('throws when next() is called multiple times', async () => {
     const handler = chain([doubleNextMiddleware, passthroughMiddleware]);
 
     await expect(handler(mockRequest(), mockEvent())).rejects.toThrow(
       MiddlewareChainError,
     );
+  });
+
+  it('throws immediately on the second next() call, not from a deeper dispatch', async () => {
+    const callOrder: string[] = [];
+    const mw: CustomMiddleware = async (_req, _event, next) => {
+      callOrder.push('before-first-next');
+      await next();
+      callOrder.push('before-second-next');
+      await next();
+      callOrder.push('after-second-next');
+    };
+
+    const handler = chain([mw]);
+    await expect(handler(mockRequest(), mockEvent())).rejects.toThrow(
+      MiddlewareChainError,
+    );
+    expect(callOrder).toEqual(['before-first-next', 'before-second-next']);
   });
 
   it('wraps the double-next Error into MiddlewareChainError', async () => {
@@ -154,5 +195,6 @@ describe('chain', () => {
     const response = await handler(req, mockEvent());
 
     expect(response).toBeInstanceOf(NextResponse);
+    expect(response.headers.get('x-middleware-request-x-test')).toBe('value');
   });
 });
