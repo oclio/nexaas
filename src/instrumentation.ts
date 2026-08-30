@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 import { logger } from '@/core/observability/axiom/server';
 
 export async function register() {
-  const runtime = process.env.NEXT_RUNTIME;
+  const runtime = process.env.NEXT_RUNTIME || '';
   if (!runtime) return;
 
   if (runtime === 'nodejs') {
