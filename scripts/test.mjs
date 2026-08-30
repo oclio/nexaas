@@ -32,7 +32,13 @@ const escaped = pattern.includes('/')
   : pattern;
 
 const vitestArguments = ['vitest', 'run'];
-if (!hasNoCoverage) vitestArguments.push('--coverage');
+if (!hasNoCoverage) {
+  // Scope coverage to files matching the test pattern, not the entire src/
+  const coverageInclude = pattern.includes('/')
+    ? pattern.replace(/\.spec\.(ts|tsx)$/, '.{ts,tsx}')
+    : `**/${pattern.replace(/\.spec$/, '')}*.{ts,tsx}`;
+  vitestArguments.push('--coverage', `--coverage.include=${coverageInclude}`);
+}
 vitestArguments.push(escaped);
 
 try {
