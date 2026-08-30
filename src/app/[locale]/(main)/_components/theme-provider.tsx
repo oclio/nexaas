@@ -8,7 +8,7 @@ interface Properties extends ComponentProps<typeof NextThemesProvider> {
 }
 
 // Silence the false-positive React 19 warning in development
-if (globalThis !== undefined && process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development') {
   const originalError = console.error;
   console.error = (...arguments_: unknown[]) => {
     if (

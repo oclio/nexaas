@@ -106,6 +106,21 @@ describe('ThemeProvider', () => {
       expect(innerSpy).toHaveBeenCalledWith('some other error');
     });
 
+    it('forwards non-string arguments to the original console.error in development', async () => {
+      vi.stubEnv('NODE_ENV', 'development');
+      vi.resetModules();
+
+      const innerSpy = vi.fn();
+      vi.spyOn(console, 'error').mockImplementation(innerSpy);
+
+      await import('@/app/[locale]/(main)/_components/theme-provider');
+
+      const errorObject = new Error('boom');
+      console.error(errorObject);
+
+      expect(innerSpy).toHaveBeenCalledWith(errorObject);
+    });
+
     it('does not override console.error when NODE_ENV is not development', async () => {
       vi.stubEnv('NODE_ENV', 'production');
       vi.resetModules();
