@@ -11,6 +11,9 @@ vi.mock('@sentry/nextjs', () => sentryMocks);
 
 export const axiomLoggerMock = {
   error: vi.fn(),
+  warn: vi.fn(),
+  info: vi.fn(),
+  debug: vi.fn(),
   flush: vi.fn().mockResolvedValue(undefined),
 };
 
