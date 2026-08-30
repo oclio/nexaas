@@ -17,6 +17,8 @@ import {
   accessSync,
   constants,
   globSync,
+  mkdirSync,
+  readFileSync,
   unlinkSync,
   writeFileSync,
 } from 'node:fs';
@@ -96,6 +98,11 @@ if (hasMutation) {
     process.exit(1);
   }
 
+  // Clear mutants file at startup
+  mkdirSync('.temp', { recursive: true });
+  const mutantsFile = '.temp/mutants.txt';
+  writeFileSync(mutantsFile, '');
+
   // Clear incremental cache so stale mutants from previous full runs don't
   // pollute the report (e.g. config/index.ts, fonts/index.ts).
   try {
@@ -131,4 +138,96 @@ if (hasMutation) {
   if (strykerResult.status !== 0) {
     process.exit(strykerResult.status ?? 1);
   }
+
+  // Extract survived mutants from the report and save to .temp/mutants.txt
+  extractSurvivedMutants(sourceFiles, mutantsFile);
+}
+
+/**
+ * Parse the Stryker mutation report and extract survived mutants.
+ * Writes the list to the mutants file and prints a summary message.
+ */
+function extractSurvivedMutants(sourcePaths, mutantsFile) {
+  const reportPath = 'reports/mutation/mutation.json';
+  let report;
+  try {
+    report = JSON.parse(readFileSync(reportPath, 'utf8'));
+  } catch {
+    return; // report not found, nothing to extract
+  }
+
+  const testNames = new Map();
+  for (const testFile of Object.values(report.testFiles)) {
+    for (const test of testFile.tests ?? []) {
+      testNames.set(test.id, test.name);
+    }
+  }
+
+  const blocks = [];
+  for (const [filePath, fileData] of Object.entries(report.files)) {
+    if (!sourcePaths.includes(filePath)) continue;
+    const sourceLines = readFileSync(filePath, 'utf8').split('\n');
+    const survived = (fileData.mutants ?? []).filter(
+      (m) => m.status === 'Survived',
+    );
+    for (const mutant of survived) {
+      blocks.push(formatMutant(mutant, filePath, sourceLines, testNames));
+    }
+  }
+
+  writeFileSync(
+    mutantsFile,
+    blocks.join('\n\n') + (blocks.length > 0 ? '\n' : ''),
+  );
+
+  if (blocks.length > 0) {
+    console.log(
+      `\n⚠️  ${blocks.length} survived mutant(s) found — saved to ${mutantsFile}`,
+    );
+  }
+}
+
+function formatMutant(mutant, filePath, sourceLines, testNames) {
+  const { mutatorName, replacement, location, coveredBy } = mutant;
+  const { start, end } = location;
+  let original;
+  let mutated;
+  if (start.line === end.line) {
+    const line = sourceLines[start.line - 1];
+    original = line;
+    mutated =
+      line.slice(0, start.column - 1) +
+      replacement +
+      line.slice(end.column - 1);
+  } else {
+    original = sourceLines.slice(start.line - 1, end.line).join('\n');
+    const firstLine = sourceLines[start.line - 1];
+    const lastLine = sourceLines[end.line - 1];
+    mutated =
+      firstLine.slice(0, start.column - 1) +
+      replacement +
+      lastLine.slice(end.column - 1);
+  }
+
+  const lines = [
+    `[Survived] ${mutatorName}`,
+    `${filePath}:${start.line}:${start.column}`,
+  ];
+  for (const originalLine of original.split('\n')) {
+    lines.push(`-     ${originalLine}`);
+  }
+  lines.push(`+     ${mutated}`);
+
+  if (coveredBy?.length) {
+    const names = coveredBy.map((id) => testNames.get(id)).filter(Boolean);
+    lines.push('Tests ran:');
+    for (const name of names.slice(0, 3)) {
+      lines.push(`    ${name}`);
+    }
+    if (names.length > 3) {
+      lines.push(`  and ${names.length - 3} more tests!`);
+    }
+  }
+
+  return lines.join('\n');
 }
