@@ -13,7 +13,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 export default defineConfig({
   testDir: './src',
-  testMatch: '**/*.e2e-spec.ts',
+  testMatch: '**/*.e2e-spec.{ts,tsx}',
   /*
   Run tests in files in parallel
   */

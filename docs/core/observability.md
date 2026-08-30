@@ -32,6 +32,25 @@ SENTRY_AUTH_TOKEN=sntryu-your-auth-token
 
 > **Tip:** You can run nexaas locally without any Axiom or Sentry account. Simply leave the env vars unset — everything works, just without telemetry.
 
+## File structure
+
+### Axiom
+
+| File                              | Purpose                                                                   |
+| --------------------------------- | ------------------------------------------------------------------------- |
+| `axiom/client.ts`                 | Axiom API client (dataset info, ingestion)                                |
+| `axiom/server.ts`                 | Server-side logger with console + Axiom transports                        |
+| `axiom/middlewares/with-axiom.ts` | Middleware: trace ID, request/response logging, cookie propagation        |
+| `axiom/components/web-vitals.tsx` | Client component: collects Core Web Vitals and sends to `/api/web-vitals` |
+| `axiom/health/index.ts`           | Health check logic: queries Axiom dataset status with timeout             |
+
+### Sentry
+
+| File                     | Purpose                                                       |
+| ------------------------ | ------------------------------------------------------------- |
+| `sentry/config/index.ts` | `initSentry()` — configures traces, logs, PII based on env    |
+| `sentry/health/index.ts` | Health check logic: pings Sentry ingest endpoint with timeout |
+
 ## Server-side logging
 
 The logger is created in `src/core/observability/axiom/server.ts` and exported as `logger`. It uses `@axiomhq/logging` with a console transport (always) and an Axiom transport (when configured).
