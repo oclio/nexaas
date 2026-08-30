@@ -1,5 +1,11 @@
 # nexaas
 
+## 0.6.0
+
+### Minor Changes
+
+- 0d2a115: Added internationalization (i18n) support with next-intl: locale-prefixed routing (`/en`, `/fr`), type-safe messages with `TranslationSchema`, `LocaleSwitcher` component, and `withIntl` middleware for API locale header resolution.
+
 ## 0.5.0
 
 ### Minor Changes
