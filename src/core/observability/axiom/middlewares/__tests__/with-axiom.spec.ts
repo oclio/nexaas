@@ -107,6 +107,15 @@ describe('withAxiom', () => {
       .fn()
       .mockResolvedValue(new NextResponse('ok', { status: 200 }));
 
+    let now = 1000;
+    vi.spyOn(Date, 'now').mockImplementation(() => {
+      return now;
+    });
+    next.mockImplementation(async () => {
+      now = 1050;
+      return new NextResponse('ok', { status: 200 });
+    });
+
     await withAxiom(mockRequest(), mockEvent(), next);
 
     expect(loggerMock.info).toHaveBeenCalledWith(
@@ -114,10 +123,11 @@ describe('withAxiom', () => {
       expect.objectContaining({
         method: 'GET',
         status: 200,
-        duration: expect.any(Number),
+        duration: 50,
         traceId: expect.any(String),
       }),
     );
+    vi.restoreAllMocks();
   });
 
   it('sets x-trace-id cookie on NextResponse', async () => {
@@ -130,6 +140,11 @@ describe('withAxiom', () => {
     await withAxiom(mockRequest(), mockEvent(), next);
 
     expect(response.cookies.get('x-trace-id')).toBeDefined();
+    const setCookie = response.headers.get('set-cookie');
+    expect(setCookie).toContain('x-trace-id=');
+    expect(setCookie).toMatch(/SameSite=Strict/i);
+    expect(setCookie).toMatch(/Path=\//);
+    expect(setCookie).not.toMatch(/HttpOnly/i);
   });
 
   it('sets x-trace-id header on plain Response but does not set cookie', async () => {

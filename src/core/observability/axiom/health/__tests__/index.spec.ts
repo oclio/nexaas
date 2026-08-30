@@ -4,10 +4,6 @@ import { axiomClientReference } from '@/tests/unit/mocks/observability';
 
 const datasetsGetMock = vi.fn();
 
-vi.mock('@/core/async/helpers/with-timeout', () => ({
-  withTimeout: (promise: Promise<unknown>) => promise,
-}));
-
 const { checkAxiomService } = await import('../index');
 
 describe('checkAxiomService', () => {

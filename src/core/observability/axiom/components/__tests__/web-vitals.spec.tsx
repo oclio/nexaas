@@ -66,6 +66,8 @@ describe('WebVitals', () => {
       '/api/web-vitals',
       expect.any(Blob),
     );
+    const blob = sendBeaconSpy.mock.calls[0][1] as Blob;
+    expect(blob.type).toBe('application/json');
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
@@ -101,6 +103,34 @@ describe('WebVitals', () => {
 
     expect(payload.traceId).toBe('abc-123');
     expect(payload.name).toBe('FCP');
+  });
+
+  it('extracts traceId when preceded by semicolon and space', async () => {
+    Object.defineProperty(document, 'cookie', {
+      value: 'other=value; x-trace-id=def-456',
+      configurable: true,
+    });
+
+    renderAndTrigger({ name: 'FCP', value: 1.2 });
+
+    const blob = sendBeaconSpy.mock.calls[0][1] as Blob;
+    const payload = JSON.parse(await blob.text());
+
+    expect(payload.traceId).toBe('def-456');
+  });
+
+  it('extracts traceId when preceded by semicolon without space', async () => {
+    Object.defineProperty(document, 'cookie', {
+      value: 'other=value;x-trace-id=ghi-789',
+      configurable: true,
+    });
+
+    renderAndTrigger({ name: 'FCP', value: 1.2 });
+
+    const blob = sendBeaconSpy.mock.calls[0][1] as Blob;
+    const payload = JSON.parse(await blob.text());
+
+    expect(payload.traceId).toBe('ghi-789');
   });
 
   it('sets traceId to undefined when cookie is absent', async () => {
