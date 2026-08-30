@@ -19,7 +19,7 @@ const config = {
   timeoutMS: 240_000,
   timeoutFactor: 3,
   coverageAnalysis: 'perTest',
-  ignoreStatic: false,
+  ignoreStatic: true,
   incremental: true,
   incrementalFile: '.stryker-tmp/incremental.json',
   concurrency: 4,
@@ -38,7 +38,7 @@ const config = {
   },
   vitest: {
     configFile: 'vitest.config.mjs',
-    related: false,
+    related: true,
   },
 };
 
