@@ -19,6 +19,7 @@ const config = {
     'nojekyll',
     'nosniff',
     'oclio',
+    'oklch',
     'sonarqube',
     'ttfb',
     'turbopack',

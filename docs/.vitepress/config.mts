@@ -29,6 +29,7 @@ export default defineConfig({
     nav: [
       { text: 'Guide', link: '/getting-started/' },
       { text: 'Core', link: '/core/architecture' },
+      { text: 'UI', link: '/ui' },
       { text: 'API', link: '/api/health' },
     ],
 
@@ -50,6 +51,10 @@ export default defineConfig({
             { text: 'Security', link: '/core/security' },
             { text: 'Observability', link: '/core/observability' },
           ],
+        },
+        {
+          text: 'UI',
+          items: [{ text: 'Overview', link: '/ui' }],
         },
         {
           text: 'API',
