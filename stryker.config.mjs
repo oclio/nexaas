@@ -16,6 +16,7 @@ const config = {
     '@stryker-mutator/typescript-checker',
     './.stryker-plugins/tailwind-ignorer.mjs',
   ],
+  ignorers: ['tailwind'],
   timeoutMS: 240_000,
   timeoutFactor: 3,
   coverageAnalysis: 'perTest',
