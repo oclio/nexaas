@@ -13,12 +13,15 @@
 
 ## Stack
 
-| Technology                                     | Role                                  |
-| ---------------------------------------------- | ------------------------------------- |
-| [Next.js](https://nextjs.org) 16               | App Router, Turbopack, React Compiler |
-| [React](https://react.dev) 19                  | UI library                            |
-| [TypeScript](https://www.typescriptlang.org) 6 | Type safety                           |
-| [Tailwind CSS](https://tailwindcss.com) 4      | Styling                               |
+| Technology                                                | Role                                  |
+| --------------------------------------------------------- | ------------------------------------- |
+| [Next.js](https://nextjs.org) 16                          | App Router, Turbopack, React Compiler |
+| [React](https://react.dev) 19                             | UI library                            |
+| [TypeScript](https://www.typescriptlang.org) 6            | Type safety                           |
+| [Tailwind CSS](https://tailwindcss.com) 4                 | Styling                               |
+| [shadcn/ui](https://ui.shadcn.com)                        | Component system (base-lyra style)    |
+| [next-themes](https://github.com/pacocoursey/next-themes) | Dark mode & theme switching           |
+| [Hugeicons](https://hugeicons.com)                        | Icon library                          |
 
 ## Tooling
 
@@ -42,6 +45,14 @@
 | [Commitizen](https://commitizen-tools.github.io/commitizen) 4     | Interactive commit prompts              |
 | [Changesets](https://github.com/changesets/changesets) 3          | Versioning & changelog management       |
 | [@next/bundle-analyzer](https://github.com/vercel/next.js) 16     | Bundle analysis & visualization         |
+
+## Features
+
+### Dark mode
+
+Theme switching is powered by [`next-themes`](https://github.com/pacocoursey/next-themes) and integrated at the root layout level via `ThemeProvider`. The `ThemeToggle` component on the landing page lets users switch between light and dark — the choice persists in `localStorage` and survives reloads.
+
+CSS variables for both themes are defined in [`src/ui/styles/globals.css`](src/ui/styles/globals.css) using the OKLCH color space, with the `.dark` class applied to `<html>` as the activation strategy.
 
 ## Scripts
 

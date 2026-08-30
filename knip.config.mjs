@@ -1,6 +1,6 @@
 const knipConfig = {
   $schema: 'https://unpkg.com/knip@6/schema.json',
-  ignore: ['commitlint.config.mjs', 'docs/**'],
+  ignore: ['commitlint.config.mjs', 'src/ui/components/shadcn/button.tsx'],
   ignoreBinaries: ['gitleaks'],
   ignoreDependencies: [
     '@axe-core/cli',
