@@ -98,6 +98,13 @@ const eslintConfig = defineConfig([
       'unicorn/filename-case': 'off',
     },
   },
+  // SETUP TESTS
+  {
+    files: ['tests/**'],
+    rules: {
+      'unicorn/no-top-level-side-effects': 'off'
+    }
+  },
   // KEYS AUTO-SORT
   {
     files: [

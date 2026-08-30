@@ -1,28 +1,49 @@
-/* eslint-disable unicorn/no-top-level-side-effects */
 import { vi } from 'vitest';
-
-const envDefaults: Record<string, unknown> = {
-  NODE_ENV: 'test',
-  ARCJET_ENV: 'development',
-  EMAIL_WHITELIST: '',
-  LOG_LEVEL: 'info',
-  NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
-};
-
-vi.mock('@/core/config/env', () => ({
-  env: new Proxy(envDefaults, {
-    get(target, property: string) {
-      return Object.prototype.hasOwnProperty.call(target, property)
-        ? target[property]
-        : process.env[property];
-    },
-  }),
-}));
 
 export const sentryMocks = {
   init: vi.fn(),
   replayIntegration: vi.fn().mockReturnValue({ name: 'replay' }),
   captureRouterTransitionStart: vi.fn(),
+  captureRequestError: vi.fn(),
 };
 
 vi.mock('@sentry/nextjs', () => sentryMocks);
+
+export const axiomLoggerMock = {
+  error: vi.fn(),
+  flush: vi.fn().mockResolvedValue(undefined),
+};
+
+vi.mock('@/core/observability/axiom/server', () => ({
+  logger: axiomLoggerMock,
+}));
+
+const sentryConfigMocks = vi.hoisted(() => ({
+  server: vi.fn(),
+  edge: vi.fn(),
+}));
+
+export const sentryServerConfigLoaded = sentryConfigMocks.server;
+export const sentryEdgeConfigLoaded = sentryConfigMocks.edge;
+
+vi.mock('@/../sentry.server.config', () => {
+  return new Proxy(
+    {},
+    {
+      get(_target, property) {
+        if (property === 'then') sentryConfigMocks.server();
+      },
+    },
+  );
+});
+
+vi.mock('@/../sentry.edge.config', () => {
+  return new Proxy(
+    {},
+    {
+      get(_target, property) {
+        if (property === 'then') sentryConfigMocks.edge();
+      },
+    },
+  );
+});

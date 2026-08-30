@@ -3,13 +3,15 @@ import * as Sentry from '@sentry/nextjs';
 import { logger } from '@/core/observability/axiom/server';
 
 export async function register() {
-  if (process.env.NEXT_RUNTIME === 'nodejs') {
+  const runtime = process.env.NEXT_RUNTIME;
+  if (!runtime) return;
+
+  if (runtime === 'nodejs') {
     await import('../sentry.server.config');
-    await import('@/core/observability/axiom/server');
-  } else if (process.env.NEXT_RUNTIME === 'edge') {
+  } else {
     await import('../sentry.edge.config');
-    await import('@/core/observability/axiom/server');
   }
+  await import('@/core/observability/axiom/server');
 }
 
 export async function onRequestError(
