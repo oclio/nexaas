@@ -25,10 +25,10 @@ if (!pattern) {
   process.exit(1);
 }
 
-// Only escape regex chars that appear in Next.js route paths: ( ) [ ] { }
+// Only escape regex chars that appear in Next.js route paths: ( ) [ ] { } \
 // Don't escape . since it's harmless in path matching
 const escaped = pattern.includes('/')
-  ? pattern.replaceAll(/[()[\]{}]/g, '\\$&')
+  ? pattern.replaceAll(/[()[\]{}\\]/g, (m) => `\\${m}`)
   : pattern;
 
 const vitestArguments = ['vitest', 'run'];
