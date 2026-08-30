@@ -74,10 +74,15 @@ CSS variables for both themes are defined in [`src/ui/styles/globals.css`](src/u
 
 ## Scripts
 
-| Script                   | Description                                                                        |
-| ------------------------ | ---------------------------------------------------------------------------------- |
-| `scripts/check-a11y.mjs` | Runs axe-core against one or more routes. Requires `pnpm dev` running.             |
-|                          | Usage: `pnpm check:a11y / /about` or `pnpm check:a11y http://localhost:3000/login` |
+| Script                   | Description                                                                                     |
+| ------------------------ | ----------------------------------------------------------------------------------------------- |
+| `scripts/test.mjs`       | Unified test runner for a single source file. Runs Vitest with scoped coverage, then optionally |
+|                          | Stryker mutation testing (`-m`) or Playwright e2e (`-e`).                                       |
+|                          | Usage: `pnpm test "src/core/i18n/components/locale-switcher.tsx"`                               |
+|                          | `pnpm test "src/core/i18n/components/locale-switcher.tsx" -m`                                   |
+|                          | `pnpm test theme-toggle -e`                                                                     |
+| `scripts/check-a11y.mjs` | Runs axe-core against one or more routes. Requires `pnpm dev` running.                          |
+|                          | Usage: `pnpm check:a11y / /about` or `pnpm check:a11y http://localhost:3000/login`              |
 
 ## Contributing
 
