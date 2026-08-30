@@ -1,10 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
 
-const captureExceptionMock = vi.fn();
-vi.mock('@sentry/nextjs', () => ({
-  captureException: captureExceptionMock,
-}));
+import { sentryMocks } from '@/tests/unit/mocks/observability';
 
 const { default: GlobalError } = await import('../global-error');
 
@@ -23,8 +19,8 @@ describe('GlobalError', () => {
 
     render(<GlobalError error={error} />);
 
-    expect(captureExceptionMock).toHaveBeenCalledWith(error);
-    expect(captureExceptionMock).toHaveBeenCalledOnce();
+    expect(sentryMocks.captureException).toHaveBeenCalledWith(error);
+    expect(sentryMocks.captureException).toHaveBeenCalledOnce();
   });
 
   it('captures exception again when error changes', () => {
@@ -33,8 +29,8 @@ describe('GlobalError', () => {
     const secondError = new Error('Second');
     rerender(<GlobalError error={secondError} />);
 
-    expect(captureExceptionMock).toHaveBeenCalledTimes(2);
-    expect(captureExceptionMock).toHaveBeenLastCalledWith(secondError);
+    expect(sentryMocks.captureException).toHaveBeenCalledTimes(2);
+    expect(sentryMocks.captureException).toHaveBeenLastCalledWith(secondError);
   });
 
   it('renders html with lang en', () => {

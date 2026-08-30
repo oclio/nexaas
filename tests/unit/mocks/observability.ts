@@ -5,6 +5,7 @@ export const sentryMocks = {
   replayIntegration: vi.fn().mockReturnValue({ name: 'replay' }),
   captureRouterTransitionStart: vi.fn(),
   captureRequestError: vi.fn(),
+  captureException: vi.fn(),
 };
 
 vi.mock('@sentry/nextjs', () => sentryMocks);
