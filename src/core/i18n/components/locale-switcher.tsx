@@ -42,6 +42,7 @@ export default function LocaleSwitcher({
         key={lang.code}
         onClick={() => handleLocaleChange(lang.code)}
         aria-label={t('ariaLabel')}
+        data-testid={`locale-switcher-item-${lang.code}`}
         className={cn(
           'cursor-pointer',
           isActive
@@ -63,6 +64,7 @@ export default function LocaleSwitcher({
           <Button
             variant="outline"
             {...props}
+            data-testid="locale-switcher-trigger"
             className={cn(
               'size-7 cursor-pointer text-[12px] font-light focus:outline-none focus-visible:ring-0',
               isGhost
