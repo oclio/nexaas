@@ -25,4 +25,11 @@ vi.mock('next-intl/server', () => ({
   getTranslations: vi.fn(async () => translationMock),
 }));
 
-export { messagesMock, translationMock };
+const routerPushMock = vi.fn();
+
+vi.mock('@/core/i18n/navigation', () => ({
+  usePathname: () => '/',
+  useRouter: () => ({ push: routerPushMock }),
+}));
+
+export { messagesMock, routerPushMock, translationMock };

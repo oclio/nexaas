@@ -2,11 +2,6 @@ import { render, screen } from '@testing-library/react';
 
 import LandingPage, { generateMetadata } from '../page';
 
-vi.mock('@/core/i18n/navigation', () => ({
-  usePathname: () => '/',
-  useRouter: () => ({ push: vi.fn() }),
-}));
-
 describe('LandingPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
