@@ -50,6 +50,7 @@ export default defineConfig({
             { text: 'Environment Variables', link: '/core/env' },
             { text: 'Security', link: '/core/security' },
             { text: 'Observability', link: '/core/observability' },
+            { text: 'Internationalization', link: '/core/i18n' },
           ],
         },
         {

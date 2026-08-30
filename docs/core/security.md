@@ -21,6 +21,17 @@ Request → withAxiom → withCsp → withCsrf → withBodySizeLimit → withArc
 
 Each middleware calls `next()` to pass control to the next layer. If a middleware rejects the request (e.g. CSRF fail, body too large, Arcjet deny), it returns a response directly without calling `next()`.
 
+## File structure
+
+| File                                                  | Purpose                                                                             |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `security/arcjet/middlewares/with-arcjet.ts`          | Rate limiting, bot detection, shield (SQLi/XSS). Bypassed if `ARCJET_KEY` is unset. |
+| `security/csp/middlewares/with-csp.ts`                | Content-Security-Policy header with nonce generation and Sentry reporting           |
+| `security/csrf/middlewares/with-csrf.ts`              | CSRF protection via Origin header check on state-changing methods                   |
+| `security/body/middlewares/with-body-size-limit.ts`   | Rejects request bodies larger than 1MB (413)                                        |
+| `security/cookies/middlewares/with-secure-cookies.ts` | Enforces HttpOnly, Secure, SameSite=Strict on all response cookies                  |
+| `security/email-whitelist.ts`                         | `isAuthorizedEmail()` — restricts access to whitelisted emails (dev/testing)        |
+
 ## Arcjet
 
 [Arcjet](https://arcjet.com) provides rate limiting, bot protection, and shield (SQL injection, XSS detection).
