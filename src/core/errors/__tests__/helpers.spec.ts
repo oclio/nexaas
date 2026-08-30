@@ -73,6 +73,18 @@ describe('formatErrorMessage', () => {
     );
   });
 
+  it('strips "error:" prefix after leading whitespace', () => {
+    expect(formatErrorMessage('  error: something failed')).toBe(
+      'Something failed.',
+    );
+  });
+
+  it('does not strip "error:" when not at the start', () => {
+    expect(formatErrorMessage('something error: failed')).toBe(
+      'Something error: failed.',
+    );
+  });
+
   it('strips multiple leading "error:" prefixes', () => {
     expect(formatErrorMessage('error: error: nested')).toBe('Nested.');
   });

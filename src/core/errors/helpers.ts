@@ -1,10 +1,6 @@
 import { toSentence } from '@/core/helpers';
 
 export function getErrorMessage(error: unknown): string {
-  if (error instanceof Error) {
-    return error.message;
-  }
-
   if (error && typeof error === 'object' && 'message' in error) {
     const message = (error as { message: unknown }).message;
     if (typeof message === 'string') {
@@ -28,10 +24,7 @@ export function getErrorMessage(error: unknown): string {
 }
 
 export function formatErrorMessage(message: string): string {
-  let cleaned = message.trim();
-  if (!cleaned) return 'Unknown error.';
-
-  cleaned = cleaned.replace(/^(error:\s*)+/i, '').trim();
+  const cleaned = message.trim().replace(/^(error:\s*)+/i, '');
   if (!cleaned) return 'Unknown error.';
 
   if (cleaned.startsWith('{') || cleaned.startsWith('[')) {
