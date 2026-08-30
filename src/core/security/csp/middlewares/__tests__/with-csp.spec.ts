@@ -1,6 +1,11 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { vi } from 'vitest';
+
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
 
 vi.mock('@/core/config/env', () => ({
   env: {
@@ -19,15 +24,10 @@ const { withCsp } = await import('../with-csp');
 const { buildCSP } = await import('@/core/security/csp');
 
 function mockRequest(pathname = '/test'): NextRequest {
-  return {
-    headers: new Headers(),
-    nextUrl: { pathname },
-  } as unknown as NextRequest;
+  return mockNextRequest({ pathname });
 }
 
-function mockEvent(): NextFetchEvent {
-  return {} as unknown as NextFetchEvent;
-}
+const mockEvent = mockNextFetchEvent;
 
 function nextMock() {
   return vi.fn().mockResolvedValue(NextResponse.next());

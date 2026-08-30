@@ -2,6 +2,10 @@ import type { NextFetchEvent, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { ErrorCode } from '@/core/errors';
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
 
 async function passThrough(
   _req: NextRequest,
@@ -45,18 +49,9 @@ vi.mock('@/core/security/cookies/middlewares/with-secure-cookies', () => ({
   withSecureCookies: passThrough,
 }));
 
-function mockRequest(headers: Record<string, string> = {}): NextRequest {
-  return {
-    headers: new Headers(headers),
-    url: 'http://localhost:3000/test',
-    method: 'GET',
-    nextUrl: { pathname: '/test' },
-  } as unknown as NextRequest;
-}
-
-function mockEvent(): NextFetchEvent {
-  return {} as unknown as NextFetchEvent;
-}
+const mockRequest = (headers: Record<string, string> = {}) =>
+  mockNextRequest({ headers });
+const mockEvent = mockNextFetchEvent;
 
 describe('proxy', () => {
   beforeEach(() => {

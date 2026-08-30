@@ -1,7 +1,6 @@
 import { vi } from 'vitest';
 
 const envDefaults: Record<string, unknown> = {
-  NODE_ENV: 'test',
   ARCJET_ENV: 'development',
   EMAIL_WHITELIST: '',
   LOG_LEVEL: 'info',

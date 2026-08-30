@@ -1,21 +1,16 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { vi } from 'vitest';
 
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
+
 const { withSecureCookies } = await import('../with-secure-cookies');
 
-function mockRequest(): NextRequest {
-  return {
-    headers: new Headers(),
-    url: 'http://localhost:3000/test',
-    method: 'GET',
-    nextUrl: { pathname: '/test' },
-  } as unknown as NextRequest;
-}
-
-function mockEvent(): NextFetchEvent {
-  return {} as unknown as NextFetchEvent;
-}
+const mockRequest = (): NextRequest => mockNextRequest();
+const mockEvent = mockNextFetchEvent;
 
 function nextMockWithCookies(cookies: string[]): () => Promise<NextResponse> {
   const response = NextResponse.next();

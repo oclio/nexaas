@@ -1,6 +1,11 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { vi } from 'vitest';
+
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
 
 const envReference = {
   AXIOM_TOKEN: undefined as string | undefined,
@@ -32,20 +37,8 @@ vi.mock('@axiomhq/nextjs', () => ({
 
 const { withAxiom } = await import('../with-axiom');
 
-function mockRequest(): NextRequest {
-  return {
-    headers: new Headers(),
-    url: 'http://localhost:3000/test',
-    method: 'GET',
-    nextUrl: { pathname: '/test' },
-  } as unknown as NextRequest;
-}
-
-function mockEvent(): NextFetchEvent {
-  return {
-    waitUntil: vi.fn(),
-  } as unknown as NextFetchEvent;
-}
+const mockRequest = (): NextRequest => mockNextRequest();
+const mockEvent = mockNextFetchEvent;
 
 describe('withAxiom', () => {
   afterEach(() => {

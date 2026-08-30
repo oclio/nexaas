@@ -1,4 +1,4 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { AppError } from '@/core/errors/app-error';
@@ -6,15 +6,10 @@ import { ErrorCode } from '@/core/errors/codes';
 import { chain } from '@/core/middlewares/chain';
 import { MiddlewareChainError } from '@/core/middlewares/errors/middleware-chain-error';
 import type { CustomMiddleware } from '@/core/middlewares/types';
-
-vi.mock('@/core/observability/axiom/server', () => ({
-  logger: {
-    error: vi.fn(),
-    warn: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  },
-}));
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
 
 // ─── helpers ───────────────────────────────────────────────────────────────
 
@@ -34,18 +29,8 @@ const doubleNextMiddleware: CustomMiddleware = async (_req, _event, next) => {
   return next();
 };
 
-function mockRequest(): NextRequest {
-  return {
-    headers: new Headers(),
-    url: 'http://localhost:3000/test',
-    method: 'GET',
-    nextUrl: { pathname: '/test' },
-  } as unknown as NextRequest;
-}
-
-function mockEvent(): NextFetchEvent {
-  return {} as unknown as NextFetchEvent;
-}
+const mockRequest = (): NextRequest => mockNextRequest();
+const mockEvent = mockNextFetchEvent;
 
 function respond(body: string): CustomMiddleware {
   return async () => new Response(body);

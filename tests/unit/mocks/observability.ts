@@ -32,6 +32,16 @@ vi.mock('@/core/observability/axiom/server', () => ({
   logger: axiomLoggerMock,
 }));
 
+const axiomClientReference: { value: unknown } = { value: undefined };
+
+vi.mock('@/core/observability/axiom/client', () => ({
+  get axiomClient() {
+    return axiomClientReference.value;
+  },
+}));
+
+export { axiomClientReference };
+
 const sentryConfigMocks = vi.hoisted(() => ({
   server: vi.fn(),
   edge: vi.fn(),
