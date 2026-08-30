@@ -1,10 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
+import { pathnameRef, routerPushMock } from '@/tests/unit/mocks/intl';
 
-const { localeRef, routerPushMock } = vi.hoisted(() => ({
+const { localeRef, useTranslationsMock, dropdownMenuMock } = vi.hoisted(() => ({
   localeRef: { current: 'en' as string },
-  routerPushMock: vi.fn(),
+  useTranslationsMock: vi.fn(),
+  dropdownMenuMock: vi.fn(),
 }));
 
 function translateLocaleSwitcher(key: string): string {
@@ -14,15 +16,25 @@ function translateLocaleSwitcher(key: string): string {
   return labels[key] ?? key;
 }
 
+useTranslationsMock.mockReturnValue(translateLocaleSwitcher);
+
 vi.mock('next-intl', () => ({
   useLocale: () => localeRef.current,
-  useTranslations: () => translateLocaleSwitcher,
+  useTranslations: useTranslationsMock,
 }));
 
-vi.mock('@/core/i18n/navigation', () => ({
-  usePathname: () => '/test',
-  useRouter: () => ({ push: routerPushMock }),
-}));
+vi.mock('@/ui/components/shadcn/dropdown-menu', async () => {
+  const actual = await vi.importActual<
+    typeof import('@/ui/components/shadcn/dropdown-menu')
+  >('@/ui/components/shadcn/dropdown-menu');
+  return {
+    ...actual,
+    DropdownMenu: (props: Record<string, unknown>) => {
+      dropdownMenuMock(props);
+      return actual.DropdownMenu(props);
+    },
+  };
+});
 
 async function openMenu() {
   const trigger = screen.getByRole('button');
@@ -35,6 +47,7 @@ describe('LocaleSwitcher', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localeRef.current = 'en';
+    pathnameRef.current = '/test';
   });
 
   describe('rendering', () => {
@@ -42,6 +55,38 @@ describe('LocaleSwitcher', () => {
       render(<LocaleSwitcher />);
 
       expect(screen.getByRole('button', { name: 'En' })).toBeInTheDocument();
+    });
+
+    it('calls useTranslations with the correct namespace', () => {
+      render(<LocaleSwitcher />);
+
+      expect(useTranslationsMock).toHaveBeenCalledWith(
+        'components.localeSwitcher',
+      );
+    });
+
+    it('passes default align to dropdown content', async () => {
+      render(<LocaleSwitcher />);
+      await openMenu();
+
+      const content = screen.getByRole('menu');
+      expect(content).toHaveAttribute('data-align', 'end');
+    });
+
+    it('passes custom align to dropdown content', async () => {
+      render(<LocaleSwitcher align="start" />);
+      await openMenu();
+
+      const content = screen.getByRole('menu');
+      expect(content).toHaveAttribute('data-align', 'start');
+    });
+
+    it('renders the dropdown as non-modal', () => {
+      render(<LocaleSwitcher />);
+
+      expect(dropdownMenuMock).toHaveBeenCalledWith(
+        expect.objectContaining({ modal: false }),
+      );
     });
 
     it('capitalizes the locale code correctly', () => {
@@ -128,6 +173,21 @@ describe('LocaleSwitcher', () => {
       for (const item of screen.getAllByRole('menuitem')) {
         expect(item).toHaveAttribute('aria-label', 'Change language');
       }
+    });
+
+    it('sets data-testid with locale code on each item', async () => {
+      render(<LocaleSwitcher />);
+      await openMenu();
+
+      const items = screen.getAllByRole('menuitem');
+      expect(items[0]).toHaveAttribute(
+        'data-testid',
+        'locale-switcher-item-en',
+      );
+      expect(items[1]).toHaveAttribute(
+        'data-testid',
+        'locale-switcher-item-fr',
+      );
     });
   });
 });

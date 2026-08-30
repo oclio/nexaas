@@ -40,4 +40,8 @@ describe('toSentence', () => {
   it('handles single character without punctuation', () => {
     expect(toSentence('x')).toBe('X.');
   });
+
+  it('adds trailing period when punctuation is only in the middle', () => {
+    expect(toSentence('hello.world')).toBe('Hello.world.');
+  });
 });
