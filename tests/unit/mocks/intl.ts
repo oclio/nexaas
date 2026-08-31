@@ -1,14 +1,33 @@
 import { vi } from 'vitest';
 
 const messagesMock: Record<string, unknown> = {
-  pages: { landing: { title: 'Welcome!' } },
+  meta: {
+    title: 'nexaas',
+    description: 'A scalable, production-ready SaaS boilerplate.',
+    keywords: ['saas', 'boilerplate', 'nextjs', 'typescript'],
+  },
+  pages: {
+    landing: {
+      title: 'Welcome!',
+      description: 'A scalable, production-ready SaaS boilerplate for Next.js.',
+    },
+  },
 };
 
 const translationMock = vi.fn((key: string) => {
   const messages: Record<string, string> = {
     title: 'Welcome!',
+    description: 'A scalable, production-ready SaaS boilerplate for Next.js.',
   };
   return messages[key] ?? key;
+});
+
+// Allow t.raw('keywords') to return the array from messages
+translationMock.raw = vi.fn((key: string) => {
+  if (key === 'keywords') {
+    return ['saas', 'boilerplate', 'nextjs', 'typescript'];
+  }
+  return key;
 });
 
 vi.mock('next-intl', () => ({

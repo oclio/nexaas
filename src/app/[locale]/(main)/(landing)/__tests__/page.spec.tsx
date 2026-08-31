@@ -8,12 +8,12 @@ describe('LandingPage', () => {
   });
 
   describe('generateMetadata', () => {
-    it('returns title combining the translated page title and app title', async () => {
+    it('returns the translated page title without suffix', async () => {
       const metadata = await generateMetadata({
         params: Promise.resolve({ locale: 'en' }),
       });
 
-      expect(metadata).toEqual({ title: 'Welcome! | nexaas' });
+      expect(metadata.title).toBe('Welcome!');
     });
 
     it('passes the locale to getTranslations', async () => {

@@ -1,7 +1,21 @@
 export const app = {
   title: 'nexaas',
-  description:
-    'A scalable, production-ready SaaS boilerplate built for high performance and rapid prototyping in Next.js.',
+  author: {
+    name: 'oclio',
+    email: 'hello@oclio.dev',
+    url: 'https://oclio.dev',
+  },
+  keywords: [
+    'boilerplate',
+    'nextjs',
+    'production-ready',
+    'react',
+    'saas',
+    'saas boilerplate',
+    'saas starter',
+    'starter kit',
+    'tailwindcss',
+    'typescript',
+  ],
   logo: '/images/logo.svg',
-  emailLogo: '/images/logo.png',
 };

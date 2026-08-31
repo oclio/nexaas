@@ -1,6 +1,13 @@
 import { render, screen } from '@testing-library/react';
 
-import RootLayout, { generateStaticParams } from '../layout';
+import RootLayout, { generateMetadata, generateStaticParams } from '../layout';
+
+vi.mock('@/core/seo', () => ({
+  createLayoutMetadata: vi.fn(async ({ locale }: { locale: string }) => ({
+    title: `mock-title-${locale}`,
+    description: 'mock-description',
+  })),
+}));
 
 const localeParameters = (locale: string) => ({
   params: Promise.resolve({ locale }),
@@ -28,7 +35,7 @@ describe('RootLayout', () => {
     expect(screen.getByRole('main')).toBeInTheDocument();
   });
 
-  it('sets html lang attribute to en', async () => {
+  it('sets html lang attribute to the given locale', async () => {
     render(
       await RootLayout({
         children: <div>Content</div>,
@@ -37,6 +44,17 @@ describe('RootLayout', () => {
     );
 
     expect(document.documentElement).toHaveAttribute('lang', 'en');
+  });
+
+  it('sets html lang attribute to fr for French locale', async () => {
+    render(
+      await RootLayout({
+        children: <div>Content</div>,
+        ...localeParameters('fr'),
+      }),
+    );
+
+    expect(document.documentElement).toHaveAttribute('lang', 'fr');
   });
 
   it('applies layout classes to html element', async () => {
@@ -81,5 +99,19 @@ describe('generateStaticParams', () => {
     const parameters = generateStaticParams();
 
     expect(parameters).toEqual([{ locale: 'en' }, { locale: 'fr' }]);
+  });
+});
+
+describe('generateMetadata', () => {
+  it('delegates to createLayoutMetadata with the locale', async () => {
+    const createLayoutMetadata = await import('@/core/seo');
+
+    await generateMetadata({
+      params: Promise.resolve({ locale: 'fr' }),
+    });
+
+    expect(createLayoutMetadata.createLayoutMetadata).toHaveBeenCalledWith({
+      locale: 'fr',
+    });
   });
 });
