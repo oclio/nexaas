@@ -17,6 +17,11 @@ vi.mock('@/core/security/arcjet/health', () => ({
   checkArcjetService: checkArcjetServiceMock,
 }));
 
+const checkDatabaseServiceMock = vi.fn();
+vi.mock('@/core/db/health', () => ({
+  checkDatabaseService: checkDatabaseServiceMock,
+}));
+
 const { GET } = await import('../route');
 
 const mockRequest = (headers: Record<string, string> = {}) =>
@@ -65,6 +70,7 @@ describe('GET /api/health', () => {
     checkArcjetServiceMock.mockResolvedValue({ status: 'healthy' });
     checkAxiomServiceMock.mockResolvedValue({ status: 'healthy' });
     checkSentryServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkDatabaseServiceMock.mockResolvedValue({ status: 'healthy' });
     const { GET: freshGET } = await import('../route');
 
     const response = await freshGET(
@@ -77,6 +83,7 @@ describe('GET /api/health', () => {
     expect(body.services.security.status).toBe('healthy');
     expect(body.services.logs.status).toBe('healthy');
     expect(body.services.errorsCapture.status).toBe('healthy');
+    expect(body.services.database.status).toBe('healthy');
     expect(body.timestamp).toBeDefined();
     expect(response.headers.get('Cache-Control')).toBe('no-store, max-age=0');
   });
@@ -89,6 +96,7 @@ describe('GET /api/health', () => {
     });
     checkAxiomServiceMock.mockResolvedValue({ status: 'healthy' });
     checkSentryServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkDatabaseServiceMock.mockResolvedValue({ status: 'healthy' });
     const { GET: freshGET } = await import('../route');
 
     const response = await freshGET(
@@ -101,6 +109,7 @@ describe('GET /api/health', () => {
     expect(body.services.security.status).toBe('unhealthy');
     expect(body.services.logs.status).toBe('healthy');
     expect(body.services.errorsCapture.status).toBe('healthy');
+    expect(body.services.database.status).toBe('healthy');
   });
 
   it('returns 503 when logs service is unhealthy', async () => {
@@ -111,6 +120,7 @@ describe('GET /api/health', () => {
       error: 'timeout',
     });
     checkSentryServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkDatabaseServiceMock.mockResolvedValue({ status: 'healthy' });
     const { GET: freshGET } = await import('../route');
 
     const response = await freshGET(
@@ -123,6 +133,7 @@ describe('GET /api/health', () => {
     expect(body.services.security.status).toBe('healthy');
     expect(body.services.logs.status).toBe('unhealthy');
     expect(body.services.errorsCapture.status).toBe('healthy');
+    expect(body.services.database.status).toBe('healthy');
   });
 
   it('returns 503 when errorsCapture service is unhealthy', async () => {
@@ -133,6 +144,7 @@ describe('GET /api/health', () => {
       status: 'unhealthy',
       reason: 'Client not initialized',
     });
+    checkDatabaseServiceMock.mockResolvedValue({ status: 'healthy' });
     const { GET: freshGET } = await import('../route');
 
     const response = await freshGET(
@@ -145,6 +157,31 @@ describe('GET /api/health', () => {
     expect(body.services.security.status).toBe('healthy');
     expect(body.services.logs.status).toBe('healthy');
     expect(body.services.errorsCapture.status).toBe('unhealthy');
+    expect(body.services.database.status).toBe('healthy');
+  });
+
+  it('returns 503 when database service is unhealthy', async () => {
+    vi.stubEnv('HEALTH_CHECK_SECRET', 'test-secret');
+    checkArcjetServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkAxiomServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkSentryServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkDatabaseServiceMock.mockResolvedValue({
+      status: 'unhealthy',
+      error: 'connection refused',
+    });
+    const { GET: freshGET } = await import('../route');
+
+    const response = await freshGET(
+      mockRequest({ authorization: 'Bearer test-secret' }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(503);
+    expect(body.status).toBe('degraded');
+    expect(body.services.security.status).toBe('healthy');
+    expect(body.services.logs.status).toBe('healthy');
+    expect(body.services.errorsCapture.status).toBe('healthy');
+    expect(body.services.database.status).toBe('unhealthy');
   });
 
   it('returns 200 when all services are disabled', async () => {
@@ -152,6 +189,7 @@ describe('GET /api/health', () => {
     checkArcjetServiceMock.mockResolvedValue({ status: 'disabled' });
     checkAxiomServiceMock.mockResolvedValue({ status: 'disabled' });
     checkSentryServiceMock.mockResolvedValue({ status: 'disabled' });
+    checkDatabaseServiceMock.mockResolvedValue({ status: 'healthy' });
     const { GET: freshGET } = await import('../route');
 
     const response = await freshGET(
@@ -164,6 +202,7 @@ describe('GET /api/health', () => {
     expect(body.services.security.status).toBe('disabled');
     expect(body.services.logs.status).toBe('disabled');
     expect(body.services.errorsCapture.status).toBe('disabled');
+    expect(body.services.database.status).toBe('healthy');
   });
 
   it('returns 200 when one service is healthy and the others disabled', async () => {
@@ -171,6 +210,7 @@ describe('GET /api/health', () => {
     checkArcjetServiceMock.mockResolvedValue({ status: 'disabled' });
     checkAxiomServiceMock.mockResolvedValue({ status: 'healthy' });
     checkSentryServiceMock.mockResolvedValue({ status: 'disabled' });
+    checkDatabaseServiceMock.mockResolvedValue({ status: 'healthy' });
     const { GET: freshGET } = await import('../route');
 
     const response = await freshGET(
@@ -187,6 +227,7 @@ describe('GET /api/health', () => {
     checkArcjetServiceMock.mockRejectedValue(new Error('connection refused'));
     checkAxiomServiceMock.mockResolvedValue({ status: 'healthy' });
     checkSentryServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkDatabaseServiceMock.mockResolvedValue({ status: 'healthy' });
     const { GET: freshGET } = await import('../route');
 
     const response = await freshGET(
@@ -204,6 +245,7 @@ describe('GET /api/health', () => {
     checkArcjetServiceMock.mockResolvedValue({ status: 'healthy' });
     checkAxiomServiceMock.mockRejectedValue(new Error('connection refused'));
     checkSentryServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkDatabaseServiceMock.mockResolvedValue({ status: 'healthy' });
     const { GET: freshGET } = await import('../route');
 
     const response = await freshGET(
@@ -221,6 +263,7 @@ describe('GET /api/health', () => {
     checkArcjetServiceMock.mockResolvedValue({ status: 'healthy' });
     checkAxiomServiceMock.mockResolvedValue({ status: 'healthy' });
     checkSentryServiceMock.mockRejectedValue(new Error('fetch failed'));
+    checkDatabaseServiceMock.mockResolvedValue({ status: 'healthy' });
     const { GET: freshGET } = await import('../route');
 
     const response = await freshGET(
@@ -231,5 +274,23 @@ describe('GET /api/health', () => {
     expect(response.status).toBe(503);
     expect(body.status).toBe('degraded');
     expect(body.services.errorsCapture.status).toBe('unhealthy');
+  });
+
+  it('treats a rejected database service as unhealthy', async () => {
+    vi.stubEnv('HEALTH_CHECK_SECRET', 'test-secret');
+    checkArcjetServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkAxiomServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkSentryServiceMock.mockResolvedValue({ status: 'healthy' });
+    checkDatabaseServiceMock.mockRejectedValue(new Error('connection refused'));
+    const { GET: freshGET } = await import('../route');
+
+    const response = await freshGET(
+      mockRequest({ authorization: 'Bearer test-secret' }),
+    );
+    const body = await response.json();
+
+    expect(response.status).toBe(503);
+    expect(body.status).toBe('degraded');
+    expect(body.services.database.status).toBe('unhealthy');
   });
 });

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { env } from '@/core/config/env';
+import { checkDatabaseService } from '@/core/db/health';
 import { checkAxiomService } from '@/core/observability/axiom/health';
 import { checkSentryService } from '@/core/observability/sentry/health';
 import { checkArcjetService } from '@/core/security/arcjet/health';
@@ -13,10 +14,11 @@ enum Status {
 }
 
 async function checkServices() {
-  const [security, logs, errorsCapture] = await Promise.allSettled([
+  const [security, logs, errorsCapture, database] = await Promise.allSettled([
     checkArcjetService(),
     checkAxiomService(),
     checkSentryService(),
+    checkDatabaseService(),
   ]);
 
   const services = {
@@ -31,6 +33,10 @@ async function checkServices() {
     errorsCapture:
       errorsCapture.status === Status.fulfilled
         ? errorsCapture.value
+        : { status: Status.unhealthy },
+    database:
+      database.status === Status.fulfilled
+        ? database.value
         : { status: Status.unhealthy },
   };
 

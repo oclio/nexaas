@@ -48,6 +48,7 @@ test.describe('/api/health', () => {
     expect(body.services.security).toBeDefined();
     expect(body.services.logs).toBeDefined();
     expect(body.services.errorsCapture).toBeDefined();
+    expect(body.services.database).toBeDefined();
     expect(['healthy', 'unhealthy', 'disabled']).toContain(
       body.services.security.status,
     );
@@ -57,6 +58,7 @@ test.describe('/api/health', () => {
     expect(['healthy', 'unhealthy', 'disabled']).toContain(
       body.services.errorsCapture.status,
     );
+    expect(['healthy', 'unhealthy']).toContain(body.services.database.status);
     expect(response.headers()['cache-control']).toBe('no-store, max-age=0');
   });
 });
