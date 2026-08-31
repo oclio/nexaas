@@ -67,10 +67,11 @@ export default function ScreenSize({ className }: Readonly<Props>) {
           'size-7 text-xs': size === 'sm',
           'size-9 text-sm': size === 'md',
           'text-md size-11': size === 'lg',
-          'border-transparent bg-red-600! font-bold text-white sm:bg-orange-400! md:bg-yellow-500! lg:bg-green-400! xl:bg-green-600! 2xl:bg-indigo-500!':
+          'border-transparent bg-red-600! font-bold text-white hover:text-white/90! focus:text-white/90! aria-expanded:text-white! sm:bg-orange-600! md:bg-yellow-500! lg:bg-green-700! xl:bg-blue-500! 2xl:bg-indigo-500!':
             isColored,
         },
         className,
+        'cursor-pointer',
       )}
     >
       <span className="block sm:hidden">XS</span>
