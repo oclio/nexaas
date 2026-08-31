@@ -22,6 +22,15 @@ A Next.js SaaS architecture hardened by mutation testing and bulletproof TypeScr
 
 📖 **[Full documentation](https://nexaas-docs.oclio.dev)** — architectures, features, and guides.
 
+## Features
+
+- **Security** — [Arcjet](https://arcjet.com) rate limiting & bot detection, CSP with nonce, CSRF protection, body size limit, secure cookies
+- **Database** — PostgreSQL with [pgvector](https://github.com/pgvector/pgvector), [Drizzle ORM](https://orm.drizzle.team) with typed schemas and migrations, connection pooling, health-checked
+- **Observability** — [Axiom](https://axiom.co) logging + [Sentry](https://sentry.io) error tracking, composable middleware chain, automatic web vitals reporting
+- **Email** — [Resend](https://resend.com) + [React Email](https://react.email) templates, provider-agnostic mailer interface
+- **i18n** — [next-intl](https://next-intl.dev) with locale-segmented routing, typed message bundles, persistent locale switcher
+- **Dark mode** — [`next-themes`](https://github.com/pacocoursey/next-themes), OKLCH color space, persists across reloads
+
 ## Stack
 
 | Technology                                     | Role                                  |
@@ -31,14 +40,6 @@ A Next.js SaaS architecture hardened by mutation testing and bulletproof TypeScr
 | [TypeScript](https://www.typescriptlang.org) 6 | Type safety                           |
 | [Tailwind CSS](https://tailwindcss.com) 4      | Styling                               |
 | [shadcn/ui](https://ui.shadcn.com)             | Component system (base-lyra style)    |
-
-## Features
-
-- **Observability** — [Axiom](https://axiom.co) logging + [Sentry](https://sentry.io) error tracking, composable middleware chain, automatic web vitals reporting
-- **Security** — [Arcjet](https://arcjet.com) rate limiting & bot detection, CSP with nonce, CSRF protection, body size limit, secure cookies
-- **i18n** — [next-intl](https://next-intl.dev) with locale-segmented routing, typed message bundles, persistent locale switcher
-- **Email** — [Resend](https://resend.com) + [React Email](https://react.email) templates (OTP, welcome, reset, invitations), provider-agnostic mailer interface
-- **Dark mode** — [`next-themes`](https://github.com/pacocoursey/next-themes), OKLCH color space, persists across reloads
 
 ## Requirements
 
