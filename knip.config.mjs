@@ -1,6 +1,7 @@
 const knipConfig = {
   $schema: 'https://unpkg.com/knip@6/schema.json',
   ignore: [
+    '.storybook/mocks/**',
     'commitlint.config.mjs',
     'docs/.vitepress/**',
     'src/core/i18n/**',
