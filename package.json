@@ -1,6 +1,6 @@
 {
   "name": "nexaas",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Stop debugging production. Start shipping with total confidence. A Next.js SaaS architecture hardened by mutation testing and bulletproof TypeScript patterns. Every refactor is safe, every deploy is calm, and your 3am alerts stay silent.",
   "keywords": [
     "nextjs",
