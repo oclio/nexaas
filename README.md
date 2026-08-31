@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./docs/images/logo.svg" alt="Logo" width="45" />
+  <img src="./docs/images/logo.svg" alt="Logo" width="60" />
   <h1>nexaas</h1>
   <p>
   Forget <i>production-ready</i>.
