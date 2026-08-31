@@ -11,6 +11,7 @@ import { ThemeProvider } from '@/app/[locale]/(main)/_components/theme-provider'
 import { app } from '@/core/config';
 import { routing } from '@/core/i18n/routing';
 import { WebVitals } from '@/core/observability/axiom/components/web-vitals';
+import ScreenSize from '@/ui/components/dev/screen-size';
 import { fontHeading, fontSans } from '@/ui/fonts';
 import { cn } from '@/ui/helpers';
 
@@ -60,6 +61,7 @@ export default async function RootLayout({
           </NextIntlClientProvider>
           <WebVitals />
         </ThemeProvider>
+        <ScreenSize />
       </body>
     </html>
   );
