@@ -51,6 +51,7 @@ export default defineConfig({
             { text: 'Security', link: '/core/security' },
             { text: 'Observability', link: '/core/observability' },
             { text: 'Internationalization', link: '/core/i18n' },
+            { text: 'Mailer', link: '/core/mailer' },
           ],
         },
         {
