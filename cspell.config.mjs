@@ -5,6 +5,7 @@ const config = {
   ignorePaths: [
     ...ignore,
     '**/docs/**',
+    'drizzle/**',
     'messages/fr/**',
     'pnpm-lock.yaml',
     'pnpm-workspace.yaml',
