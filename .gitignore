@@ -3,9 +3,9 @@
 .agents
 docs/.vitepress/cache/
 docs/.vitepress/deps/
+/.vitepress/
 .ops/
 .temp/
-.vitepress/
 pr.md
 AGENTS.md
 

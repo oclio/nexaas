@@ -11,6 +11,7 @@ src/core/
   errors/            → AppError class, error codes, message helpers
   helpers/           → shared utilities (string formatting)
   i18n/              → next-intl routing, messages, locale switcher
+  mailer/            → Resend email client, template rendering, recipient whitelist
   middlewares/       → composable middleware chain + proxy entrypoint
   observability/     → Axiom logging, Sentry error tracking, request tracing, web vitals, health checks
   security/          → Arcjet, CSP, CSRF, body size limit, secure cookies, email whitelist
@@ -58,6 +59,10 @@ Small, pure utilities shared across the codebase.
 ## i18n
 
 Locale-prefixed routing, type-safe messages, and server/client translation access via [next-intl](https://next-intl.dev). See [Internationalization](./i18n) for the full guide.
+
+## mailer
+
+Transactional email via [Resend](https://resend.com) with [React Email](https://react.email) templates. Supports HTML, React elements, and named templates. Recipients are filtered through the email whitelist. See [Mailer](./mailer) for the full guide.
 
 ## middlewares
 

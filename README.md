@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./docs/images/logo.svg" alt="Logo" width="45" />
+  <img src="./docs/images/logo.svg" alt="Logo" width="60" />
   <h1>nexaas</h1>
   <p>
   Forget <i>production-ready</i>.
@@ -22,67 +22,30 @@ A Next.js SaaS architecture hardened by mutation testing and bulletproof TypeScr
 
 📖 **[Full documentation](https://nexaas-docs.oclio.dev)** — architectures, features, and guides.
 
+## Stack
+
+| Technology                                     | Role                                  |
+| ---------------------------------------------- | ------------------------------------- |
+| [Next.js](https://nextjs.org) 16               | App Router, Turbopack, React Compiler |
+| [React](https://react.dev) 19                  | UI library                            |
+| [TypeScript](https://www.typescriptlang.org) 6 | Type safety                           |
+| [Tailwind CSS](https://tailwindcss.com) 4      | Styling                               |
+| [shadcn/ui](https://ui.shadcn.com)             | Component system (base-lyra style)    |
+
+## Features
+
+- **Observability** — [Axiom](https://axiom.co) logging + [Sentry](https://sentry.io) error tracking, composable middleware chain, automatic web vitals reporting
+- **Security** — [Arcjet](https://arcjet.com) rate limiting & bot detection, CSP with nonce, CSRF protection, body size limit, secure cookies
+- **i18n** — [next-intl](https://next-intl.dev) with locale-segmented routing, typed message bundles, persistent locale switcher
+- **Email** — [Resend](https://resend.com) + [React Email](https://react.email) templates (OTP, welcome, reset, invitations), provider-agnostic mailer interface
+- **Dark mode** — [`next-themes`](https://github.com/pacocoursey/next-themes), OKLCH color space, persists across reloads
+
 ## Requirements
 
 | Tool    | Version                        |
 | ------- | ------------------------------ |
 | Node.js | >= 24.0.0                      |
 | pnpm    | 11.20.0 (via `packageManager`) |
-
-## Stack
-
-| Technology                                                | Role                                  |
-| --------------------------------------------------------- | ------------------------------------- |
-| [Next.js](https://nextjs.org) 16                          | App Router, Turbopack, React Compiler |
-| [React](https://react.dev) 19                             | UI library                            |
-| [TypeScript](https://www.typescriptlang.org) 6            | Type safety                           |
-| [Tailwind CSS](https://tailwindcss.com) 4                 | Styling                               |
-| [shadcn/ui](https://ui.shadcn.com)                        | Component system (base-lyra style)    |
-| [next-themes](https://github.com/pacocoursey/next-themes) | Dark mode & theme switching           |
-| [Hugeicons](https://hugeicons.com)                        | Icon library                          |
-
-## Tooling
-
-| Tool                                                              | Purpose                                 |
-| ----------------------------------------------------------------- | --------------------------------------- |
-| [ESLint](https://eslint.org) 10                                   | Linting (flat config)                   |
-| [Prettier](https://prettier.io) 3                                 | Code formatting                         |
-| [typescript-eslint](https://typescript-eslint.io) 8               | TypeScript-specific lint rules          |
-| [Knip](https://knip.dev) 6                                        | Dead code & unused dependency detection |
-| [Gitleaks](https://github.com/gitleaks/gitleaks)                  | Secret scanning                         |
-| [axe-core](https://github.com/dequelabs/axe-core)                 | Accessibility auditing                  |
-| [markdownlint](https://github.com/igorshubovych/markdownlint-cli) | Markdown linting                        |
-| [cspell](https://cspell.org)                                      | Spell checking                          |
-| [Vitest](https://vitest.dev) 4                                    | Unit testing & coverage v8              |
-| [@testing-library/react](https://testing-library.com/docs/react)  | React component testing utilities       |
-| [Playwright](https://playwright.dev) 1.55                         | E2E testing (chromium)                  |
-| [Stryker](https://stryker-mutator.io) 10                          | Mutation testing                        |
-| [Husky](https://typicode.github.io/husky) 9                       | Git hooks                               |
-| [lint-staged](https://github.com/lint-staged/lint-staged) 17      | Staged files linting                    |
-| [commitlint](https://commitlint.js.org) 21                        | Conventional commits enforcement        |
-| [Commitizen](https://commitizen-tools.github.io/commitizen) 4     | Interactive commit prompts              |
-| [Changesets](https://github.com/changesets/changesets) 3          | Versioning & changelog management       |
-| [@next/bundle-analyzer](https://github.com/vercel/next.js) 16     | Bundle analysis & visualization         |
-
-## Features
-
-### Dark mode
-
-Theme switching is powered by [`next-themes`](https://github.com/pacocoursey/next-themes) and integrated at the root layout level via `ThemeProvider`. The `ThemeToggle` component on the landing page lets users switch between light and dark — the choice persists in `localStorage` and survives reloads.
-
-CSS variables for both themes are defined in [`src/ui/styles/globals.css`](src/ui/styles/globals.css) using the OKLCH color space, with the `.dark` class applied to `<html>` as the activation strategy.
-
-## Scripts
-
-| Script                   | Description                                                                                     |
-| ------------------------ | ----------------------------------------------------------------------------------------------- |
-| `scripts/test.mjs`       | Unified test runner for a single source file. Runs Vitest with scoped coverage, then optionally |
-|                          | Stryker mutation testing (`-m`) or Playwright e2e (`-e`).                                       |
-|                          | Usage: `pnpm test "src/core/i18n/components/locale-switcher.tsx"`                               |
-|                          | `pnpm test "src/core/i18n/components/locale-switcher.tsx" -m`                                   |
-|                          | `pnpm test theme-toggle -e`                                                                     |
-| `scripts/check-a11y.mjs` | Runs axe-core against one or more routes. Requires `pnpm dev` running.                          |
-|                          | Usage: `pnpm check:a11y / /about` or `pnpm check:a11y http://localhost:3000/login`              |
 
 ## Contributing
 

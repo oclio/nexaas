@@ -12,6 +12,7 @@ const exclude = [
   'src/core/i18n/navigation.ts',
   'src/core/i18n/request.ts',
   'src/core/i18n/routing.ts',
+  'src/core/mailer/index.ts',
   'src/core/observability/axiom/client.ts',
   'src/core/observability/axiom/server.ts',
   'src/core/security/headers.ts',
