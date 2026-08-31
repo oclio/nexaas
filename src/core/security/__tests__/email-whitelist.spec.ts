@@ -1,45 +1,39 @@
 import { vi } from 'vitest';
 
-vi.mock('@/core/config/env', () => ({
-  env: {
-    EMAIL_WHITELIST:
-      'tester1@example.com,tester2@example.com;TESTER3@EXAMPLE.COM',
-  },
-}));
+const WHITELIST = 'tester1@example.com,tester2@example.com;TESTER3@EXAMPLE.COM';
 
-const { isAuthorizedEmail } = await import('../email-whitelist');
+async function loadWithEmaillist(value: string | undefined) {
+  vi.resetModules();
+  if (value === undefined) {
+    vi.stubEnv('EMAIL_WHITELIST', '');
+    delete process.env.EMAIL_WHITELIST;
+  } else {
+    vi.stubEnv('EMAIL_WHITELIST', value);
+  }
+  const result = await import('../email-whitelist');
+  return result.isAuthorizedEmail;
+}
 
 describe('isAuthorizedEmail', () => {
-  it('returns true when email is in the whitelist', () => {
-    expect(isAuthorizedEmail('tester1@example.com')).toBe(true);
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
-  it('returns true when email matches with different casing', () => {
-    expect(isAuthorizedEmail('TESTER1@EXAMPLE.COM')).toBe(true);
-  });
+  it.each([
+    ['tester1@example.com', true, 'in the whitelist'],
+    ['TESTER1@EXAMPLE.COM', true, 'different casing'],
+    ['  tester1@example.com  ', true, 'surrounding whitespace'],
+    ['random@example.com', false, 'not in the whitelist'],
+    ['tester2@example.com', true, 'semicolon-separated'],
+    ['tester3@example.com', true, 'normalized to lowercase'],
+  ])('returns %s for email %s', async (email, expected) => {
+    const check = await loadWithEmaillist(WHITELIST);
 
-  it('returns true when email has surrounding whitespace', () => {
-    expect(isAuthorizedEmail('  tester1@example.com  ')).toBe(true);
-  });
-
-  it('returns false when email is not in the whitelist', () => {
-    expect(isAuthorizedEmail('random@example.com')).toBe(false);
-  });
-
-  it('handles semicolon-separated entries', () => {
-    expect(isAuthorizedEmail('tester2@example.com')).toBe(true);
-  });
-
-  it('normalizes entries to lowercase', () => {
-    expect(isAuthorizedEmail('tester3@example.com')).toBe(true);
+    expect(check(email)).toBe(expected);
   });
 
   it('deduplicates entries', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/config/env', () => ({
-      env: { EMAIL_WHITELIST: 'a@x.com,a@x.com,b@x.com' },
-    }));
-    const { isAuthorizedEmail: check } = await import('../email-whitelist');
+    const check = await loadWithEmaillist('a@x.com,a@x.com,b@x.com');
 
     expect(check('a@x.com')).toBe(true);
     expect(check('b@x.com')).toBe(true);
@@ -47,11 +41,9 @@ describe('isAuthorizedEmail', () => {
   });
 
   it('filters out invalid email entries from whitelist', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/config/env', () => ({
-      env: { EMAIL_WHITELIST: 'valid@example.com,not-an-email,also-bad@' },
-    }));
-    const { isAuthorizedEmail: check } = await import('../email-whitelist');
+    const check = await loadWithEmaillist(
+      'valid@example.com,not-an-email,also-bad@',
+    );
 
     expect(check('valid@example.com')).toBe(true);
     expect(check('not-an-email')).toBe(false);
@@ -59,31 +51,29 @@ describe('isAuthorizedEmail', () => {
   });
 
   it('returns true for all emails when whitelist is empty', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/config/env', () => ({
-      env: { EMAIL_WHITELIST: '' },
-    }));
-    const { isAuthorizedEmail: check } = await import('../email-whitelist');
+    const check = await loadWithEmaillist('');
 
     expect(check('anyone@example.com')).toBe(true);
   });
 
   it('returns true for all emails when EMAIL_WHITELIST is undefined', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/config/env', () => ({
-      env: { EMAIL_WHITELIST: undefined },
-    }));
-    const { isAuthorizedEmail: check } = await import('../email-whitelist');
+    const check = await loadWithEmaillist(undefined);
 
     expect(check('anyone@example.com')).toBe(true);
   });
 
+  it('trims whitespace around whitelist entries', async () => {
+    const check = await loadWithEmaillist(
+      '  tester1@example.com  ,tester2@example.com',
+    );
+
+    expect(check('tester1@example.com')).toBe(true);
+    expect(check('tester2@example.com')).toBe(true);
+    expect(check('random@example.com')).toBe(false);
+  });
+
   it('filters out empty entries from split', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/config/env', () => ({
-      env: { EMAIL_WHITELIST: 'a@x.com,, ,b@x.com' },
-    }));
-    const { isAuthorizedEmail: check } = await import('../email-whitelist');
+    const check = await loadWithEmaillist('a@x.com,, ,b@x.com');
 
     expect(check('a@x.com')).toBe(true);
     expect(check('b@x.com')).toBe(true);

@@ -162,8 +162,7 @@ describe('chain', () => {
       callOrder.push('before-first-next');
       await next();
       callOrder.push('before-second-next');
-      await next();
-      callOrder.push('after-second-next');
+      return next();
     };
 
     const handler = chain([mw]);

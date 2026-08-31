@@ -7,12 +7,6 @@ import {
   mockNextRequest,
 } from '@/tests/unit/helpers/request';
 
-vi.mock('@/core/config/env', () => ({
-  env: {
-    NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
-  },
-}));
-
 const { withCsrf } = await import('../with-csrf');
 
 function mockRequest(
@@ -35,6 +29,21 @@ describe('withCsrf', () => {
       const next = nextMock();
 
       await withCsrf(mockRequest(method), mockEvent(), next);
+
+      expect(next).toHaveBeenCalledOnce();
+    },
+  );
+
+  it.each(['GET', 'HEAD', 'OPTIONS'])(
+    'calls next for safe methods (%s) even with mismatched Origin',
+    async (method) => {
+      const next = nextMock();
+
+      await withCsrf(
+        mockRequest(method, { origin: 'https://evil.com' }),
+        mockEvent(),
+        next,
+      );
 
       expect(next).toHaveBeenCalledOnce();
     },

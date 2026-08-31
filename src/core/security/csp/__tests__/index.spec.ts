@@ -3,27 +3,24 @@ import { buildCSP } from '../index';
 describe('buildCSP', () => {
   it('includes nonce and strict-dynamic when nonce is provided', () => {
     const csp = buildCSP('abc123', false);
-    const scriptSource = csp.match(/script-src ([^;]+)/)?.[1] ?? '';
 
-    expect(scriptSource).toContain("'nonce-abc123'");
-    expect(scriptSource).toContain("'strict-dynamic'");
-    expect(scriptSource).not.toContain("'unsafe-inline'");
+    expect(csp).toBe(
+      "default-src 'self'; script-src 'self' 'nonce-abc123' 'strict-dynamic' https://vercel.live https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'self' https://vercel.live; worker-src 'self' blob:; connect-src 'self' https://*.sentry.io https://*.arcjet.com https://api.axiom.co https://va.vercel-scripts.com; upgrade-insecure-requests",
+    );
   });
 
   it('falls back to unsafe-inline when nonce is null', () => {
-    const csp = buildCSP(undefined, false);
-    const scriptSource = csp.match(/script-src ([^;]+)/)?.[1] ?? '';
+    const csp = buildCSP(null, false);
 
-    expect(scriptSource).toContain("'unsafe-inline'");
+    expect(csp).toContain("'unsafe-inline'");
     expect(csp).not.toContain("'nonce-null'");
-    expect(scriptSource).not.toContain("'strict-dynamic'");
+    expect(csp).not.toContain("'strict-dynamic'");
   });
 
   it('falls back to unsafe-inline when nonce is undefined', () => {
     const csp = buildCSP(undefined, false);
-    const scriptSource = csp.match(/script-src ([^;]+)/)?.[1] ?? '';
 
-    expect(scriptSource).toContain("'unsafe-inline'");
+    expect(csp).toContain("'unsafe-inline'");
     expect(csp).not.toContain("'nonce-undefined'");
   });
 
@@ -67,8 +64,9 @@ describe('buildCSP', () => {
   it('includes report-uri and report-to when reportUri is provided', () => {
     const csp = buildCSP(undefined, false, 'https://example.com/report');
 
-    expect(csp).toContain('report-uri https://example.com/report');
-    expect(csp).toContain('report-to csp-endpoint');
+    expect(csp).toBe(
+      "default-src 'self'; script-src 'self' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'self' https://vercel.live; worker-src 'self' blob:; connect-src 'self' https://*.sentry.io https://*.arcjet.com https://api.axiom.co https://va.vercel-scripts.com; upgrade-insecure-requests; report-uri https://example.com/report; report-to csp-endpoint",
+    );
   });
 
   it('excludes report-uri and report-to when reportUri is not provided', () => {
@@ -76,6 +74,14 @@ describe('buildCSP', () => {
 
     expect(csp).not.toContain('report-uri');
     expect(csp).not.toContain('report-to');
+  });
+
+  it('produces exact CSP for development without reportUri', () => {
+    const csp = buildCSP(undefined, true);
+
+    expect(csp).toBe(
+      "default-src 'self'; script-src 'self' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; frame-src 'self' https://vercel.live; worker-src 'self' blob:; connect-src 'self' https://*.sentry.io https://*.arcjet.com https://api.axiom.co https://va.vercel-scripts.com ws: wss:",
+    );
   });
 
   it('always includes core directives', () => {

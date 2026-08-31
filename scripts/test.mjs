@@ -44,10 +44,6 @@ import path from 'node:path';
 Escape glob special chars so [locale] and (main) are treated literally.
 */
 const escapeGlob = (s) => s.replaceAll(/[()[\]{}]/g, (m) => `[${m}]`);
-/**
-Escape regex special chars for vitest/playwright filename filters.
-*/
-const escapeRegex = (s) => s.replaceAll(/[()[\]{}\\]/g, (m) => `\\${m}`);
 
 /**
 Resolve the full path to a binary on PATH (avoids sonarjs/no-os-command-from-path).
@@ -114,8 +110,10 @@ const escapedDirectory = escapeGlob(directory);
 function findSpecs(...suffixes) {
   const results = [];
   for (const suffix of suffixes) {
-    results.push(...globSync(`${escapedDirectory}/${base}.${suffix}.{ts,tsx}`));
-    results.push(...globSync(`${escapedDirectory}/__tests__/${base}.${suffix}.{ts,tsx}`));
+    results.push(
+      ...globSync(`${escapedDirectory}/${base}.${suffix}.{ts,tsx}`),
+      ...globSync(`${escapedDirectory}/__tests__/${base}.${suffix}.{ts,tsx}`),
+    );
   }
   return results;
 }
@@ -125,7 +123,9 @@ const specFiles = findSpecs('spec', 'test');
 if (specFiles.length === 0) {
   console.error(`No spec file found for ${sourceFile}`);
   console.error(`  Looked for: ${directory}/${base}.{spec,test}.{ts,tsx}`);
-  console.error(`  Looked for: ${directory}/__tests__/${base}.{spec,test}.{ts,tsx}`);
+  console.error(
+    `  Looked for: ${directory}/__tests__/${base}.{spec,test}.{ts,tsx}`,
+  );
   process.exit(1);
 }
 

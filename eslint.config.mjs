@@ -102,8 +102,8 @@ const eslintConfig = defineConfig([
   {
     files: ['tests/**'],
     rules: {
-      'unicorn/no-top-level-side-effects': 'off'
-    }
+      'unicorn/no-top-level-side-effects': 'off',
+    },
   },
   // KEYS AUTO-SORT
   {

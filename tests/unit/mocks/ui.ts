@@ -27,8 +27,13 @@ vi.mock('next/font/google', () => ({
   }),
 }));
 
+const themeReference = { current: 'light' as string | undefined };
+const setThemeMock = vi.fn();
+
 vi.mock('next-themes', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => children,
   NextThemesProvider: ({ children }: { children: React.ReactNode }) => children,
-  useTheme: () => ({ theme: 'light', setTheme: vi.fn() }),
+  useTheme: () => ({ theme: themeReference.current, setTheme: setThemeMock }),
 }));
+
+export { setThemeMock, themeReference as themeRef };
