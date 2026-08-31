@@ -89,10 +89,13 @@ describe('withBodySizeLimit', () => {
     'allows %s without Content-Length header (chunked encoding)',
     async (method) => {
       const next = nextMock();
+      const numberSpy = vi.spyOn(globalThis, 'Number');
 
       await withBodySizeLimit(mockRequest(method), mockEvent(), next);
 
       expect(next).toHaveBeenCalledOnce();
+      expect(numberSpy).not.toHaveBeenCalled();
+      numberSpy.mockRestore();
     },
   );
 
