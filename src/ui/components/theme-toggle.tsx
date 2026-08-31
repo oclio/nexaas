@@ -3,17 +3,11 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
-import { type ComponentProps, useSyncExternalStore } from 'react';
+import { type ComponentProps } from 'react';
 
 import { Button } from '@/ui/components/shadcn/button';
+import { useIsMounted } from '@/ui/hooks/use-is-mounted';
 import { ICONS } from '@/ui/icons';
-
-const noop = () => {
-  /*
-  noop
-  */
-};
-const emptySubscribe = () => noop;
 
 export default function ThemeToggle({
   className,
@@ -21,12 +15,7 @@ export default function ThemeToggle({
 }: Readonly<ComponentProps<typeof Button>>) {
   const { theme, setTheme } = useTheme();
   const t = useTranslations('components.themeToggle');
-
-  const mounted = useSyncExternalStore(
-    emptySubscribe,
-    () => true,
-    () => false,
-  );
+  const mounted = useIsMounted();
 
   const isDark = mounted && theme === 'dark';
 
