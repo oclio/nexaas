@@ -1,6 +1,12 @@
 import { vi } from 'vitest';
 
-import { withTimeoutMock } from '@/tests/unit/mocks/async';
+const { withTimeoutMock } = vi.hoisted(() => ({
+  withTimeoutMock: vi.fn(<T>(promise: Promise<T>): Promise<T> => promise),
+}));
+
+vi.mock('@/core/async/helpers/with-timeout', () => ({
+  withTimeout: withTimeoutMock,
+}));
 
 const { checkArcjetService } = await import('../index');
 

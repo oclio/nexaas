@@ -4,6 +4,7 @@ const exclude = [
   'src/**/__tests__/**',
   'src/**/types.ts',
   'src/**/types/**',
+  'src/core/config/env/index.ts',
   'src/core/config/index.ts',
   'src/core/errors/codes.ts',
   'src/core/errors/index.ts',
