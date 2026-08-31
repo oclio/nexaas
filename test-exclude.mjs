@@ -2,6 +2,7 @@ const exclude = [
   '**/*.d.ts',
   'src/**/__e2e__/**',
   'src/**/__tests__/**',
+  'src/**/db-schemas/**',
   'src/**/types.ts',
   'src/**/types/**',
   'src/core/config/env/index.ts',

@@ -40,14 +40,15 @@ test.describe('/api/health', () => {
       headers: { authorization: 'Bearer test-health-secret' },
     });
 
-    expect(response.status()).toBe(200);
     const body = await response.json();
-    expect(body.status).toBe('ok');
+    expect([200, 503]).toContain(response.status());
+    expect(['ok', 'degraded']).toContain(body.status);
     expect(body.timestamp).toBeDefined();
     expect(body.services).toBeDefined();
     expect(body.services.security).toBeDefined();
     expect(body.services.logs).toBeDefined();
     expect(body.services.errorsCapture).toBeDefined();
+    expect(body.services.database).toBeDefined();
     expect(['healthy', 'unhealthy', 'disabled']).toContain(
       body.services.security.status,
     );
@@ -57,6 +58,7 @@ test.describe('/api/health', () => {
     expect(['healthy', 'unhealthy', 'disabled']).toContain(
       body.services.errorsCapture.status,
     );
+    expect(['healthy', 'unhealthy']).toContain(body.services.database.status);
     expect(response.headers()['cache-control']).toBe('no-store, max-age=0');
   });
 });

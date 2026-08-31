@@ -8,6 +8,12 @@ export const env = createEnv({
       .enum(['development', 'test', 'production'])
       .default('development'),
 
+    // ─── DATABASE ────────────────────────────────────────────────────────────
+    DATABASE_URL: z.url(),
+    DATABASE_POOL_MAX: z.coerce.number().int().min(1).default(10),
+    DATABASE_IDLE_TIMEOUT: z.coerce.number().int().min(0).default(30),
+    DATABASE_CONNECT_TIMEOUT: z.coerce.number().int().min(0).default(10),
+
     // ─── SECURITY ────────────────────────────────────────────────────────────
     ARCJET_KEY: z.string().min(10).optional(),
     ARCJET_ENV: z

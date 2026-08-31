@@ -2,7 +2,7 @@
 
 ## GET /api/health
 
-Lightweight health check for load balancers and monitoring tools.
+Health check for load balancers and monitoring tools. When authenticated, the endpoint actively pings each upstream service — it does not just report configuration status. Each service is queried with a short timeout, so a degraded response reflects real connectivity issues, not stale state.
 
 ### Authentication
 
@@ -33,10 +33,16 @@ Without authentication, the endpoint returns a simple `ok` without checking upst
   "status": "ok",
   "timestamp": "2026-08-29T20:00:00.000Z",
   "services": {
+    "security": {
+      "status": "healthy"
+    },
     "logs": {
       "status": "healthy"
     },
     "errorsCapture": {
+      "status": "healthy"
+    },
+    "database": {
       "status": "healthy"
     }
   }
@@ -52,12 +58,18 @@ Without authentication, the endpoint returns a simple `ok` without checking upst
   "status": "degraded",
   "timestamp": "2026-08-29T20:00:00.000Z",
   "services": {
+    "security": {
+      "status": "healthy"
+    },
     "logs": {
       "status": "unhealthy",
       "error": "connection refused"
     },
     "errorsCapture": {
       "status": "disabled"
+    },
+    "database": {
+      "status": "healthy"
     }
   }
 }
@@ -67,10 +79,12 @@ Without authentication, the endpoint returns a simple `ok` without checking upst
 
 ### Services
 
-| Key             | Service | Env vars                       |
-| --------------- | ------- | ------------------------------ |
-| `logs`          | Axiom   | `AXIOM_TOKEN`, `AXIOM_DATASET` |
-| `errorsCapture` | Sentry  | `NEXT_PUBLIC_SENTRY_DSN`       |
+| Key             | Service    | Env vars                       |
+| --------------- | ---------- | ------------------------------ |
+| `security`      | Arcjet     | `ARCJET_KEY`                   |
+| `logs`          | Axiom      | `AXIOM_TOKEN`, `AXIOM_DATASET` |
+| `errorsCapture` | Sentry     | `NEXT_PUBLIC_SENTRY_DSN`       |
+| `database`      | PostgreSQL | `DATABASE_URL`                 |
 
 ### Service statuses
 
@@ -79,6 +93,8 @@ Without authentication, the endpoint returns a simple `ok` without checking upst
 | `healthy`   | Service responded successfully                         |
 | `unhealthy` | Service failed or timed out                            |
 | `disabled`  | Service is not configured (e.g. `AXIOM_TOKEN` not set) |
+
+> **Note:** The `database` service is always required and never returns `disabled`.
 
 ---
 

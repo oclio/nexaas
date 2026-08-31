@@ -3,6 +3,7 @@
 .agents
 docs/.vitepress/cache/
 docs/.vitepress/deps/
+docs/.vitepress/dist/
 /.vitepress/
 .ops/
 .temp/

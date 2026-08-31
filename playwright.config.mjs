@@ -98,7 +98,7 @@ export default defineConfig({
   */
   webServer: {
     command: process.env.CI
-      ? 'cross-env NEXT_PUBLIC_APP_URL=http://localhost:3000 PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm build && cross-env NEXT_PUBLIC_APP_URL=http://localhost:3000 PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm start'
+      ? 'cross-env NEXT_PUBLIC_APP_URL=http://localhost:3000 DATABASE_URL=postgresql://postgres:postgres@localhost:5455/db PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm build && cross-env NEXT_PUBLIC_APP_URL=http://localhost:3000 DATABASE_URL=postgresql://postgres:postgres@localhost:5455/db PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm start'
       : 'cross-env NEXT_PUBLIC_APP_URL=http://localhost:3000 PLAYWRIGHT_TEST=true HEALTH_CHECK_SECRET=test-health-secret pnpm dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
