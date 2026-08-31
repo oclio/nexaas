@@ -1,8 +1,7 @@
-import '@/core/ui/css/globals.css';
+import '@/ui/styles/globals.css';
 
 import type { Preview } from '@storybook/nextjs-vite';
 import { NextIntlClientProvider } from 'next-intl';
-import React from 'react';
 
 import enMessages from '../messages/en';
 import frMessages from '../messages/fr';
