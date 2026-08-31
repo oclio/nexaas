@@ -161,7 +161,7 @@ export const Default: Story = {};
 
 Storybook aliases server-only modules to lightweight mocks in `.storybook/mocks/`:
 
-- `@/core/config/env` → `.storybook/mocks/env.ts`
+- `@/core/env` → `.storybook/mocks/env.ts`
 - `@/core/i18n/navigation` → `.storybook/mocks/navigation.ts`
 - `@/core/observability/logger` → `.storybook/mocks/logger.ts`
 
