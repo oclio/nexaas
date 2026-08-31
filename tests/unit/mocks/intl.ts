@@ -14,13 +14,17 @@ const messagesMock: Record<string, unknown> = {
   },
 };
 
+type TranslationMock = ReturnType<typeof vi.fn<(key: string) => string>> & {
+  raw: ReturnType<typeof vi.fn<(key: string) => unknown>>;
+};
+
 const translationMock = vi.fn((key: string) => {
   const messages: Record<string, string> = {
     title: 'Welcome!',
     description: 'A scalable, production-ready SaaS boilerplate for Next.js.',
   };
   return messages[key] ?? key;
-});
+}) as TranslationMock;
 
 // Allow t.raw('keywords') to return the array from messages
 translationMock.raw = vi.fn((key: string) => {
