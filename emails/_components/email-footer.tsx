@@ -1,6 +1,6 @@
 import { Hr, Tailwind, Text } from '@react-email/components';
 
-import { app } from '@/core/config';
+import { app } from '@/config';
 
 interface Properties {
   note: string;

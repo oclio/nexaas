@@ -1,5 +1,5 @@
 import { withTimeout } from '@/core/async/helpers/with-timeout';
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 import { axiomClient } from '@/core/observability/axiom/client';
 
 export async function checkAxiomService() {

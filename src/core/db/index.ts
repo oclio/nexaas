@@ -2,7 +2,7 @@ import type { Logger } from 'drizzle-orm/logger';
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 import { logger } from '@/core/observability/axiom/server';
 
 const client = postgres(env.DATABASE_URL, {

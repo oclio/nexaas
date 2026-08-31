@@ -12,7 +12,7 @@ const envReference = {
   AXIOM_DATASET: undefined as string | undefined,
 };
 
-vi.mock('@/core/config/env', () => ({
+vi.mock('@/core/env', () => ({
   get env() {
     return envReference;
   },

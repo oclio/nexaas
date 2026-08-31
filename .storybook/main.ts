@@ -26,7 +26,7 @@ const config: StorybookConfig = {
 
     config.resolve.alias = [
       {
-        find: '@/core/config/env',
+        find: '@/core/env',
         replacement: path.resolve(storybookDirectory, 'mocks/env.ts'),
       },
       {

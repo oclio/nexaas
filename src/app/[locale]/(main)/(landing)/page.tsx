@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { app } from '@/core/config';
+import { app } from '@/config';
 import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
 import ThemeToggle from '@/ui/components/theme-toggle';
 

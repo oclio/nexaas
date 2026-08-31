@@ -4,7 +4,7 @@
 
 import * as Sentry from '@sentry/nextjs';
 
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 
 const isProduction = process.env.NODE_ENV === 'production';
 

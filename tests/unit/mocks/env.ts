@@ -11,7 +11,7 @@ const envDefaults: Record<string, unknown> = {
   RESEND_API_KEY: 're_test_key_1234567890',
 };
 
-vi.mock('@/core/config/env', () => ({
+vi.mock('@/core/env', () => ({
   env: new Proxy(envDefaults, {
     get(target, property: string) {
       return Object.prototype.hasOwnProperty.call(target, property)

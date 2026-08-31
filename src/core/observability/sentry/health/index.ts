@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 import { withTimeout } from '@/core/async/helpers/with-timeout';
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 
 export async function checkSentryService() {
   const dsn = env.NEXT_PUBLIC_SENTRY_DSN;

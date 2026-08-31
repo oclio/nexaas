@@ -1,5 +1,5 @@
 import '@/ui/styles/globals.css';
-import '@/core/config/env';
+import '@/core/env';
 
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -8,7 +8,7 @@ import { getMessages } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { ThemeProvider } from '@/app/[locale]/(main)/_components/theme-provider';
-import { app } from '@/core/config';
+import { app } from '@/config';
 import { routing } from '@/core/i18n/routing';
 import { WebVitals } from '@/core/observability/axiom/components/web-vitals';
 import ScreenSize from '@/ui/components/dev/screen-size';

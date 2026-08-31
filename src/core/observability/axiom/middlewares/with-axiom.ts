@@ -1,7 +1,7 @@
 import { transformMiddlewareRequest } from '@axiomhq/nextjs';
 import { NextResponse } from 'next/server';
 
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 import type { CustomMiddleware } from '@/core/middlewares/types';
 import { logger } from '@/core/observability/axiom/server';
 
