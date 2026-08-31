@@ -12,9 +12,11 @@ The `src/ui/` directory contains the presentation layer of nexaas. It is built o
 ```text
 src/ui/
   components/
-    shadcn/         → shadcn/ui primitives (Button, …)
+    shadcn/         → shadcn/ui primitives (Button, DropdownMenu, …)
+    dev/            → development-only tools (ScreenSize, …)
     theme-toggle.tsx
   helpers/          → cn() class merge utility
+  hooks/            → reusable hooks (useIsMounted, …)
   icons/            → Hugeicons registry
   fonts/            → Next.js font definitions
   styles/           → globals.css (Tailwind + CSS variables)
@@ -101,3 +103,80 @@ import { HugeiconsIcon } from '@hugeicons/react';
 ```
 
 To add a new icon, import it from `@hugeicons/core-free-icons` and add it to the `ICONS` registry — then use `ICONS.myIcon` everywhere.
+
+## Hooks
+
+### useIsMounted
+
+The `useIsMounted` hook (`src/ui/hooks/use-is-mounted.ts`) wraps `useSyncExternalStore` to safely detect whether the component is mounted on the client. It returns `false` during SSR and `true` after hydration, preventing flash-of-incorrect-state in components that depend on client-only APIs (theme, localStorage, etc.).
+
+```tsx
+import { useIsMounted } from '@/ui/hooks/use-is-mounted';
+
+const mounted = useIsMounted();
+if (!mounted) return null;
+```
+
+## Storybook
+
+[Storybook](https://storybook.js.org) 10 is configured with the Next.js + Vite framework. It provides an isolated environment for developing and visually testing UI components.
+
+### Commands
+
+```bash
+pnpm sb              # start Storybook dev server (http://localhost:6006)
+pnpm build:sb        # build static Storybook bundle
+```
+
+### Addons
+
+| Addon                      | Purpose                                     |
+| -------------------------- | ------------------------------------------- |
+| `@chromatic-com/storybook` | Chromatic integration for visual regression |
+| `@storybook/addon-vitest`  | Run component tests in Vitest               |
+| `@storybook/addon-a11y`    | Accessibility checks in the Storybook panel |
+| `@storybook/addon-docs`    | MDX documentation pages                     |
+| `@storybook/addon-mcp`     | MCP server for AI-driven Storybook access   |
+
+### Writing stories
+
+Stories are colocated with components using the `.stories.tsx` suffix. The glob pattern `src/**/*.stories.@(js|jsx|mjs|ts|tsx)` is configured in `.storybook/main.ts`.
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import MyComponent from './my-component';
+
+const meta: Meta<typeof MyComponent> = {
+  title: 'Components/MyComponent',
+  component: MyComponent,
+};
+
+export default meta;
+type Story = StoryObj<typeof MyComponent>;
+
+export const Default: Story = {};
+```
+
+### Mocks
+
+Storybook aliases server-only modules to lightweight mocks in `.storybook/mocks/`:
+
+- `@/core/config/env` → `.storybook/mocks/env.ts`
+- `@/core/i18n/navigation` → `.storybook/mocks/navigation.ts`
+- `@/core/observability/logger` → `.storybook/mocks/logger.ts`
+
+## Dev tools
+
+Development-only components live in `src/ui/components/dev/`. They are gated by `process.env.NODE_ENV !== 'development'` and render nothing in production builds.
+
+### ScreenSize
+
+The `ScreenSize` component (`src/ui/components/dev/screen-size.tsx`) is a floating breakpoint badge that displays the current Tailwind breakpoint (XS → 2XL). It is mounted once in the root layout and helps developers verify responsive behavior at a glance.
+
+**Features:**
+
+- **Breakpoint label** — shows the active breakpoint (XS, SM, MD, LG, XL, 2XL).
+- **Size** — adjustable badge size (Small, Medium, Large).
+- **Position** — dockable to any screen corner (Bottom Left, Bottom Right, Top Left, Top Right).
+- **Colored mode** — color-codes the badge per breakpoint for quick visual identification.
+- **Persistence** — preferences are stored in `localStorage` via a [Zustand](https://github.com/pmndrs/zustand) store (`src/ui/components/dev/screen-size.store.ts`) with `persist` and `devtools` middleware.
