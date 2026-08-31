@@ -1,5 +1,7 @@
 const exclude = [
   '**/*.d.ts',
+  'src/**/*.store.ts',
+  'src/**/*.stories.*',
   'src/**/__e2e__/**',
   'src/**/__tests__/**',
   'src/**/db-schemas/**',

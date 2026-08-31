@@ -2,6 +2,7 @@ const ignore = [
   '.agents/**',
   '.next/**',
   '.ops/**',
+  '.storybook/**',
   '.stryker-tmp/**',
   '.temp/**',
   '.vitepress/**',
