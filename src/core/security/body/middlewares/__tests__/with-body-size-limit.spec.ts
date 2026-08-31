@@ -1,6 +1,11 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { vi } from 'vitest';
+
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
 
 const { withBodySizeLimit } = await import('../with-body-size-limit');
 
@@ -8,17 +13,10 @@ function mockRequest(
   method = 'GET',
   headers: Record<string, string> = {},
 ): NextRequest {
-  return {
-    headers: new Headers(headers),
-    method,
-    url: 'http://localhost:3000/test',
-    nextUrl: { pathname: '/test' },
-  } as unknown as NextRequest;
+  return mockNextRequest({ method, headers });
 }
 
-function mockEvent(): NextFetchEvent {
-  return {} as unknown as NextFetchEvent;
-}
+const mockEvent = mockNextFetchEvent;
 
 function nextMock() {
   return vi.fn().mockResolvedValue(NextResponse.next());
@@ -91,10 +89,13 @@ describe('withBodySizeLimit', () => {
     'allows %s without Content-Length header (chunked encoding)',
     async (method) => {
       const next = nextMock();
+      const numberSpy = vi.spyOn(globalThis, 'Number');
 
       await withBodySizeLimit(mockRequest(method), mockEvent(), next);
 
       expect(next).toHaveBeenCalledOnce();
+      expect(numberSpy).not.toHaveBeenCalled();
+      numberSpy.mockRestore();
     },
   );
 

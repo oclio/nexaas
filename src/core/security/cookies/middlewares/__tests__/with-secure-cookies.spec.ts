@@ -1,21 +1,16 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { vi } from 'vitest';
 
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
+
 const { withSecureCookies } = await import('../with-secure-cookies');
 
-function mockRequest(): NextRequest {
-  return {
-    headers: new Headers(),
-    url: 'http://localhost:3000/test',
-    method: 'GET',
-    nextUrl: { pathname: '/test' },
-  } as unknown as NextRequest;
-}
-
-function mockEvent(): NextFetchEvent {
-  return {} as unknown as NextFetchEvent;
-}
+const mockRequest = (): NextRequest => mockNextRequest();
+const mockEvent = mockNextFetchEvent;
 
 function nextMockWithCookies(cookies: string[]): () => Promise<NextResponse> {
   const response = NextResponse.next();
@@ -29,9 +24,15 @@ function nextMockNoCookies(): () => Promise<NextResponse> {
   return vi.fn().mockResolvedValue(NextResponse.next());
 }
 
+function setNodeEnvironment(value: string) {
+  (process.env as { NODE_ENV: string }).NODE_ENV = value;
+}
+
 describe('withSecureCookies', () => {
+  const originalNodeEnvironment = process.env.NODE_ENV;
+
   afterEach(() => {
-    vi.unstubAllEnvs();
+    setNodeEnvironment(originalNodeEnvironment);
   });
 
   it('passes through when no cookies are set', async () => {
@@ -43,60 +44,48 @@ describe('withSecureCookies', () => {
     expect(next).toHaveBeenCalledOnce();
   });
 
-  it('adds HttpOnly, SameSite=Strict, and Path=/ to a bare cookie', async () => {
-    const next = nextMockWithCookies(['session=abc123']);
-
-    const response = await withSecureCookies(mockRequest(), mockEvent(), next);
-
-    const cookie = response.headers.get('set-cookie');
-    expect(cookie).toContain('session=abc123');
-    expect(cookie).toContain('HttpOnly');
-    expect(cookie).toContain('SameSite=Strict');
-    expect(cookie).toContain('Path=/');
-  });
-
-  it('does not duplicate attributes already present', async () => {
-    const next = nextMockWithCookies([
+  it.each([
+    ['session=abc123', 'session=abc123; HttpOnly; SameSite=Strict; Path=/'],
+    [
       'session=abc123; HttpOnly; SameSite=Strict; Path=/auth',
-    ]);
+      'session=abc123; HttpOnly; SameSite=Strict; Path=/auth',
+    ],
+  ])('secures cookie %s', async (input, expected) => {
+    const next = nextMockWithCookies([input]);
 
     const response = await withSecureCookies(mockRequest(), mockEvent(), next);
 
-    const cookie = response.headers.get('set-cookie') ?? '';
-    const httpOnlyCount = (cookie.match(/HttpOnly/gi) ?? []).length;
-    const sameSiteCount = (cookie.match(/SameSite=Strict/gi) ?? []).length;
-    expect(httpOnlyCount).toBe(1);
-    expect(sameSiteCount).toBe(1);
-    expect(cookie).toContain('Path=/auth');
+    expect(response.headers.get('set-cookie')).toBe(expected);
   });
 
-  it('adds Secure in production', async () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    const next = nextMockWithCookies(['session=abc123']);
+  it.each([
+    [
+      'production',
+      'session=abc123',
+      'session=abc123; HttpOnly; SameSite=Strict; Path=/; Secure',
+    ],
+    [
+      'production',
+      'session=abc123; HttpOnly',
+      'session=abc123; HttpOnly; SameSite=Strict; Path=/; Secure',
+    ],
+    [
+      'development',
+      'session=abc123',
+      'session=abc123; HttpOnly; SameSite=Strict; Path=/',
+    ],
+    [
+      'production',
+      'session=abc123; Secure; HttpOnly',
+      'session=abc123; Secure; HttpOnly; SameSite=Strict; Path=/',
+    ],
+  ])('handles Secure for %s with cookie %s', async (env, input, expected) => {
+    setNodeEnvironment(env);
+    const next = nextMockWithCookies([input]);
 
     const response = await withSecureCookies(mockRequest(), mockEvent(), next);
 
-    expect(response.headers.get('set-cookie')).toContain('Secure');
-  });
-
-  it('does not add Secure in development', async () => {
-    vi.stubEnv('NODE_ENV', 'development');
-    const next = nextMockWithCookies(['session=abc123']);
-
-    const response = await withSecureCookies(mockRequest(), mockEvent(), next);
-
-    expect(response.headers.get('set-cookie')).not.toContain('Secure');
-  });
-
-  it('does not duplicate Secure when already present', async () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    const next = nextMockWithCookies(['session=abc123; Secure; HttpOnly']);
-
-    const response = await withSecureCookies(mockRequest(), mockEvent(), next);
-
-    const cookie = response.headers.get('set-cookie') ?? '';
-    const secureCount = (cookie.match(/Secure/gi) ?? []).length;
-    expect(secureCount).toBe(1);
+    expect(response.headers.get('set-cookie')).toBe(expected);
   });
 
   it('handles multiple cookies independently', async () => {
@@ -109,10 +98,10 @@ describe('withSecureCookies', () => {
 
     const cookies = response.headers.getSetCookie();
     expect(cookies).toHaveLength(2);
-    expect(cookies[0]).toContain('session=abc123');
-    expect(cookies[0]).toContain('HttpOnly');
-    expect(cookies[1]).toContain('csrf=xyz789');
-    expect(cookies[1]).toContain('SameSite=Strict');
+    expect(cookies[0]).toBe(
+      'session=abc123; HttpOnly; SameSite=Strict; Path=/',
+    );
+    expect(cookies[1]).toBe('csrf=xyz789; HttpOnly; SameSite=Strict; Path=/');
   });
 
   it('preserves cookie attributes like Max-Age and Expires', async () => {
@@ -122,9 +111,70 @@ describe('withSecureCookies', () => {
 
     const response = await withSecureCookies(mockRequest(), mockEvent(), next);
 
-    const cookie = response.headers.get('set-cookie') ?? '';
-    expect(cookie).toContain('Max-Age=3600');
-    expect(cookie).toContain('Expires=Wed, 21 Oct 2025 07:28:00 GMT');
-    expect(cookie).toContain('HttpOnly');
+    expect(response.headers.get('set-cookie')).toBe(
+      'session=abc123; Max-Age=3600; Expires=Wed, 21 Oct 2025 07:28:00 GMT; HttpOnly; SameSite=Strict; Path=/',
+    );
   });
+
+  it('trims whitespace around semicolons', async () => {
+    const next = nextMockWithCookies([
+      'session=abc123 ;  HttpOnly ;  SameSite=Strict ;  Path=/auth',
+    ]);
+
+    const response = await withSecureCookies(mockRequest(), mockEvent(), next);
+
+    expect(response.headers.get('set-cookie')).toBe(
+      'session=abc123; HttpOnly; SameSite=Strict; Path=/auth',
+    );
+  });
+
+  it('splits multiple cookies separated by comma without space', async () => {
+    const response = NextResponse.next();
+    response.headers.set('set-cookie', 'a=1,b=2');
+    const next = vi.fn().mockResolvedValue(response);
+
+    const result = await withSecureCookies(mockRequest(), mockEvent(), next);
+
+    const cookies = result.headers.getSetCookie();
+    expect(cookies).toHaveLength(2);
+    expect(cookies[0]).toBe('a=1; HttpOnly; SameSite=Strict; Path=/');
+    expect(cookies[1]).toBe('b=2; HttpOnly; SameSite=Strict; Path=/');
+  });
+
+  it('does not treat cookie name as an attribute', async () => {
+    const next = nextMockWithCookies(['path_token=abc123']);
+
+    const response = await withSecureCookies(mockRequest(), mockEvent(), next);
+
+    expect(response.headers.get('set-cookie')).toBe(
+      'path_token=abc123; HttpOnly; SameSite=Strict; Path=/',
+    );
+  });
+
+  it.each([
+    [
+      'development',
+      'session=abc123; PATH=/custom',
+      'session=abc123; PATH=/custom; HttpOnly; SameSite=Strict',
+    ],
+    [
+      'production',
+      'session=abc123; secure',
+      'session=abc123; secure; HttpOnly; SameSite=Strict; Path=/',
+    ],
+  ])(
+    'matches attributes case-insensitively for %s with %s',
+    async (env, input, expected) => {
+      setNodeEnvironment(env);
+      const next = nextMockWithCookies([input]);
+
+      const response = await withSecureCookies(
+        mockRequest(),
+        mockEvent(),
+        next,
+      );
+
+      expect(response.headers.get('set-cookie')).toBe(expected);
+    },
+  );
 });

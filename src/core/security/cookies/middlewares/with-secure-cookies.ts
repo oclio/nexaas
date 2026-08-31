@@ -24,7 +24,7 @@ export const withSecureCookies: CustomMiddleware = async (
   const securedCookies = cookies.map((cookie) => {
     const parts = cookie.split(';').map((p) => p.trim());
 
-    const attributes = parts.slice(1).map((p) => p.trim().toLowerCase());
+    const attributes = parts.slice(1).map((p) => p.toLowerCase());
 
     if (attributes.every((a) => a !== 'httponly')) parts.push('HttpOnly');
     if (attributes.every((a) => !a.startsWith('samesite')))

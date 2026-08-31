@@ -15,6 +15,7 @@ const config = {
     'arcjet',
     'axiomhq',
     'credentialless',
+    'emaillist',
     'français',
     'httponly',
     'hugeicons',

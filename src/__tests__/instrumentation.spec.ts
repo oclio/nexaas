@@ -1,63 +1,40 @@
-import { vi } from 'vitest';
-
-const loggerMock = {
-  error: vi.fn(),
-  flush: vi.fn().mockResolvedValue(undefined),
-};
-vi.mock('@/core/observability/axiom/server', () => ({
-  logger: loggerMock,
-}));
-
-const captureRequestErrorMock = vi.fn();
-vi.mock('@sentry/nextjs', () => ({
-  captureRequestError: captureRequestErrorMock,
-  init: vi.fn(),
-  replayIntegration: vi.fn().mockReturnValue({ name: 'replay' }),
-  captureRouterTransitionStart: vi.fn(),
-}));
-
-const sentryServerConfigLoaded = vi.fn();
-vi.mock('../../sentry.server.config', () => {
-  sentryServerConfigLoaded();
-  return {};
-});
-
-const sentryEdgeConfigLoaded = vi.fn();
-vi.mock('../../sentry.edge.config', () => {
-  sentryEdgeConfigLoaded();
-  return {};
-});
+import {
+  axiomLoggerMock,
+  sentryEdgeConfigLoaded,
+  sentryMocks,
+  sentryServerConfigLoaded,
+} from '@/tests/unit/mocks/observability';
 
 describe('instrumentation', () => {
-  const originalNextRuntime = process.env.NEXT_RUNTIME;
-
   afterEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
-    process.env.NEXT_RUNTIME = originalNextRuntime;
+    vi.unstubAllEnvs();
   });
 
   describe('register', () => {
     it('imports sentry.server.config on nodejs runtime', async () => {
-      process.env.NEXT_RUNTIME = 'nodejs';
+      vi.stubEnv('NEXT_RUNTIME', 'nodejs');
 
       const { register } = await import('../instrumentation');
       await register();
 
       expect(sentryServerConfigLoaded).toHaveBeenCalled();
+      expect(sentryEdgeConfigLoaded).not.toHaveBeenCalled();
     });
 
     it('imports sentry.edge.config on edge runtime', async () => {
-      process.env.NEXT_RUNTIME = 'edge';
+      vi.stubEnv('NEXT_RUNTIME', 'edge');
 
       const { register } = await import('../instrumentation');
       await register();
 
       expect(sentryEdgeConfigLoaded).toHaveBeenCalled();
+      expect(sentryServerConfigLoaded).not.toHaveBeenCalled();
     });
 
     it('does nothing when NEXT_RUNTIME is not set', async () => {
-      process.env.NEXT_RUNTIME = undefined;
+      vi.stubEnv('NEXT_RUNTIME', '');
 
       const { register } = await import('../instrumentation');
       await register();
@@ -77,18 +54,21 @@ describe('instrumentation', () => {
 
       await onRequestError(error, request, errorContext);
 
-      expect(captureRequestErrorMock).toHaveBeenCalledWith(
+      expect(sentryMocks.captureRequestError).toHaveBeenCalledWith(
         error,
         request,
         errorContext,
       );
-      expect(loggerMock.error).toHaveBeenCalledWith('Unhandled request error', {
-        err: error,
-        method: 'POST',
-        path: '/api/webhook',
-        requestPath: '/api/webhook',
-      });
-      expect(loggerMock.flush).toHaveBeenCalledOnce();
+      expect(axiomLoggerMock.error).toHaveBeenCalledWith(
+        'Unhandled request error',
+        {
+          err: error,
+          method: 'POST',
+          path: '/api/webhook',
+          requestPath: '/api/webhook',
+        },
+      );
+      expect(axiomLoggerMock.flush).toHaveBeenCalledOnce();
     });
   });
 });

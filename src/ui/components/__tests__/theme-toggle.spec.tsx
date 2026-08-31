@@ -1,34 +1,14 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import * as nextIntl from 'next-intl';
 
-import ThemeToggle from '@/ui/components/theme-toggle';
+import { setThemeMock, themeRef } from '@/tests/unit/mocks/ui';
 
-const { themeRef, setThemeMock } = vi.hoisted(() => ({
-  themeRef: { current: 'light' as string },
-  setThemeMock: vi.fn(),
-}));
-
-function translateThemeToggle(key: string): string {
-  const labels: Record<string, string> = {
-    toggleDark: 'Toggle theme',
-    toggleLight: 'Toggle theme',
-  };
-  return labels[key] ?? key;
-}
-
-vi.mock('next-themes', () => ({
-  useTheme: () => ({
-    theme: themeRef.current,
-    setTheme: setThemeMock,
-  }),
-}));
-
-vi.mock('next-intl', () => ({
-  useTranslations: () => translateThemeToggle,
-}));
+const { default: ThemeToggle } = await import('@/ui/components/theme-toggle');
 
 describe('ThemeToggle', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(nextIntl, 'useTranslations');
     themeRef.current = 'light';
   });
 
@@ -37,8 +17,11 @@ describe('ThemeToggle', () => {
       render(<ThemeToggle />);
 
       expect(
-        screen.getByRole('button', { name: 'Toggle theme' }),
+        screen.getByRole('button', { name: 'toggleDark' }),
       ).toBeInTheDocument();
+      expect(nextIntl.useTranslations).toHaveBeenCalledWith(
+        'components.themeToggle',
+      );
     });
 
     it('renders both dark and light icons', () => {
@@ -85,6 +68,9 @@ describe('ThemeToggle', () => {
       const icons = container.querySelectorAll('svg');
       expect(icons[0].getAttribute('class')).toContain('opacity-100');
       expect(icons[1].getAttribute('class')).toContain('opacity-0');
+      expect(
+        screen.getByRole('button', { name: 'toggleLight' }),
+      ).toBeInTheDocument();
     });
 
     it('shows the light icon when theme is light', () => {

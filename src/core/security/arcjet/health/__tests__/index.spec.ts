@@ -1,13 +1,11 @@
 import { vi } from 'vitest';
 
-vi.mock('@/core/config/env', () => ({
-  env: {
-    ARCJET_KEY: 'test-arcjet-key',
-  },
+const { withTimeoutMock } = vi.hoisted(() => ({
+  withTimeoutMock: vi.fn(<T>(promise: Promise<T>): Promise<T> => promise),
 }));
 
 vi.mock('@/core/async/helpers/with-timeout', () => ({
-  withTimeout: vi.fn((promise: Promise<Response>) => promise),
+  withTimeout: withTimeoutMock,
 }));
 
 const { checkArcjetService } = await import('../index');
@@ -15,21 +13,19 @@ const { checkArcjetService } = await import('../index');
 describe('checkArcjetService', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
   });
 
   it('returns disabled when ARCJET_KEY is not set', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/config/env', () => ({
-      env: { ARCJET_KEY: undefined },
-    }));
-    const { checkArcjetService: check } = await import('../index');
+    vi.stubEnv('ARCJET_KEY', '');
 
-    const result = await check();
+    const result = await checkArcjetService();
 
     expect(result).toEqual({ status: 'disabled' });
   });
 
   it('returns healthy when fetch responds with status < 500', async () => {
+    vi.stubEnv('ARCJET_KEY', 'test-arcjet-key');
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(undefined, { status: 200 }),
     );
@@ -43,17 +39,22 @@ describe('checkArcjetService', () => {
     });
   });
 
-  it('returns unhealthy when fetch responds with status >= 500', async () => {
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(undefined, { status: 503 }),
-    );
+  it.each([500, 503])(
+    'returns unhealthy when fetch responds with status %i',
+    async (status) => {
+      vi.stubEnv('ARCJET_KEY', 'test-arcjet-key');
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+        new Response(undefined, { status }),
+      );
 
-    const result = await checkArcjetService();
+      const result = await checkArcjetService();
 
-    expect(result).toEqual({ status: 'unhealthy' });
-  });
+      expect(result).toEqual({ status: 'unhealthy' });
+    },
+  );
 
   it('returns unhealthy with error message when fetch throws', async () => {
+    vi.stubEnv('ARCJET_KEY', 'test-arcjet-key');
     vi.spyOn(globalThis, 'fetch').mockRejectedValue(
       new Error('Connection refused'),
     );
@@ -67,16 +68,10 @@ describe('checkArcjetService', () => {
   });
 
   it('returns unhealthy with error message when timeout occurs', async () => {
-    vi.resetModules();
-    vi.doMock('@/core/config/env', () => ({
-      env: { ARCJET_KEY: 'test-arcjet-key' },
-    }));
-    vi.doMock('@/core/async/helpers/with-timeout', () => ({
-      withTimeout: vi.fn(() => Promise.reject(new Error('Timeout exceeded'))),
-    }));
-    const { checkArcjetService: check } = await import('../index');
+    vi.stubEnv('ARCJET_KEY', 'test-arcjet-key');
+    withTimeoutMock.mockRejectedValueOnce(new Error('Timeout exceeded'));
 
-    const result = await check();
+    const result = await checkArcjetService();
 
     expect(result).toEqual({
       status: 'unhealthy',

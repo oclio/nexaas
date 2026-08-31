@@ -1,34 +1,17 @@
 import { vi } from 'vitest';
 
-const envReference = {
-  NEXT_PUBLIC_SENTRY_DSN: undefined as string | undefined,
-};
-
-vi.mock('@/core/config/env', () => ({
-  get env() {
-    return envReference;
-  },
-}));
-
-const getClientMock = vi.fn();
-vi.mock('@sentry/nextjs', () => ({
-  getClient: getClientMock,
-}));
-
-vi.mock('@/core/async/helpers/with-timeout', () => ({
-  withTimeout: (promise: Promise<unknown>) => promise,
-}));
+import { sentryMocks } from '@/tests/unit/mocks/observability';
 
 const { checkSentryService } = await import('../index');
 
 describe('checkSentryService', () => {
   afterEach(() => {
     vi.clearAllMocks();
-    envReference.NEXT_PUBLIC_SENTRY_DSN = undefined;
+    vi.unstubAllEnvs();
   });
 
   it('returns disabled when DSN is not set', async () => {
-    envReference.NEXT_PUBLIC_SENTRY_DSN = undefined;
+    delete process.env.NEXT_PUBLIC_SENTRY_DSN;
 
     const result = await checkSentryService();
 
@@ -36,8 +19,8 @@ describe('checkSentryService', () => {
   });
 
   it('returns unhealthy when Sentry client is not initialized', async () => {
-    envReference.NEXT_PUBLIC_SENTRY_DSN = 'https://sentry.io/abc';
-    getClientMock.mockReturnValue(undefined);
+    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'https://sentry.io/abc');
+    sentryMocks.getClient.mockReturnValue(undefined);
 
     const result = await checkSentryService();
 
@@ -48,8 +31,8 @@ describe('checkSentryService', () => {
   });
 
   it('returns healthy when fetch responds with status < 500', async () => {
-    envReference.NEXT_PUBLIC_SENTRY_DSN = 'https://sentry.io/abc';
-    getClientMock.mockReturnValue({});
+    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'https://sentry.io/abc');
+    sentryMocks.getClient.mockReturnValue({});
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(undefined, { status: 200 }),
     );
@@ -59,21 +42,24 @@ describe('checkSentryService', () => {
     expect(result).toEqual({ status: 'healthy' });
   });
 
-  it('returns unhealthy when fetch responds with status >= 500', async () => {
-    envReference.NEXT_PUBLIC_SENTRY_DSN = 'https://sentry.io/abc';
-    getClientMock.mockReturnValue({});
-    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
-      new Response(undefined, { status: 503 }),
-    );
+  it.each([500, 503])(
+    'returns unhealthy when fetch responds with status %i',
+    async (status) => {
+      vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'https://sentry.io/abc');
+      sentryMocks.getClient.mockReturnValue({});
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+        new Response(undefined, { status }),
+      );
 
-    const result = await checkSentryService();
+      const result = await checkSentryService();
 
-    expect(result).toEqual({ status: 'unhealthy' });
-  });
+      expect(result).toEqual({ status: 'unhealthy' });
+    },
+  );
 
   it('returns unhealthy with error message when fetch throws', async () => {
-    envReference.NEXT_PUBLIC_SENTRY_DSN = 'https://sentry.io/abc';
-    getClientMock.mockReturnValue({});
+    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'https://sentry.io/abc');
+    sentryMocks.getClient.mockReturnValue({});
     vi.spyOn(globalThis, 'fetch').mockRejectedValue(
       new Error('connection refused'),
     );
@@ -87,8 +73,8 @@ describe('checkSentryService', () => {
   });
 
   it('returns unhealthy with error message on invalid DSN URL', async () => {
-    envReference.NEXT_PUBLIC_SENTRY_DSN = 'not-a-url';
-    getClientMock.mockReturnValue({});
+    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'not-a-url');
+    sentryMocks.getClient.mockReturnValue({});
 
     const result = await checkSentryService();
 
@@ -97,8 +83,8 @@ describe('checkSentryService', () => {
   });
 
   it('constructs fetch URL from DSN protocol and host', async () => {
-    envReference.NEXT_PUBLIC_SENTRY_DSN = 'https://sentry.io/abc';
-    getClientMock.mockReturnValue({});
+    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'https://sentry.io/abc');
+    sentryMocks.getClient.mockReturnValue({});
     const fetchSpy = vi
       .spyOn(globalThis, 'fetch')
       .mockResolvedValue(new Response(undefined, { status: 200 }));

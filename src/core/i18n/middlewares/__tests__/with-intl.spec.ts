@@ -1,5 +1,10 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
+
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
 
 import { withIntl } from '../with-intl';
 
@@ -27,23 +32,10 @@ function mockRequest(
     cookies?: Record<string, string>;
   } = {},
 ): NextRequest {
-  const headers = new Headers(options.headers);
-  const cookies = new Map(Object.entries(options.cookies ?? {}));
-  return {
-    headers,
-    cookies: {
-      get: (name: string) => {
-        const value = cookies.get(name);
-        return value ? { name, value } : undefined;
-      },
-    },
-    nextUrl: { pathname },
-  } as unknown as NextRequest;
+  return mockNextRequest({ pathname, ...options });
 }
 
-function mockEvent(): NextFetchEvent {
-  return {} as unknown as NextFetchEvent;
-}
+const mockEvent = mockNextFetchEvent;
 
 function nextMock() {
   return vi.fn().mockResolvedValue({} as Response);

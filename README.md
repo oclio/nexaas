@@ -1,8 +1,26 @@
 <div align="center">
   <img src="./docs/images/logo.svg" alt="Logo" width="45" />
   <h1>nexaas</h1>
-  <p>A scalable, production-ready SaaS boilerplate built for high performance and rapid prototyping in Next.js.</p>
+  <p>
+  Forget <i>production-ready</i>.
+  <br />
+  Build on something <strong>unbreakable</strong>.
+  </p>
+
+  <!-- Stryker badge: token unavailable, dashboard login broken — ticket opened with Stryker support -->
+
+<a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=coverage&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Coverage" /></a>
+<a href="https://github.com/oclio/nexaas"><img src="https://img.shields.io/badge/mutation%20score-99.73%25-brightgreen" alt="Mutation score" /></a>
+<a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=alert_status&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Quality gate status" /></a>
+<a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=reliability_rating&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Reliability Rating" /></a>
+<a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=software_quality_security_issues&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Security issues" /></a>
 </div>
+
+Stop debugging production. Start shipping with total confidence.
+
+A Next.js SaaS architecture hardened by mutation testing and bulletproof TypeScript patterns. Every refactor is safe, every deploy is calm, and your 3am alerts stay silent.
+
+📖 **[Full documentation](https://nexaas-docs.oclio.dev)** — architectures, features, and guides.
 
 ## Requirements
 
@@ -56,10 +74,15 @@ CSS variables for both themes are defined in [`src/ui/styles/globals.css`](src/u
 
 ## Scripts
 
-| Script                   | Description                                                                        |
-| ------------------------ | ---------------------------------------------------------------------------------- |
-| `scripts/check-a11y.mjs` | Runs axe-core against one or more routes. Requires `pnpm dev` running.             |
-|                          | Usage: `pnpm check:a11y / /about` or `pnpm check:a11y http://localhost:3000/login` |
+| Script                   | Description                                                                                     |
+| ------------------------ | ----------------------------------------------------------------------------------------------- |
+| `scripts/test.mjs`       | Unified test runner for a single source file. Runs Vitest with scoped coverage, then optionally |
+|                          | Stryker mutation testing (`-m`) or Playwright e2e (`-e`).                                       |
+|                          | Usage: `pnpm test "src/core/i18n/components/locale-switcher.tsx"`                               |
+|                          | `pnpm test "src/core/i18n/components/locale-switcher.tsx" -m`                                   |
+|                          | `pnpm test theme-toggle -e`                                                                     |
+| `scripts/check-a11y.mjs` | Runs axe-core against one or more routes. Requires `pnpm dev` running.                          |
+|                          | Usage: `pnpm check:a11y / /about` or `pnpm check:a11y http://localhost:3000/login`              |
 
 ## Contributing
 

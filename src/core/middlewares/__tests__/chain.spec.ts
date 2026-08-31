@@ -1,4 +1,4 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { AppError } from '@/core/errors/app-error';
@@ -6,15 +6,11 @@ import { ErrorCode } from '@/core/errors/codes';
 import { chain } from '@/core/middlewares/chain';
 import { MiddlewareChainError } from '@/core/middlewares/errors/middleware-chain-error';
 import type { CustomMiddleware } from '@/core/middlewares/types';
-
-vi.mock('@/core/observability/axiom/server', () => ({
-  logger: {
-    error: vi.fn(),
-    warn: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  },
-}));
+import { logger } from '@/core/observability/axiom/server';
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
 
 // ─── helpers ───────────────────────────────────────────────────────────────
 
@@ -34,18 +30,8 @@ const doubleNextMiddleware: CustomMiddleware = async (_req, _event, next) => {
   return next();
 };
 
-function mockRequest(): NextRequest {
-  return {
-    headers: new Headers(),
-    url: 'http://localhost:3000/test',
-    method: 'GET',
-    nextUrl: { pathname: '/test' },
-  } as unknown as NextRequest;
-}
-
-function mockEvent(): NextFetchEvent {
-  return {} as unknown as NextFetchEvent;
-}
+const mockRequest = (): NextRequest => mockNextRequest();
+const mockEvent = mockNextFetchEvent;
 
 function respond(body: string): CustomMiddleware {
   return async () => new Response(body);
@@ -139,12 +125,51 @@ describe('chain', () => {
     await expect(handler(mockRequest(), mockEvent())).rejects.toBe(appError);
   });
 
+  it('logs error context with request metadata and traceId', async () => {
+    const appError = new AppError(ErrorCode.UNKNOWN_ERROR, 'custom', 400);
+    const failing: CustomMiddleware = async () => {
+      throw appError;
+    };
+    const handler = chain([failing]);
+    const req = mockRequest();
+    req.headers.set('x-trace-id', 'trace-123');
+
+    await expect(handler(req, mockEvent())).rejects.toBe(appError);
+
+    expect(logger.error).toHaveBeenCalledWith('custom', {
+      err: appError,
+      code: appError.code,
+      statusCode: appError.statusCode,
+      context: appError.context,
+      url: req.url,
+      method: req.method,
+      pathname: req.nextUrl.pathname,
+      traceId: 'trace-123',
+    });
+  });
+
   it('throws when next() is called multiple times', async () => {
     const handler = chain([doubleNextMiddleware, passthroughMiddleware]);
 
     await expect(handler(mockRequest(), mockEvent())).rejects.toThrow(
       MiddlewareChainError,
     );
+  });
+
+  it('throws immediately on the second next() call, not from a deeper dispatch', async () => {
+    const callOrder: string[] = [];
+    const mw: CustomMiddleware = async (_req, _event, next) => {
+      callOrder.push('before-first-next');
+      await next();
+      callOrder.push('before-second-next');
+      return next();
+    };
+
+    const handler = chain([mw]);
+    await expect(handler(mockRequest(), mockEvent())).rejects.toThrow(
+      MiddlewareChainError,
+    );
+    expect(callOrder).toEqual(['before-first-next', 'before-second-next']);
   });
 
   it('wraps the double-next Error into MiddlewareChainError', async () => {
@@ -169,5 +194,6 @@ describe('chain', () => {
     const response = await handler(req, mockEvent());
 
     expect(response).toBeInstanceOf(NextResponse);
+    expect(response.headers.get('x-middleware-request-x-test')).toBe('value');
   });
 });

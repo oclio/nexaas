@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     Boolean(secret && authHeader === `Bearer ${secret}`);
 
   if (!isAuthorized) {
-    return NextResponse.json({ status: 'ok' }, { status: 200 });
+    return NextResponse.json({ status: 'ok' });
   }
 
   const { isHealthy, services } = await checkServices();

@@ -10,7 +10,7 @@ import { ICONS } from '@/ui/icons';
 
 const noop = () => {
   /*
-  No cleanup required
+  noop
   */
 };
 const emptySubscribe = () => noop;

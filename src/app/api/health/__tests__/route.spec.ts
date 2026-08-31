@@ -1,14 +1,6 @@
-import type { NextRequest } from 'next/server';
 import { vi } from 'vitest';
 
-vi.mock('@/core/observability/axiom/server', () => ({
-  logger: {
-    error: vi.fn(),
-    warn: vi.fn(),
-    info: vi.fn(),
-    debug: vi.fn(),
-  },
-}));
+import { mockNextRequest } from '@/tests/unit/helpers/request';
 
 const checkAxiomServiceMock = vi.fn();
 vi.mock('@/core/observability/axiom/health', () => ({
@@ -27,11 +19,8 @@ vi.mock('@/core/security/arcjet/health', () => ({
 
 const { GET } = await import('../route');
 
-function mockRequest(headers: Record<string, string> = {}): NextRequest {
-  return {
-    headers: new Headers(headers),
-  } as unknown as NextRequest;
-}
+const mockRequest = (headers: Record<string, string> = {}) =>
+  mockNextRequest({ headers });
 
 describe('GET /api/health', () => {
   afterEach(() => {

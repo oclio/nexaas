@@ -1,53 +1,72 @@
 import { expect, test } from '@playwright/test';
 
+import enMessages from '@/../messages/en';
+import frMessages from '@/../messages/fr';
+import { supportedLocales } from '@/core/i18n/routing';
+
+const messages = { en: enMessages, fr: frMessages } as const;
+
+const capitalize = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1);
+
 test.describe('LocaleSwitcher', () => {
   test('displays the current locale code on the trigger button', async ({
     page,
   }) => {
-    await page.goto('/en');
+    for (const { code } of supportedLocales) {
+      await page.goto(`/${code}`);
 
-    await expect(page.getByTestId('locale-switcher-trigger')).toHaveText('En');
+      await expect(page.getByTestId('locale-switcher-trigger')).toHaveText(
+        capitalize(code),
+      );
+    }
   });
 
-  test('switches from en to fr when selecting French', async ({ page }) => {
-    await page.goto('/en');
+  test('switches from default to second locale and updates page content', async ({
+    page,
+  }) => {
+    const [defaultLocale, secondLocale] = supportedLocales.map((l) => l.code);
+
+    await page.goto(`/${defaultLocale}`);
 
     await page.getByTestId('locale-switcher-trigger').click();
+    await page.getByTestId(`locale-switcher-item-${secondLocale}`).click();
 
-    const frenchItem = page.getByTestId('locale-switcher-item-fr');
-    await frenchItem.click();
-
-    await expect(page).toHaveURL(/\/fr/);
+    await expect(page).toHaveURL(new RegExp(`/${secondLocale}`));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Bienvenue !',
+      messages[secondLocale].pages.landing.title,
     );
   });
 
-  test('switches from fr to en when selecting English', async ({ page }) => {
-    await page.goto('/fr');
+  test('switches back from second locale to default', async ({ page }) => {
+    const [defaultLocale, secondLocale] = supportedLocales.map((l) => l.code);
+
+    await page.goto(`/${secondLocale}`);
 
     await page.getByTestId('locale-switcher-trigger').click();
+    await page.getByTestId(`locale-switcher-item-${defaultLocale}`).click();
 
-    const englishItem = page.getByTestId('locale-switcher-item-en');
-    await englishItem.click();
-
-    await expect(page).toHaveURL(/\/en/);
+    await expect(page).toHaveURL(new RegExp(`/${defaultLocale}`));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-      'Welcome!',
+      messages[defaultLocale].pages.landing.title,
     );
   });
 
   test('persists the locale choice across page reloads', async ({ page }) => {
-    await page.goto('/en');
+    const [defaultLocale, secondLocale] = supportedLocales.map((l) => l.code);
+
+    await page.goto(`/${defaultLocale}`);
 
     await page.getByTestId('locale-switcher-trigger').click();
-    await page.getByTestId('locale-switcher-item-fr').click();
+    await page.getByTestId(`locale-switcher-item-${secondLocale}`).click();
 
-    await expect(page).toHaveURL(/\/fr/);
+    await expect(page).toHaveURL(new RegExp(`/${secondLocale}`));
 
     await page.reload();
 
-    await expect(page).toHaveURL(/\/fr/);
-    await expect(page.getByTestId('locale-switcher-trigger')).toHaveText('Fr');
+    await expect(page).toHaveURL(new RegExp(`/${secondLocale}`));
+    await expect(page.getByTestId('locale-switcher-trigger')).toHaveText(
+      capitalize(secondLocale),
+    );
   });
 });

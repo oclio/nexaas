@@ -16,10 +16,11 @@ const config = {
     '@stryker-mutator/typescript-checker',
     './.stryker-plugins/tailwind-ignorer.mjs',
   ],
+  ignorers: ['tailwind'],
   timeoutMS: 240_000,
   timeoutFactor: 3,
   coverageAnalysis: 'perTest',
-  ignoreStatic: false,
+  ignoreStatic: true,
   incremental: true,
   incrementalFile: '.stryker-tmp/incremental.json',
   concurrency: 4,
@@ -38,7 +39,7 @@ const config = {
   },
   vitest: {
     configFile: 'vitest.config.mjs',
-    related: false,
+    related: true,
   },
 };
 

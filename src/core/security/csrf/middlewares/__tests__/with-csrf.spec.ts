@@ -1,12 +1,11 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { vi } from 'vitest';
 
-vi.mock('@/core/config/env', () => ({
-  env: {
-    NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
-  },
-}));
+import {
+  mockNextFetchEvent,
+  mockNextRequest,
+} from '@/tests/unit/helpers/request';
 
 const { withCsrf } = await import('../with-csrf');
 
@@ -14,17 +13,10 @@ function mockRequest(
   method = 'GET',
   headers: Record<string, string> = {},
 ): NextRequest {
-  return {
-    headers: new Headers(headers),
-    method,
-    url: 'http://localhost:3000/test',
-    nextUrl: { pathname: '/test' },
-  } as unknown as NextRequest;
+  return mockNextRequest({ method, headers });
 }
 
-function mockEvent(): NextFetchEvent {
-  return {} as unknown as NextFetchEvent;
-}
+const mockEvent = mockNextFetchEvent;
 
 function nextMock() {
   return vi.fn().mockResolvedValue(NextResponse.next());
@@ -37,6 +29,21 @@ describe('withCsrf', () => {
       const next = nextMock();
 
       await withCsrf(mockRequest(method), mockEvent(), next);
+
+      expect(next).toHaveBeenCalledOnce();
+    },
+  );
+
+  it.each(['GET', 'HEAD', 'OPTIONS'])(
+    'calls next for safe methods (%s) even with mismatched Origin',
+    async (method) => {
+      const next = nextMock();
+
+      await withCsrf(
+        mockRequest(method, { origin: 'https://evil.com' }),
+        mockEvent(),
+        next,
+      );
 
       expect(next).toHaveBeenCalledOnce();
     },
