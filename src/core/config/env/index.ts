@@ -22,6 +22,10 @@ export const env = createEnv({
       .enum(['error', 'warn', 'info', 'debug', 'off'])
       .default('info'),
     HEALTH_CHECK_SECRET: z.string().min(10).optional(),
+
+    // ─── MAILER ──────────────────────────────────────────────────────────────
+    RESEND_API_KEY: z.string().min(10),
+    EMAIL_FROM: z.string().min(10),
   },
   client: {
     NEXT_PUBLIC_APP_URL: z.url(),
