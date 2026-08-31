@@ -41,6 +41,7 @@ export default defineConfig({
             { text: 'Quick Start', link: '/getting-started/' },
             { text: 'Project Structure', link: '/getting-started/structure' },
             { text: 'Scripts', link: '/getting-started/scripts' },
+            { text: 'Infrastructure', link: '/getting-started/infrastructure' },
           ],
         },
         {
@@ -48,10 +49,11 @@ export default defineConfig({
           items: [
             { text: 'Architecture', link: '/core/architecture' },
             { text: 'Environment Variables', link: '/core/env' },
+            { text: 'Database', link: '/core/database' },
             { text: 'Security', link: '/core/security' },
             { text: 'Observability', link: '/core/observability' },
-            { text: 'Internationalization', link: '/core/i18n' },
             { text: 'Mailer', link: '/core/mailer' },
+            { text: 'Internationalization', link: '/core/i18n' },
           ],
         },
         {

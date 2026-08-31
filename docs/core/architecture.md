@@ -7,7 +7,9 @@ The `src/core/` directory contains the foundational infrastructure of nexaas. Th
 ```text
 src/core/
   async/             → withTimeout helper, TimeoutError
+  auth/              → Better Auth schemas and role types
   config/env/        → typed environment variable validation
+  db/                → Drizzle ORM client, health check
   errors/            → AppError class, error codes, message helpers
   helpers/           → shared utilities (string formatting)
   i18n/              → next-intl routing, messages, locale switcher
@@ -27,6 +29,10 @@ src/core/
 ## config/env
 
 Validates environment variables at startup using `@t3-oss/env-nextjs` and zod. See [Environment Variables](./env) for the full guide.
+
+## db
+
+Type-safe database access via [Drizzle ORM](https://orm.drizzle.team) with a `postgres-js` connection pool. Includes query logging to Axiom and a health check for the `/api/health` endpoint. See [Database](./database) for the full guide.
 
 ## errors
 
