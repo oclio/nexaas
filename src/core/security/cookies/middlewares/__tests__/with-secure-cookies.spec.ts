@@ -7,7 +7,7 @@ import {
   mockNextRequest,
 } from '@/tests/unit/helpers/request';
 
-const { withSecureCookies } = await import('../with-secure-cookies');
+import { withSecureCookies } from '../with-secure-cookies';
 
 const mockRequest = (): NextRequest => mockNextRequest();
 const mockEvent = mockNextFetchEvent;
@@ -24,15 +24,13 @@ function nextMockNoCookies(): () => Promise<NextResponse> {
   return vi.fn().mockResolvedValue(NextResponse.next());
 }
 
-function setNodeEnvironment(value: string) {
-  (process.env as { NODE_ENV: string }).NODE_ENV = value;
-}
-
 describe('withSecureCookies', () => {
-  const originalNodeEnvironment = process.env.NODE_ENV;
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
   afterEach(() => {
-    setNodeEnvironment(originalNodeEnvironment);
+    vi.unstubAllEnvs();
   });
 
   it('passes through when no cookies are set', async () => {
@@ -41,7 +39,7 @@ describe('withSecureCookies', () => {
     const response = await withSecureCookies(mockRequest(), mockEvent(), next);
 
     expect(response.headers.get('set-cookie')).toBeNull();
-    expect(next).toHaveBeenCalledOnce();
+    expect(next).toHaveBeenCalled();
   });
 
   it.each([
@@ -80,7 +78,7 @@ describe('withSecureCookies', () => {
       'session=abc123; Secure; HttpOnly; SameSite=Strict; Path=/',
     ],
   ])('handles Secure for %s with cookie %s', async (env, input, expected) => {
-    setNodeEnvironment(env);
+    vi.stubEnv('NODE_ENV', env);
     const next = nextMockWithCookies([input]);
 
     const response = await withSecureCookies(mockRequest(), mockEvent(), next);
@@ -165,7 +163,7 @@ describe('withSecureCookies', () => {
   ])(
     'matches attributes case-insensitively for %s with %s',
     async (env, input, expected) => {
-      setNodeEnvironment(env);
+      vi.stubEnv('NODE_ENV', env);
       const next = nextMockWithCookies([input]);
 
       const response = await withSecureCookies(

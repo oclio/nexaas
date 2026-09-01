@@ -2,7 +2,7 @@ import { vi } from 'vitest';
 
 const WHITELIST = 'tester1@example.com,tester2@example.com;TESTER3@EXAMPLE.COM';
 
-async function loadWithEmaillist(value: string | undefined) {
+async function loadWithEmailWhitelist(value: string | undefined) {
   vi.resetModules();
   if (value === undefined) {
     vi.stubEnv('EMAIL_WHITELIST', '');
@@ -15,8 +15,20 @@ async function loadWithEmaillist(value: string | undefined) {
 }
 
 describe('isAuthorizedEmail', () => {
+  let originalEmailWhitelist: string | undefined;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    originalEmailWhitelist = process.env.EMAIL_WHITELIST;
+  });
+
   afterEach(() => {
     vi.unstubAllEnvs();
+    if (originalEmailWhitelist === undefined) {
+      delete process.env.EMAIL_WHITELIST;
+    } else {
+      process.env.EMAIL_WHITELIST = originalEmailWhitelist;
+    }
   });
 
   it.each([
@@ -27,13 +39,13 @@ describe('isAuthorizedEmail', () => {
     ['tester2@example.com', true, 'semicolon-separated'],
     ['tester3@example.com', true, 'normalized to lowercase'],
   ])('returns %s for email %s', async (email, expected) => {
-    const check = await loadWithEmaillist(WHITELIST);
+    const check = await loadWithEmailWhitelist(WHITELIST);
 
     expect(check(email)).toBe(expected);
   });
 
   it('deduplicates entries', async () => {
-    const check = await loadWithEmaillist('a@x.com,a@x.com,b@x.com');
+    const check = await loadWithEmailWhitelist('a@x.com,a@x.com,b@x.com');
 
     expect(check('a@x.com')).toBe(true);
     expect(check('b@x.com')).toBe(true);
@@ -41,7 +53,7 @@ describe('isAuthorizedEmail', () => {
   });
 
   it('filters out invalid email entries from whitelist', async () => {
-    const check = await loadWithEmaillist(
+    const check = await loadWithEmailWhitelist(
       'valid@example.com,not-an-email,also-bad@',
     );
 
@@ -51,19 +63,19 @@ describe('isAuthorizedEmail', () => {
   });
 
   it('returns true for all emails when whitelist is empty', async () => {
-    const check = await loadWithEmaillist('');
+    const check = await loadWithEmailWhitelist('');
 
     expect(check('anyone@example.com')).toBe(true);
   });
 
   it('returns true for all emails when EMAIL_WHITELIST is undefined', async () => {
-    const check = await loadWithEmaillist(undefined);
+    const check = await loadWithEmailWhitelist(undefined);
 
     expect(check('anyone@example.com')).toBe(true);
   });
 
   it('trims whitespace around whitelist entries', async () => {
-    const check = await loadWithEmaillist(
+    const check = await loadWithEmailWhitelist(
       '  tester1@example.com  ,tester2@example.com',
     );
 
@@ -73,7 +85,7 @@ describe('isAuthorizedEmail', () => {
   });
 
   it('filters out empty entries from split', async () => {
-    const check = await loadWithEmaillist('a@x.com,, ,b@x.com');
+    const check = await loadWithEmailWhitelist('a@x.com,, ,b@x.com');
 
     expect(check('a@x.com')).toBe(true);
     expect(check('b@x.com')).toBe(true);
