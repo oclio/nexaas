@@ -11,11 +11,9 @@ The only required environment variable is `NEXT_PUBLIC_APP_URL`, already used by
 ```text
 src/core/seo/
   create-layout-metadata.ts   → root metadata (title, description, OG, Twitter, robots, viewport, appleWebApp, alternates)
-  create-page-metadata.ts     → per-page metadata from x-headers
+  create-page-metadata.ts     → per-page metadata from x-locale and x-pathname headers
   create-viewport.ts          → viewport and theme-color metadata
   json-ld.tsx                 → WebSite and Organization JSON-LD generators + JsonLdScript component
-  middlewares/
-    with-seo.ts               → middleware injecting x-locale and x-pathname headers
   index.ts                    → public re-exports
 
 src/app/
@@ -51,7 +49,7 @@ Translated fields (title, description, keywords, OG/Twitter text) come from `mes
 
 ### Page metadata
 
-`createPageMetadata` builds per-page metadata by reading `x-locale` and `x-pathname` headers injected by the `withSeo` middleware. Translated fields (title, description) are extracted from the `meta` namespace in `messages/<locale>/meta.ts`. This allows each page to set its own canonical and hreflang alternates without repeating the locale logic.
+`createPageMetadata` builds per-page metadata by reading the `x-locale` header (set by the `withIntl` middleware) and the `x-pathname` header (set by the proxy entrypoint). The locale prefix is stripped from the pathname to derive the page path. Translated fields (title, description) are extracted from the page's i18n namespace. This allows each page to set its own canonical and hreflang alternates without repeating the locale logic.
 
 ```ts
 // src/app/[locale]/(main)/(landing)/page.tsx
@@ -138,7 +136,7 @@ Next.js serves it at `/manifest.webmanifest` automatically.
 ## Internationalization and SEO
 
 - `<html lang={locale}>` — set dynamically in the root layout
-- `alternates.canonical` — `/${locale}` at layout level, `/${locale}${pathname}` at page level
+- `alternates.canonical` — `/${locale}` at layout level, `/${locale}${path}` at page level (path derived from `x-pathname` with locale prefix stripped)
 - `alternates.languages` — hreflang mapping to all supported locales, with `x-default` pointing to the default locale
 - `openGraph.locale` — mapped to `fr_FR` or `en_US`
 - Sitemap includes hreflang `alternates.languages` per entry
