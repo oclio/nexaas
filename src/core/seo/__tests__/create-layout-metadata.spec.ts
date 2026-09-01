@@ -100,6 +100,20 @@ describe('createLayoutMetadata', () => {
     );
   });
 
+  it('sets openGraph image with correct dimensions and alt', async () => {
+    const metadata = await createLayoutMetadata({ locale: 'en' });
+    const openGraph = metadata.openGraph as OgWebsite;
+
+    expect(openGraph.images).toEqual([
+      {
+        url: '/images/og.png',
+        width: 1200,
+        height: 630,
+        alt: app.title,
+      },
+    ]);
+  });
+
   it('sets twitter card to summary_large_image', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
     const twitter = metadata.twitter as TwitterCard;
@@ -119,6 +133,20 @@ describe('createLayoutMetadata', () => {
     expect(metadata.twitter?.description).toBe(
       'A scalable, production-ready SaaS boilerplate for Next.js.',
     );
+  });
+
+  it('sets twitter image to og.png', async () => {
+    const metadata = await createLayoutMetadata({ locale: 'en' });
+    const twitter = metadata.twitter as TwitterCard;
+
+    expect(twitter.images).toEqual(['/images/og.png']);
+  });
+
+  it('sets twitter creator to app.twitter handle', async () => {
+    const metadata = await createLayoutMetadata({ locale: 'en' });
+    const twitter = metadata.twitter as TwitterCard;
+
+    expect(twitter.creator).toBe(app.author.twitter);
   });
 
   it('sets canonical to /{locale}', async () => {
@@ -178,5 +206,15 @@ describe('createLayoutMetadata', () => {
     const icons = metadata.icons as Icons;
 
     expect(icons.icon).toBe(app.logo);
+  });
+
+  it('configures appleWebApp with capable, statusBarStyle and title', async () => {
+    const metadata = await createLayoutMetadata({ locale: 'en' });
+
+    expect(metadata.appleWebApp).toEqual({
+      capable: true,
+      statusBarStyle: 'default',
+      title: app.title,
+    });
   });
 });

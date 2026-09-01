@@ -7,6 +7,14 @@ vi.mock('@/core/seo', () => ({
     title: `mock-title-${locale}`,
     description: 'mock-description',
   })),
+  createViewport: vi.fn(() => ({
+    width: 'device-width',
+    initialScale: 1,
+    themeColor: [
+      { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+      { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+    ],
+  })),
 }));
 
 const localeParameters = (locale: string) => ({

@@ -22,6 +22,7 @@ const config = {
     'httponly',
     'hugeicons',
     'isready',
+    'msvalidate',
     'nexaas',
     'nojekyll',
     'nosniff',

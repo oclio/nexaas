@@ -48,6 +48,11 @@ export async function createLayoutMetadata({
     icons: {
       icon: app.logo,
     },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'default',
+      title: app.title,
+    },
     openGraph: {
       type: 'website',
       locale: ogLocaleMap[locale] ?? ogLocaleMap[routing.defaultLocale],
@@ -55,11 +60,21 @@ export async function createLayoutMetadata({
       siteName: app.title,
       title: app.title,
       description: t('description'),
+      images: [
+        {
+          url: '/images/og.png',
+          width: 1200,
+          height: 630,
+          alt: app.title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title: app.title,
       description: t('description'),
+      images: ['/images/og.png'],
+      creator: app.author.twitter,
     },
     robots: {
       index: true,
@@ -79,5 +94,11 @@ export async function createLayoutMetadata({
         'x-default': `/${routing.defaultLocale}`,
       },
     },
+    // verification: {
+    //   google: 'google-site-verification-code',
+    //   other: {
+    //     'msvalidate.01': 'bing-verification-code',
+    //   },
+    // },
   };
 }

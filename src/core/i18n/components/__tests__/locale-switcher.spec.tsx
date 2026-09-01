@@ -65,7 +65,7 @@ describe('LocaleSwitcher', () => {
       );
     });
 
-    it.each([
+    it.each<[align: 'start' | undefined, expected: string]>([
       [undefined, 'end'],
       ['start', 'start'],
     ])('passes align=%s to dropdown content as %s', async (align, expected) => {
@@ -97,7 +97,7 @@ describe('LocaleSwitcher', () => {
       expect(screen.getByRole('button').className).toContain('custom-class');
     });
 
-    it.each([
+    it.each<[variant: 'ghost' | 'outline', expectedClass: string]>([
       ['ghost', 'focus-visible:border-transparent'],
       ['outline', 'focus-visible:border-input'],
     ])(

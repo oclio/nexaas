@@ -1,7 +1,7 @@
 import '@/ui/styles/globals.css';
 import '@/core/env';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -10,7 +10,7 @@ import { ReactNode } from 'react';
 import { ThemeProvider } from '@/app/[locale]/(main)/_components/theme-provider';
 import { routing } from '@/core/i18n/routing';
 import { WebVitals } from '@/core/observability/axiom/components/web-vitals';
-import { createLayoutMetadata } from '@/core/seo';
+import { createLayoutMetadata, createViewport } from '@/core/seo';
 import ScreenSize from '@/ui/components/dev/screen-size';
 import { fontHeading, fontSans } from '@/ui/fonts';
 import { cn } from '@/ui/helpers';
@@ -25,6 +25,8 @@ export async function generateMetadata({
   const { locale } = await params;
   return createLayoutMetadata({ locale });
 }
+
+export const viewport: Viewport = createViewport();
 
 interface Props {
   children: ReactNode;
