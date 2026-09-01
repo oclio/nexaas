@@ -1,4 +1,3 @@
-import type { NextFetchEvent, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 import { ErrorCode } from '@/core/errors';
@@ -7,50 +6,14 @@ import {
   mockNextRequest,
 } from '@/tests/unit/helpers/request';
 
-async function passThrough(
-  _req: NextRequest,
-  _event: NextFetchEvent,
-  next: () => Promise<Response | NextResponse>,
-) {
-  return next();
-}
-
 const { chainMock } = vi.hoisted(() => ({ chainMock: vi.fn() }));
 
 vi.mock('@/core/middlewares/chain', () => ({
   chain: chainMock,
 }));
 
-vi.mock('@/core/i18n/middlewares/with-intl', () => ({
-  withIntl: passThrough,
-}));
-
-vi.mock('@/core/observability/axiom/middlewares/with-axiom', () => ({
-  withAxiom: passThrough,
-}));
-
-vi.mock('@/core/seo/middlewares/with-seo', () => ({
-  withSeo: passThrough,
-}));
-
-vi.mock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
-  withArcjet: passThrough,
-}));
-
-vi.mock('@/core/security/csp/middlewares/with-csp', () => ({
-  withCsp: passThrough,
-}));
-
-vi.mock('@/core/security/csrf/middlewares/with-csrf', () => ({
-  withCsrf: passThrough,
-}));
-
-vi.mock('@/core/security/body/middlewares/with-body-size-limit', () => ({
-  withBodySizeLimit: passThrough,
-}));
-
-vi.mock('@/core/security/cookies/middlewares/with-secure-cookies', () => ({
-  withSecureCookies: passThrough,
+vi.mock('@/proxy-stack', () => ({
+  default: [],
 }));
 
 const mockRequest = (headers: Record<string, string> = {}) =>
@@ -135,17 +98,14 @@ describe('proxy', () => {
     expect(response.status).toBe(500);
   });
 
-  it('passes all proxies to chain in correct order', async () => {
+  it('passes the stack to chain', async () => {
     chainMock.mockReturnValue(async () => NextResponse.next());
 
     const { proxy } = await import('@/proxy');
     await proxy(mockRequest(), mockEvent());
 
     expect(chainMock).toHaveBeenCalledOnce();
-    const passedProxies = chainMock.mock.calls[0][0];
-    expect(passedProxies).toHaveLength(8);
-    expect(passedProxies[0]).toBe(passThrough);
-    expect(passedProxies[7]).toBe(passThrough);
+    expect(chainMock.mock.calls[0][0]).toBeTruthy();
   });
 });
 

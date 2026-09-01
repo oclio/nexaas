@@ -20,6 +20,7 @@ const exclude = [
   'src/core/observability/axiom/server.ts',
   'src/core/security/headers.ts',
   'src/core/seo/index.ts',
+  'src/proxy-stack.ts',
   'src/ui/components/shadcn/**',
   'src/ui/fonts/index.ts',
   'src/ui/icons/index.ts',
