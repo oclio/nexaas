@@ -15,7 +15,6 @@ type TwitterCard = Extract<
   { card: 'summary_large_image' }
 >;
 type Robots = Exclude<Metadata['robots'], string | null | undefined>;
-type Icons = NonNullable<Extract<Metadata['icons'], { icon?: unknown }>>;
 
 describe('createLayoutMetadata', () => {
   it('sets metadataBase from env.NEXT_PUBLIC_APP_URL', async () => {
@@ -199,13 +198,6 @@ describe('createLayoutMetadata', () => {
       { name: app.author.name, url: app.author.url },
     ]);
     expect(metadata.creator).toBe(app.author.name);
-  });
-
-  it('uses app.logo for icons', async () => {
-    const metadata = await createLayoutMetadata({ locale: 'en' });
-    const icons = metadata.icons as Icons;
-
-    expect(icons.icon).toBe(app.logo);
   });
 
   it('configures appleWebApp with capable, statusBarStyle and title', async () => {

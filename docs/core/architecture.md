@@ -46,7 +46,6 @@ export const app = {
   url: env.NEXT_PUBLIC_APP_URL,
   author: 'oclio',
   logo: '/images/logo.svg',
-  emailLogo: '/images/logo.png',
 };
 ```
 
