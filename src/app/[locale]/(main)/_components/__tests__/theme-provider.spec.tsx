@@ -16,6 +16,9 @@ vi.mock('next-themes', () => ({
 
 import { ThemeProvider } from '@/app/[locale]/(main)/_components/theme-provider';
 
+const lastCallProps = () =>
+  vi.mocked(NextThemesProviderMock).mock.calls.at(-1)?.[0];
+
 describe('ThemeProvider', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -44,10 +47,7 @@ describe('ThemeProvider', () => {
         </ThemeProvider>,
       );
 
-      expect(NextThemesProviderMock).toHaveBeenCalledWith(
-        expect.objectContaining({ [key]: value }),
-        undefined,
-      );
+      expect(lastCallProps()).toMatchObject({ [key]: value });
     });
 
     it('forwards extra props to NextThemesProvider, overriding defaults', () => {
@@ -57,15 +57,25 @@ describe('ThemeProvider', () => {
         </ThemeProvider>,
       );
 
-      expect(NextThemesProviderMock).toHaveBeenCalledWith(
-        expect.objectContaining({
-          attribute: 'data-theme',
-          defaultTheme: 'system',
-          disableTransitionOnChange: true,
-          enableSystem: true,
-        }),
-        undefined,
+      expect(lastCallProps()).toMatchObject({
+        attribute: 'data-theme',
+        defaultTheme: 'system',
+        disableTransitionOnChange: true,
+        enableSystem: true,
+      });
+    });
+
+    it.each([
+      { key: 'defaultTheme', override: 'dark' },
+      { key: 'enableSystem', override: false },
+    ])('allows overriding default $key with $override', ({ key, override }) => {
+      render(
+        <ThemeProvider {...{ [key]: override }}>
+          <div>content</div>
+        </ThemeProvider>,
       );
+
+      expect(lastCallProps()).toMatchObject({ [key]: override });
     });
   });
 
