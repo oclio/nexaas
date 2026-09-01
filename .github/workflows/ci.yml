@@ -163,51 +163,51 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  # mutation:
-  #   name: 🧬 Mutation
-  #   needs: [check]
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 30
-  #   if: github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'docs-only')
-  #   env:
-  #     HUSKY: 0
+  mutation:
+    name: 🧬 Mutation
+    needs: [check]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'docs-only')
+    env:
+      HUSKY: 0
 
-  #   steps:
-  #     - name: ⬇️ Checkout Repo
-  #       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-  #       with:
-  #         fetch-depth: 0
+    steps:
+      - name: ⬇️ Checkout Repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
 
-  #     - name: 🏗️ Setup pnpm
-  #       uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+      - name: 🏗️ Setup pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
 
-  #     - name: 🏗️ Setup Node.js
-  #       uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-  #       with:
-  #         node-version-file: .nvmrc
-  #         cache: pnpm
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
 
-  #     - name: 📦 Install Dependencies
-  #       run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: 📦 Install Dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
-  #     - name: 📂 Restore Stryker Incremental Cache
-  #       uses: actions/cache@v6
-  #       with:
-  #         path: .stryker-tmp/incremental.json
-  #         key: stryker-incremental-${{ github.ref_name }}-${{ github.sha }}
-  #         restore-keys: |
-  #           stryker-incremental-${{ github.ref_name }}-
-  #           stryker-incremental-main-
+      - name: 📂 Restore Stryker Incremental Cache
+        uses: actions/cache@v6
+        with:
+          path: .stryker-tmp/incremental.json
+          key: stryker-incremental-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            stryker-incremental-${{ github.ref_name }}-
+            stryker-incremental-main-
 
-  #     - name: 🧬 Mutation Testing
-  #       run: pnpm stryker run --incremental
-  #       env:
-  #         STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+      - name: 🧬 Mutation Testing
+        run: pnpm stryker run --incremental
+        env:
+          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
 
-  #     - name: 📤 Upload Stryker Report
-  #       if: always()
-  #       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-  #       with:
-  #         name: stryker-report
-  #         path: reports/mutation/mutation.html
-  #         retention-days: 7
+      - name: 📤 Upload Stryker Report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: stryker-report
+          path: reports/mutation/mutation.html
+          retention-days: 7
