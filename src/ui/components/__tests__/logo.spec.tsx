@@ -3,8 +3,7 @@ import * as nextIntl from 'next-intl';
 
 import { app } from '@/config';
 import { translationMock } from '@/tests/unit/mocks/intl';
-
-const { default: Logo } = await import('@/ui/components/logo');
+import Logo from '@/ui/components/logo';
 
 describe('Logo', () => {
   beforeEach(() => {
@@ -14,6 +13,10 @@ describe('Logo', () => {
       if (key === 'alt') return `${app.title} logo`;
       return key;
     });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   describe('rendering', () => {

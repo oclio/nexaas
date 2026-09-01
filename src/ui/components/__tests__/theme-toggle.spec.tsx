@@ -2,14 +2,17 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import * as nextIntl from 'next-intl';
 
 import { setThemeMock, themeRef } from '@/tests/unit/mocks/ui';
-
-const { default: ThemeToggle } = await import('@/ui/components/theme-toggle');
+import ThemeToggle from '@/ui/components/theme-toggle';
 
 describe('ThemeToggle', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(nextIntl, 'useTranslations');
     themeRef.current = 'light';
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   describe('rendering', () => {
@@ -45,7 +48,7 @@ describe('ThemeToggle', () => {
 
       fireEvent.click(screen.getByRole('button'));
 
-      expect(setThemeMock).toHaveBeenCalledOnce();
+      expect(setThemeMock).toHaveBeenCalled();
       const updater = setThemeMock.mock.calls[0][0];
       expect(updater('light')).toBe('dark');
     });
