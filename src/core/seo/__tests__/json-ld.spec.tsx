@@ -76,7 +76,7 @@ describe('organizationJsonLd', () => {
     const result = organizationJsonLd();
 
     expect(result.logo).toContain(env.NEXT_PUBLIC_APP_URL);
-    expect(result.logo).not.toBe('');
+    expect(result.logo).toBeTruthy();
   });
 
   it('uses the author email', () => {

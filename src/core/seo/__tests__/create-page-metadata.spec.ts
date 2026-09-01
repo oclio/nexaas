@@ -19,8 +19,8 @@ type TwitterCard = Extract<
 
 const mockHeaders = (locale: string | null, pathname: string | null) => {
   const headersList = new Headers();
-  if (locale) headersList.set('x-locale', locale);
-  if (pathname) headersList.set('x-pathname', pathname);
+  if (locale !== null) headersList.set('x-locale', locale);
+  if (pathname !== null) headersList.set('x-pathname', pathname);
 
   vi.mocked(headers).mockResolvedValue(headersList);
 };

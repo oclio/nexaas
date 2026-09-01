@@ -19,6 +19,10 @@ type TwitterCard = Extract<
 type Robots = Exclude<Metadata['robots'], string | null | undefined>;
 
 describe('createLayoutMetadata', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('sets metadataBase from env.NEXT_PUBLIC_APP_URL', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
 
@@ -94,7 +98,8 @@ describe('createLayoutMetadata', () => {
     const images = [openGraph.images].flat() as { url: string; alt?: string }[];
 
     expect(images).toHaveLength(1);
-    expect(images[0]?.url).not.toBe('');
+    expect(images[0]).toBeDefined();
+    expect(images[0]?.url).toBeTruthy();
     expect(images[0]?.alt).toBe(app.title);
   });
 

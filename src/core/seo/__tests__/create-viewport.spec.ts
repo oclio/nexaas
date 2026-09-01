@@ -4,7 +4,7 @@ describe('createViewport', () => {
   it('sets width to a non-empty value', () => {
     const viewport = createViewport();
 
-    expect(viewport.width).not.toBe('');
+    expect(viewport.width).toBeTruthy();
   });
 
   it('sets initialScale to 1', () => {
