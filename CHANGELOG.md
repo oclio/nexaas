@@ -1,5 +1,11 @@
 # nexaas
 
+## 0.10.0
+
+### Minor Changes
+
+- b3452ea: Add complete SEO stack: metadata generation, sitemap, robots, OpenGraph/Twitter cards, JSON-LD structured data, PWA manifest, and documentation. Switch i18n translation source of truth from French to English.
+
 ## 0.9.0
 
 ### Minor Changes
