@@ -1,3 +1,6 @@
+import type enLabels from '../en/labels';
+import type { TranslationSchema } from '../types';
+
 export default {
   back: 'Retour',
   backToHome: "Retour à l'accueil",
@@ -6,4 +9,4 @@ export default {
   login: 'Se connecter',
   logout: 'Se déconnecter',
   menu: 'Menu',
-} as const;
+} as const satisfies TranslationSchema<typeof enLabels>;
