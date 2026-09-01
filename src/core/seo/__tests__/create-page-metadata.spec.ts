@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 
 import { env } from '@/core/env';
 import { routing, supportedLocales } from '@/core/i18n/routing';
@@ -42,7 +43,6 @@ describe('createPageMetadata', () => {
 
   it('passes locale and namespace to getTranslations', async () => {
     mockHeaders('fr', null);
-    const { getTranslations } = await import('next-intl/server');
 
     await createPageMetadata('pages.landing');
 
@@ -54,7 +54,6 @@ describe('createPageMetadata', () => {
 
   it('defaults locale to routing.defaultLocale when header is missing', async () => {
     mockHeaders(null, null);
-    const { getTranslations } = await import('next-intl/server');
 
     await createPageMetadata('pages.landing');
 

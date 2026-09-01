@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import { app } from '@/config';
 import { env } from '@/core/env';
@@ -34,8 +35,6 @@ describe('createLayoutMetadata', () => {
   });
 
   it('returns translated description from meta namespace', async () => {
-    const { getTranslations } = await import('next-intl/server');
-
     await createLayoutMetadata({ locale: 'en' });
 
     expect(getTranslations).toHaveBeenCalledWith({
