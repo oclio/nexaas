@@ -21,6 +21,7 @@ src/
     middlewares/     → composable middleware chain + proxy entrypoint
     observability/   → Axiom logging, Sentry error tracking, request tracing, web vitals, health checks
     security/        → Arcjet, CSP, CSRF, body size limit, secure cookies, email whitelist
+    seo/             → metadata, sitemap, robots, JSON-LD, PWA manifest helpers
 ```
 
 ## async
@@ -125,3 +126,7 @@ Structured logging, request tracing, web vitals via [Axiom](https://axiom.co), e
 ## security
 
 Defense-in-depth via composable middleware: CSP, CSRF, body size limit, secure cookies, email whitelist, and Arcjet for rate limiting and bot detection. Each layer can be independently enabled or disabled via environment variables. See [Security](./security) for the full guide.
+
+## seo
+
+SEO built entirely on the Next.js App Router metadata API — no external dependencies. Generates layout and page metadata from translated `meta` namespaces, a multilingual sitemap with hreflang alternates, robots.txt, OpenGraph and Twitter cards, JSON-LD structured data (WebSite and Organization schemas), and a PWA manifest with Apple touch icons. See [SEO](./seo) for the full guide.
