@@ -29,6 +29,7 @@ A Next.js SaaS architecture hardened by mutation testing and bulletproof TypeScr
 - **Observability** — [Axiom](https://axiom.co) logging + [Sentry](https://sentry.io) error tracking, composable middleware chain, automatic web vitals reporting
 - **Email** — [Resend](https://resend.com) + [React Email](https://react.email) templates, provider-agnostic mailer interface
 - **i18n** — [next-intl](https://next-intl.dev) with locale-segmented routing, typed message bundles, persistent locale switcher
+- **SEO** — per-locale metadata, `sitemap.xml`, `robots.txt`, web manifest, JSON-LD (`WebSite` + `Organization`)
 - **Dark mode** — [`next-themes`](https://github.com/pacocoursey/next-themes), OKLCH color space, persists across reloads
 
 ## Stack
