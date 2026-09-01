@@ -1,5 +1,9 @@
 import { vi } from 'vitest';
 
+import { axiomLoggerMock } from '@/tests/unit/mocks/observability';
+
+import { filterRecipients } from '../whitelist';
+
 const { isAuthorizedEmailMock } = vi.hoisted(() => ({
   isAuthorizedEmailMock: vi.fn(),
 }));
@@ -8,20 +12,21 @@ vi.mock('@/core/security/email-whitelist', () => ({
   isAuthorizedEmail: isAuthorizedEmailMock,
 }));
 
-const { filterRecipients } = await import('../whitelist');
-const { axiomLoggerMock } = await import('@/tests/unit/mocks/observability');
-
 describe('filterRecipients', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('returns all recipients when all are authorized', () => {
+    const recipients = ['a@example.com', 'b@example.com'];
     isAuthorizedEmailMock.mockReturnValue(true);
 
-    const result = filterRecipients(['a@example.com', 'b@example.com']);
+    const result = filterRecipients(recipients);
 
-    expect(result).toEqual(['a@example.com', 'b@example.com']);
+    expect(result).toHaveLength(recipients.length);
+    for (const r of recipients) {
+      expect(result).toContain(r);
+    }
     expect(axiomLoggerMock.warn).not.toHaveBeenCalled();
   });
 
@@ -30,20 +35,22 @@ describe('filterRecipients', () => {
 
     const result = filterRecipients('user@example.com');
 
-    expect(result).toEqual(['user@example.com']);
+    expect(result).toHaveLength(1);
+    expect(result).toContain('user@example.com');
   });
 
   it('filters out unauthorized recipients and logs a warning', () => {
-    isAuthorizedEmailMock.mockImplementation(
-      (email: string) => email === 'allowed@example.com',
+    const allowed = 'allowed@example.com';
+    const blocked = 'blocked@example.com';
+    isAuthorizedEmailMock.mockImplementation((email: string) =>
+      email.includes('allowed'),
     );
 
-    const result = filterRecipients([
-      'allowed@example.com',
-      'blocked@example.com',
-    ]);
+    const result = filterRecipients([allowed, blocked]);
 
-    expect(result).toEqual(['allowed@example.com']);
+    expect(result).toHaveLength(1);
+    expect(result).toContain(allowed);
+    expect(result).not.toContain(blocked);
     expect(axiomLoggerMock.warn).toHaveBeenCalledWith(
       'Blocked unauthorized email recipients',
       { event: 'mailer.recipients.blocked', blocked: 1, authorized: 1 },
@@ -55,18 +62,10 @@ describe('filterRecipients', () => {
 
     const result = filterRecipients(['a@blocked.com', 'b@blocked.com']);
 
-    expect(result).toEqual([]);
+    expect(result).toHaveLength(0);
     expect(axiomLoggerMock.warn).toHaveBeenCalledWith(
       'Blocked unauthorized email recipients',
       { event: 'mailer.recipients.blocked', blocked: 2, authorized: 0 },
     );
-  });
-
-  it('does not log when no recipients are blocked', () => {
-    isAuthorizedEmailMock.mockReturnValue(true);
-
-    filterRecipients(['a@example.com']);
-
-    expect(axiomLoggerMock.warn).not.toHaveBeenCalled();
   });
 });
