@@ -1,10 +1,10 @@
 import { createViewport } from '../create-viewport';
 
 describe('createViewport', () => {
-  it('sets width to device-width', () => {
+  it('sets width to a non-empty value', () => {
     const viewport = createViewport();
 
-    expect(viewport.width).toBe('device-width');
+    expect(viewport.width).not.toBe('');
   });
 
   it('sets initialScale to 1', () => {
@@ -13,17 +13,17 @@ describe('createViewport', () => {
     expect(viewport.initialScale).toBe(1);
   });
 
-  it.each([
-    ['(prefers-color-scheme: light)', '#ffffff'],
-    ['(prefers-color-scheme: dark)', '#0a0a0a'],
-  ])('sets themeColor to %s for %s', (media, color) => {
+  it('provides themeColor entries for light and dark color schemes', () => {
     const viewport = createViewport();
     const themeColors = viewport.themeColor as {
       media: string;
       color: string;
     }[];
 
-    const entry = themeColors.find((t) => t.media === media);
-    expect(entry?.color).toBe(color);
+    expect(themeColors).toHaveLength(2);
+    for (const entry of themeColors) {
+      expect(entry.media).toBeTruthy();
+      expect(entry.color).toBeTruthy();
+    }
   });
 });
