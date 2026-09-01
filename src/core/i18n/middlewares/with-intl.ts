@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 
 import { routing } from '@/core/i18n/routing';
@@ -11,7 +10,7 @@ function resolveLocale(pathname: string): string {
     : routing.defaultLocale;
 }
 
-export const withIntl: CustomMiddleware = async (request, _event, _next) => {
+export const withIntl: CustomMiddleware = async (request, _event, next) => {
   const { pathname } = request.nextUrl;
 
   if (pathname.startsWith('/api') || pathname.startsWith('/trpc')) {
@@ -19,14 +18,26 @@ export const withIntl: CustomMiddleware = async (request, _event, _next) => {
       request.headers.get('x-locale') ??
       request.cookies.get('NEXT_LOCALE')?.value ??
       routing.defaultLocale;
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-locale', locale);
-    return NextResponse.next({ request: { headers: requestHeaders } });
+    request.headers.set('x-locale', locale);
+
+    const response = await next();
+    response.headers.set('x-locale', locale);
+    return response;
   }
 
   const handleIntl = createMiddleware(routing);
-  const response = handleIntl(request);
+  const intlResponse = handleIntl(request);
 
+  if (intlResponse.status >= 300 && intlResponse.status < 400) {
+    intlResponse.headers.set('x-locale', resolveLocale(pathname));
+    return intlResponse;
+  }
+
+  const response = await next();
+
+  for (const [key, value] of intlResponse.headers) {
+    response.headers.set(key, value);
+  }
   response.headers.set('x-locale', resolveLocale(pathname));
 
   return response;

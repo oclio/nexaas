@@ -9,7 +9,9 @@ export const proxy = async (request: NextRequest, event: NextFetchEvent) => {
 
   const handler = chain(stack);
   try {
-    return await handler(request, event);
+    const response = await handler(request, event);
+    response.headers.set('x-pathname', request.nextUrl.pathname);
+    return response;
   } catch (error) {
     const traceId = request.headers.get('x-trace-id') || undefined;
     const status = error instanceof AppError ? error.statusCode : 500;
