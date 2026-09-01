@@ -10,7 +10,7 @@
   <!-- Stryker badge: token unavailable, dashboard login broken — ticket opened with Stryker support -->
 
 <a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=coverage&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Coverage" /></a>
-<a href="https://github.com/oclio/nexaas"><img src="https://img.shields.io/badge/mutation%20score-99.73%25-brightgreen" alt="Mutation score" /></a>
+<a href="https://github.com/oclio/nexaas"><img src="https://img.shields.io/badge/mutation%20score-100%25-brightgreen" alt="Mutation score" /></a>
 <a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=alert_status&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Quality gate status" /></a>
 <a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=reliability_rating&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Reliability Rating" /></a>
 <a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=software_quality_security_issues&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Security issues" /></a>
@@ -29,6 +29,7 @@ A Next.js SaaS architecture hardened by mutation testing and bulletproof TypeScr
 - **Observability** — [Axiom](https://axiom.co) logging + [Sentry](https://sentry.io) error tracking, composable middleware chain, automatic web vitals reporting
 - **Email** — [Resend](https://resend.com) + [React Email](https://react.email) templates, provider-agnostic mailer interface
 - **i18n** — [next-intl](https://next-intl.dev) with locale-segmented routing, typed message bundles, persistent locale switcher
+- **SEO** — per-locale metadata, `sitemap.xml`, `robots.txt`, web manifest, JSON-LD (`WebSite` + `Organization`)
 - **Dark mode** — [`next-themes`](https://github.com/pacocoursey/next-themes), OKLCH color space, persists across reloads
 
 ## Stack

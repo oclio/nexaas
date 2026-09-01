@@ -39,7 +39,6 @@ export default defineConfig({
           text: 'Getting Started',
           items: [
             { text: 'Quick Start', link: '/getting-started/' },
-            { text: 'Project Structure', link: '/getting-started/structure' },
             { text: 'Scripts', link: '/getting-started/scripts' },
             { text: 'Infrastructure', link: '/getting-started/infrastructure' },
           ],
@@ -54,6 +53,7 @@ export default defineConfig({
             { text: 'Observability', link: '/core/observability' },
             { text: 'Mailer', link: '/core/mailer' },
             { text: 'Internationalization', link: '/core/i18n' },
+            { text: 'SEO', link: '/core/seo' },
           ],
         },
         {

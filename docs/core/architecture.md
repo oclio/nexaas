@@ -2,21 +2,26 @@
 
 The `src/core/` directory contains the foundational infrastructure of nexaas. These modules are not features — they are the building blocks that features build on.
 
+App-level configuration lives at `src/config.ts` — the first file to edit when customizing the boilerplate (title, description, URL, author, logos).
+
 ## Structure
 
 ```text
-src/core/
-  async/             → withTimeout helper, TimeoutError
-  auth/              → Better Auth schemas and role types
-  config/env/        → typed environment variable validation
-  db/                → Drizzle ORM client, health check
-  errors/            → AppError class, error codes, message helpers
-  helpers/           → shared utilities (string formatting)
-  i18n/              → next-intl routing, messages, locale switcher
-  mailer/            → Resend email client, template rendering, recipient whitelist
-  middlewares/       → composable middleware chain + proxy entrypoint
-  observability/     → Axiom logging, Sentry error tracking, request tracing, web vitals, health checks
-  security/          → Arcjet, CSP, CSRF, body size limit, secure cookies, email whitelist
+src/
+  config.ts          → app metadata (title, description, URL, author, logos)
+  core/
+    async/           → withTimeout helper, TimeoutError
+    auth/            → Better Auth schemas and role types
+    env/             → typed environment variable validation
+    db/              → Drizzle ORM client, health check
+    errors/          → AppError class, error codes, message helpers
+    helpers/         → shared utilities (string formatting)
+    i18n/            → next-intl routing, messages, locale switcher
+    mailer/          → Resend email client, template rendering, recipient whitelist
+    middlewares/     → composable middleware chain + proxy entrypoint
+    observability/   → Axiom logging, Sentry error tracking, request tracing, web vitals, health checks
+    security/        → Arcjet, CSP, CSRF, body size limit, secure cookies, email whitelist
+    seo/             → metadata, sitemap, robots, JSON-LD, PWA manifest helpers
 ```
 
 ## async
@@ -26,9 +31,26 @@ src/core/
 | `helpers/with-timeout.ts` | Runs a promise with a maximum timeout delay              |
 | `errors/timeout-error.ts` | Error thrown when an operation exceeds its timeout (504) |
 
-## config/env
+## env
 
 Validates environment variables at startup using `@t3-oss/env-nextjs` and zod. See [Environment Variables](./env) for the full guide.
+
+## config (`src/config.ts`)
+
+App-level metadata consumed by the root layout, emails, and metadata APIs:
+
+```ts
+export const app = {
+  title: 'nexaas',
+  description: '...',
+  url: env.NEXT_PUBLIC_APP_URL,
+  author: 'oclio',
+  logo: '/images/logo.svg',
+  emailLogo: '/images/logo.png',
+};
+```
+
+This is the first file to edit when forking the boilerplate — change the title, description, author, and logos to match your product.
 
 ## db
 
@@ -104,3 +126,7 @@ Structured logging, request tracing, web vitals via [Axiom](https://axiom.co), e
 ## security
 
 Defense-in-depth via composable middleware: CSP, CSRF, body size limit, secure cookies, email whitelist, and Arcjet for rate limiting and bot detection. Each layer can be independently enabled or disabled via environment variables. See [Security](./security) for the full guide.
+
+## seo
+
+SEO built entirely on the Next.js App Router metadata API — no external dependencies. Generates layout and page metadata from translated `meta` namespaces, a multilingual sitemap with hreflang alternates, robots.txt, OpenGraph and Twitter cards, JSON-LD structured data (WebSite and Organization schemas), and a PWA manifest with Apple touch icons. See [SEO](./seo) for the full guide.

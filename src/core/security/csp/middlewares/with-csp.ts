@@ -1,4 +1,4 @@
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 import type { CustomMiddleware } from '@/core/middlewares/types';
 import { buildCSP } from '@/core/security/csp';
 

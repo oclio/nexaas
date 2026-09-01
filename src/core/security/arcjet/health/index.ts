@@ -1,5 +1,5 @@
 import { withTimeout } from '@/core/async/helpers/with-timeout';
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 
 export async function checkArcjetService() {
   if (!env.ARCJET_KEY) return { status: 'disabled' };

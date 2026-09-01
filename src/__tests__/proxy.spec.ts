@@ -29,6 +29,10 @@ vi.mock('@/core/observability/axiom/middlewares/with-axiom', () => ({
   withAxiom: passThrough,
 }));
 
+vi.mock('@/core/seo/middlewares/with-seo', () => ({
+  withSeo: passThrough,
+}));
+
 vi.mock('@/core/security/arcjet/middlewares/with-arcjet', () => ({
   withArcjet: passThrough,
 }));
@@ -139,9 +143,9 @@ describe('proxy', () => {
 
     expect(chainMock).toHaveBeenCalledOnce();
     const passedProxies = chainMock.mock.calls[0][0];
-    expect(passedProxies).toHaveLength(7);
+    expect(passedProxies).toHaveLength(8);
     expect(passedProxies[0]).toBe(passThrough);
-    expect(passedProxies[6]).toBe(passThrough);
+    expect(passedProxies[7]).toBe(passThrough);
   });
 });
 

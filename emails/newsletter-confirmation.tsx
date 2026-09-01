@@ -1,6 +1,6 @@
 import { Button, Link, Section, Tailwind, Text } from '@react-email/components';
 
-import { app } from '@/core/config';
+import { app } from '@/config';
 import EmailBody from '@/emails/_components/email-body';
 
 interface Properties {

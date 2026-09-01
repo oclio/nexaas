@@ -65,20 +65,15 @@ describe('LocaleSwitcher', () => {
       );
     });
 
-    it('passes default align to dropdown content', async () => {
-      render(<LocaleSwitcher />);
+    it.each<[align: 'start' | undefined, expected: string]>([
+      [undefined, 'end'],
+      ['start', 'start'],
+    ])('passes align=%s to dropdown content as %s', async (align, expected) => {
+      render(<LocaleSwitcher align={align} />);
       await openMenu();
 
       const content = screen.getByRole('menu');
-      expect(content).toHaveAttribute('data-align', 'end');
-    });
-
-    it('passes custom align to dropdown content', async () => {
-      render(<LocaleSwitcher align="start" />);
-      await openMenu();
-
-      const content = screen.getByRole('menu');
-      expect(content).toHaveAttribute('data-align', 'start');
+      expect(content).toHaveAttribute('data-align', expected);
     });
 
     it('renders the dropdown as non-modal', () => {
@@ -102,21 +97,17 @@ describe('LocaleSwitcher', () => {
       expect(screen.getByRole('button').className).toContain('custom-class');
     });
 
-    it('applies ghost focus style when variant is ghost', () => {
-      render(<LocaleSwitcher variant="ghost" />);
+    it.each<[variant: 'ghost' | 'outline', expectedClass: string]>([
+      ['ghost', 'focus-visible:border-transparent'],
+      ['outline', 'focus-visible:border-input'],
+    ])(
+      'applies %s focus style when variant is %s',
+      (variant, expectedClass) => {
+        render(<LocaleSwitcher variant={variant} />);
 
-      expect(screen.getByRole('button').className).toContain(
-        'focus-visible:border-transparent',
-      );
-    });
-
-    it('applies input focus style when variant is not ghost', () => {
-      render(<LocaleSwitcher variant="outline" />);
-
-      expect(screen.getByRole('button').className).toContain(
-        'focus-visible:border-input',
-      );
-    });
+        expect(screen.getByRole('button').className).toContain(expectedClass);
+      },
+    );
 
     it('renders an empty label when the current locale is not supported', () => {
       localeRef.current = 'de';
@@ -128,24 +119,20 @@ describe('LocaleSwitcher', () => {
   });
 
   describe('locale switching', () => {
-    it('calls router.push with pathname and new locale when a locale item is clicked', async () => {
-      render(<LocaleSwitcher />);
-      await openMenu();
+    it.each([
+      [1, 'fr'],
+      [0, 'en'],
+    ])(
+      'calls router.push with /test and locale %s when clicking item at index %i',
+      async (index, locale) => {
+        render(<LocaleSwitcher />);
+        await openMenu();
 
-      fireEvent.click(screen.getAllByRole('menuitem')[1]);
+        fireEvent.click(screen.getAllByRole('menuitem')[index]);
 
-      expect(routerPushMock).toHaveBeenCalledOnce();
-      expect(routerPushMock).toHaveBeenCalledWith('/test', { locale: 'fr' });
-    });
-
-    it('calls router.push even when clicking the active locale', async () => {
-      render(<LocaleSwitcher />);
-      await openMenu();
-
-      fireEvent.click(screen.getAllByRole('menuitem')[0]);
-
-      expect(routerPushMock).toHaveBeenCalledWith('/test', { locale: 'en' });
-    });
+        expect(routerPushMock).toHaveBeenCalledWith('/test', { locale });
+      },
+    );
   });
 
   describe('locale items', () => {

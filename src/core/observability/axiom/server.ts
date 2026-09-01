@@ -1,7 +1,7 @@
 import { AxiomJSTransport, ConsoleTransport, Logger } from '@axiomhq/logging';
 import { nextJsFormatters } from '@axiomhq/nextjs';
 
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 import { axiomClient } from '@/core/observability/axiom/client';
 
 export const logger = new Logger({

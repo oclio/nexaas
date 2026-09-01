@@ -70,6 +70,7 @@ jobs:
     timeout-minutes: 10
     env:
       HUSKY: 0
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
 
     steps:
       - name: ⬇️ Checkout Repo

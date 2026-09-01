@@ -4,7 +4,7 @@ nexaas uses [`@t3-oss/env-nextjs`](https://github.com/t3-oss/t3-env) with [zod](
 
 ## How it works
 
-Environment variables are defined in `src/core/config/env/index.ts` and validated at startup. Invalid or missing required variables throw a clear error before the app boots.
+Environment variables are defined in `src/core/env/index.ts` and validated at startup. Invalid or missing required variables throw a clear error before the app boots.
 
 ```ts
 import { createEnv } from '@t3-oss/env-nextjs';
@@ -43,7 +43,7 @@ Never put secrets in `client` variables. They are exposed to the browser.
 1. Add it to `.env` and `.env.example`
 2. Add a zod schema in the appropriate section (`server` or `client`)
 3. If client-side, add it to `experimental__runtimeEnv`
-4. Import `env` where needed: `import { env } from '@/core/config/env'`
+4. Import `env` where needed: `import { env } from '@/core/env'`
 
 ## skipValidation
 

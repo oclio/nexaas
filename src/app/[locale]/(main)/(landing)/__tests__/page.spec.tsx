@@ -8,23 +8,19 @@ describe('LandingPage', () => {
   });
 
   describe('generateMetadata', () => {
-    it('returns title combining the translated page title and app title', async () => {
-      const metadata = await generateMetadata({
-        params: Promise.resolve({ locale: 'en' }),
-      });
+    it('returns the translated page title without suffix', async () => {
+      const metadata = await generateMetadata();
 
-      expect(metadata).toEqual({ title: 'Welcome! | nexaas' });
+      expect(metadata.title).toBe('Welcome!');
     });
 
-    it('passes the locale to getTranslations', async () => {
+    it('passes the locale and namespace to getTranslations', async () => {
       const { getTranslations } = await import('next-intl/server');
 
-      await generateMetadata({
-        params: Promise.resolve({ locale: 'fr' }),
-      });
+      await generateMetadata();
 
       expect(getTranslations).toHaveBeenCalledWith({
-        locale: 'fr',
+        locale: 'en',
         namespace: 'pages.landing',
       });
     });

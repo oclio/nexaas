@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 import { formatErrorMessage, getErrorMessage } from '@/core/errors/helpers';
 import { axiomClient } from '@/core/observability/axiom/client';
 

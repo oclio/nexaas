@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { env } from '@/core/config/env';
 import { checkDatabaseService } from '@/core/db/health';
+import { env } from '@/core/env';
 import { checkAxiomService } from '@/core/observability/axiom/health';
 import { checkSentryService } from '@/core/observability/sentry/health';
 import { checkArcjetService } from '@/core/security/arcjet/health';

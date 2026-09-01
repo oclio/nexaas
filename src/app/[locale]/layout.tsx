@@ -1,16 +1,22 @@
 import '@/ui/styles/globals.css';
-import '@/core/config/env';
+import '@/core/env';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { ThemeProvider } from '@/app/[locale]/(main)/_components/theme-provider';
-import { app } from '@/core/config';
 import { routing } from '@/core/i18n/routing';
 import { WebVitals } from '@/core/observability/axiom/components/web-vitals';
+import {
+  createLayoutMetadata,
+  createViewport,
+  JsonLdScript,
+  organizationJsonLd,
+  websiteJsonLd,
+} from '@/core/seo';
 import ScreenSize from '@/ui/components/dev/screen-size';
 import { fontHeading, fontSans } from '@/ui/fonts';
 import { cn } from '@/ui/helpers';
@@ -19,13 +25,14 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export const metadata: Metadata = {
-  title: app.title,
-  description: app.description,
-  icons: {
-    icon: app.logo,
-  },
-};
+export async function generateMetadata({
+  params,
+}: Readonly<{ params: Promise<{ locale: string }> }>): Promise<Metadata> {
+  const { locale } = await params;
+  return createLayoutMetadata({ locale });
+}
+
+export const viewport: Viewport = createViewport();
 
 interface Props {
   children: ReactNode;
@@ -44,7 +51,7 @@ export default async function RootLayout({
 
   return (
     <html
-      lang="en"
+      lang={locale}
       className={cn(
         'h-full',
         'antialiased',
@@ -59,8 +66,10 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages} locale={locale}>
             <main className="flex flex-1 flex-col">{children}</main>
           </NextIntlClientProvider>
-          <WebVitals />
         </ThemeProvider>
+        <WebVitals />
+        <JsonLdScript data={websiteJsonLd()} />
+        <JsonLdScript data={organizationJsonLd()} />
         <ScreenSize />
       </body>
     </html>

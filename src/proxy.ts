@@ -10,9 +10,11 @@ import { withBodySizeLimit } from '@/core/security/body/middlewares/with-body-si
 import { withSecureCookies } from '@/core/security/cookies/middlewares/with-secure-cookies';
 import { withCsp } from '@/core/security/csp/middlewares/with-csp';
 import { withCsrf } from '@/core/security/csrf/middlewares/with-csrf';
+import { withSeo } from '@/core/seo/middlewares/with-seo';
 
 const proxies: CustomMiddleware[] = [
   withIntl,
+  withSeo,
   withAxiom,
   withCsp,
   withCsrf,

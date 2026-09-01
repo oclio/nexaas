@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 
 import * as Sentry from '@sentry/nextjs';
 
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 import { logger } from '@/core/observability/axiom/server';
 
 import { getResendClient } from './client';

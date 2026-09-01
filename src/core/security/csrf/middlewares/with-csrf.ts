@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 import type { CustomMiddleware } from '@/core/middlewares/types';
 
 const unsafeMethods = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { env } from '@/core/config/env';
+import { env } from '@/core/env';
 
 const emailSchema = z.email();
 

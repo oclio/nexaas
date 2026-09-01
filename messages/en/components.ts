@@ -1,6 +1,3 @@
-import type frComponents from '../fr/components';
-import type { TranslationSchema } from '../types';
-
 export default {
   localeSwitcher: {
     ariaLabel: 'Change language',
@@ -9,4 +6,4 @@ export default {
     toggleDark: 'Toggle dark mode',
     toggleLight: 'Toggle light mode',
   },
-} as const satisfies TranslationSchema<typeof frComponents>;
+} as const;
