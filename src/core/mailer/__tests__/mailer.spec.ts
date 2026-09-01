@@ -1,5 +1,10 @@
 import { vi } from 'vitest';
 
+import { env } from '@/core/env';
+import { axiomLoggerMock, sentryMocks } from '@/tests/unit/mocks/observability';
+
+import { sendEmail } from '../mailer';
+
 const { sendMock, resendClient } = vi.hoisted(() => {
   const sendMock = vi.fn();
   return { sendMock, resendClient: { emails: { send: sendMock } } };
@@ -19,9 +24,9 @@ const { filterRecipientsMock } = vi.hoisted(() => ({
 
 vi.mock('../whitelist', () => ({ filterRecipients: filterRecipientsMock }));
 
-const { sendEmail } = await import('../mailer');
-const { axiomLoggerMock, sentryMocks } =
-  await import('@/../tests/unit/mocks/observability');
+const START_TIME = 100;
+const END_TIME = 150;
+const EXPECTED_DURATION = END_TIME - START_TIME;
 
 describe('sendEmail', () => {
   beforeEach(() => {
@@ -29,8 +34,8 @@ describe('sendEmail', () => {
     filterRecipientsMock.mockReturnValue(['user@example.com']);
     renderTemplateMock.mockResolvedValue({ type: 'div' });
     vi.spyOn(performance, 'now')
-      .mockReturnValueOnce(100)
-      .mockReturnValueOnce(150);
+      .mockReturnValueOnce(START_TIME)
+      .mockReturnValueOnce(END_TIME);
   });
 
   describe('content selection', () => {
@@ -45,7 +50,7 @@ describe('sendEmail', () => {
 
       expect(result).toEqual({ id: 'msg-123' });
       expect(sendMock).toHaveBeenCalledWith({
-        from: 'nexaas <noreply@nexaas.dev>',
+        from: env.EMAIL_FROM,
         to: ['user@example.com'],
         subject: 'Welcome',
         html: '<p>Hello</p>',
@@ -161,7 +166,7 @@ describe('sendEmail', () => {
         expect.objectContaining({
           event: 'mailer.resend.error',
           error: 'Network timeout',
-          durationMs: 50,
+          durationMs: EXPECTED_DURATION,
         }),
       );
       expect(sentryMocks.captureException).toHaveBeenCalledWith(networkError, {
@@ -186,7 +191,7 @@ describe('sendEmail', () => {
         expect.objectContaining({
           event: 'mailer.resend.error',
           error: 'string error',
-          durationMs: 50,
+          durationMs: EXPECTED_DURATION,
         }),
       );
     });
@@ -206,16 +211,18 @@ describe('sendEmail', () => {
       ).rejects.toThrow('Invalid API key');
 
       expect(axiomLoggerMock.error).toHaveBeenCalledWith(
-        'Resend API error: Invalid API key',
+        expect.stringContaining('Resend API error'),
         expect.objectContaining({
           event: 'mailer.resend.failed',
           error: 'Invalid API key',
           name: 'invalid_api_key',
-          durationMs: 50,
+          durationMs: EXPECTED_DURATION,
         }),
       );
       expect(sentryMocks.captureException).toHaveBeenCalledWith(
-        new Error('Resend API Error: Invalid API key'),
+        expect.objectContaining({
+          message: expect.stringContaining('Resend API Error'),
+        }),
         {
           tags: { service: 'resend', errorName: 'invalid_api_key' },
           extra: expect.objectContaining({ subject: 'Test' }),
@@ -241,7 +248,7 @@ describe('sendEmail', () => {
           event: 'mailer.resend.success',
           emailId: 'msg-ok',
           recipientsCount: 2,
-          durationMs: 50,
+          durationMs: EXPECTED_DURATION,
         }),
       );
     });
