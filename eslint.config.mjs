@@ -102,6 +102,7 @@ const eslintConfig = defineConfig([
   {
     files: ['tests/**'],
     rules: {
+      '@next/next/no-img-element': 'off',
       'unicorn/no-top-level-side-effects': 'off',
     },
   },

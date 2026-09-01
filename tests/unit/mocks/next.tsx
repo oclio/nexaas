@@ -9,3 +9,25 @@ vi.mock('next/navigation', () => ({
 vi.mock('next/headers', () => ({
   headers: vi.fn(async () => new Headers()),
 }));
+
+vi.mock('next/image', () => ({
+  default: ({
+    src,
+    alt,
+    priority,
+    className,
+  }: {
+    src: string;
+    alt: string;
+    priority?: boolean;
+    className?: string;
+  }) => (
+    <img
+      data-testid="next-image"
+      src={src}
+      alt={alt}
+      data-priority={priority ? 'true' : 'false'}
+      className={className}
+    />
+  ),
+}));
