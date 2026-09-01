@@ -30,6 +30,7 @@ const config = {
     'oklch',
     'pgvector',
     'sonarqube',
+    'srcs',
     'ttfb',
     'turbopack',
     'unstub',
