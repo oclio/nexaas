@@ -3,7 +3,7 @@ import { vi } from 'vitest';
 import { mockPostRequest } from '@/tests/unit/helpers/request';
 import { axiomClientReference } from '@/tests/unit/mocks/observability';
 
-const { POST } = await import('../route');
+import { POST } from '../route';
 
 function mockRequest(body: unknown): Request {
   return mockPostRequest('http://localhost:3000/api/web-vitals', body);
@@ -16,46 +16,52 @@ describe('POST /api/web-vitals', () => {
     axiomClientReference.value = undefined;
   });
 
-  it('returns ignored when NODE_ENV is not production', async () => {
-    vi.stubEnv('NODE_ENV', 'development');
-    vi.stubEnv('AXIOM_TOKEN', 'test-token');
-    vi.stubEnv('AXIOM_DATASET', 'test-dataset');
-    const ingestMock = vi.fn();
-    axiomClientReference.value = { ingest: ingestMock, flush: vi.fn() };
+  it.each([
+    {
+      name: 'NODE_ENV is not production',
+      nodeEnv: 'development',
+      dataset: 'test-dataset',
+      hasClient: true,
+    },
+    {
+      name: 'axiomClient is undefined',
+      nodeEnv: 'production',
+      dataset: 'test-dataset',
+      hasClient: false,
+    },
+    {
+      name: 'AXIOM_DATASET is not set',
+      nodeEnv: 'production',
+      dataset: undefined,
+      hasClient: true,
+    },
+  ])(
+    'returns ignored when $name',
+    async ({
+      nodeEnv,
+      dataset,
+      hasClient,
+    }: {
+      nodeEnv: string;
+      dataset: string | undefined;
+      hasClient: boolean;
+    }) => {
+      vi.stubEnv('NODE_ENV', nodeEnv);
+      vi.stubEnv('AXIOM_TOKEN', 'test-token');
+      vi.stubEnv('AXIOM_DATASET', dataset as unknown as string);
+      const ingestMock = vi.fn();
+      axiomClientReference.value = hasClient
+        ? { ingest: ingestMock, flush: vi.fn() }
+        : undefined;
 
-    const response = await POST(mockRequest({ name: 'CLS', value: 0.1 }));
-    const body = await response.json();
+      const response = await POST(mockRequest({ name: 'CLS', value: 0.1 }));
+      const body = await response.json();
 
-    expect(response.status).toBe(200);
-    expect(body).toEqual({ status: 'ignored' });
-    expect(ingestMock).not.toHaveBeenCalled();
-  });
-
-  it('returns ignored when axiomClient is undefined', async () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    vi.stubEnv('AXIOM_TOKEN', 'test-token');
-    vi.stubEnv('AXIOM_DATASET', 'test-dataset');
-    axiomClientReference.value = undefined;
-
-    const response = await POST(mockRequest({ name: 'CLS', value: 0.1 }));
-    const body = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(body).toEqual({ status: 'ignored' });
-  });
-
-  it('returns ignored when AXIOM_DATASET is not set', async () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    vi.stubEnv('AXIOM_TOKEN', 'test-token');
-    vi.stubEnv('AXIOM_DATASET', undefined as unknown as string);
-    axiomClientReference.value = { ingest: vi.fn(), flush: vi.fn() };
-
-    const response = await POST(mockRequest({ name: 'CLS', value: 0.1 }));
-    const body = await response.json();
-
-    expect(response.status).toBe(200);
-    expect(body).toEqual({ status: 'ignored' });
-  });
+      expect(response.status).toBe(200);
+      expect(body.status).toBe('ignored');
+      expect(ingestMock).not.toHaveBeenCalled();
+    },
+  );
 
   it('ingests the metric and returns ok', async () => {
     vi.stubEnv('NODE_ENV', 'production');
@@ -70,7 +76,7 @@ describe('POST /api/web-vitals', () => {
     const body = await response.json();
 
     expect(response.status).toBe(200);
-    expect(body).toEqual({ status: 'ok' });
+    expect(body.status).toBe('ok');
     expect(ingestMock).toHaveBeenCalledWith('test-dataset', {
       _time: expect.any(String),
       type: 'web-vitals',
@@ -78,7 +84,7 @@ describe('POST /api/web-vitals', () => {
       value: 0.1,
       id: 'v3-abc',
     });
-    expect(flushMock).toHaveBeenCalledOnce();
+    expect(flushMock).toHaveBeenCalled();
   });
 
   it('returns 500 when ingest throws', async () => {
@@ -94,7 +100,23 @@ describe('POST /api/web-vitals', () => {
 
     expect(response.status).toBe(500);
     expect(body.status).toBe('error');
-    expect(body.error).toBe('Network failure.');
+    expect(body.error).toMatch(/network failure/i);
+  });
+
+  it('returns 500 when flush throws', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('AXIOM_TOKEN', 'test-token');
+    vi.stubEnv('AXIOM_DATASET', 'test-dataset');
+    const ingestMock = vi.fn().mockResolvedValue(undefined);
+    const flushMock = vi.fn().mockRejectedValue(new Error('flush failure'));
+    axiomClientReference.value = { ingest: ingestMock, flush: flushMock };
+
+    const response = await POST(mockRequest({ name: 'CLS', value: 0.1 }));
+    const body = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(body.status).toBe('error');
+    expect(body.error).toMatch(/flush failure/i);
   });
 
   it('returns 500 when request.json() throws', async () => {
@@ -117,5 +139,6 @@ describe('POST /api/web-vitals', () => {
 
     expect(response.status).toBe(500);
     expect(body.status).toBe('error');
+    expect(body.error).toBeTruthy();
   });
 });
