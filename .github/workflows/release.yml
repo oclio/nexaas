@@ -41,6 +41,8 @@ jobs:
 
       - name: 🏗️ Build Packages
         run: pnpm build
+        env:
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
 
       - name: 🚀 Create Release Pull Request
         id: changesets
