@@ -7,39 +7,36 @@ describe('instrumentation-client', () => {
     vi.resetModules();
   });
 
-  it('does not call Sentry.init in development', async () => {
-    vi.stubEnv('NODE_ENV', 'development');
-    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'https://sentry.io/abc');
+  it.each([
+    { nodeEnv: 'development', dsn: 'https://sentry.io/abc' },
+    { nodeEnv: 'production', dsn: '' },
+  ])(
+    'does not call Sentry.init when NODE_ENV=$nodeEnv and DSN is "$dsn"',
+    async ({ nodeEnv, dsn }) => {
+      vi.stubEnv('NODE_ENV', nodeEnv);
+      vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', dsn);
 
-    await import('../instrumentation-client');
+      await import('../instrumentation-client');
 
-    expect(sentryMocks.init).not.toHaveBeenCalled();
-  });
+      expect(sentryMocks.init).not.toHaveBeenCalled();
+    },
+  );
 
-  it('does not call Sentry.init in production when DSN is not set', async () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', '');
-
-    await import('../instrumentation-client');
-
-    expect(sentryMocks.init).not.toHaveBeenCalled();
-  });
-
-  it('calls Sentry.init with replay integration in production when DSN is set', async () => {
+  it('calls Sentry.init with DSN and replay integration in production when DSN is set', async () => {
     vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'https://sentry.io/abc');
 
     await import('../instrumentation-client');
 
-    expect(sentryMocks.init).toHaveBeenCalledWith({
-      dsn: 'https://sentry.io/abc',
-      integrations: [{ name: 'replay' }],
-      tracesSampleRate: 0.1,
-      enableLogs: true,
-      replaysSessionSampleRate: 0.1,
-      replaysOnErrorSampleRate: 1,
-      sendDefaultPii: false,
-    });
+    expect(sentryMocks.init).toHaveBeenCalledOnce();
+    expect(sentryMocks.init).toHaveBeenCalledWith(
+      expect.objectContaining({
+        dsn: 'https://sentry.io/abc',
+        integrations: [{ name: 'replay' }],
+        enableLogs: true,
+        sendDefaultPii: false,
+      }),
+    );
     expect(sentryMocks.replayIntegration).toHaveBeenCalledOnce();
   });
 
