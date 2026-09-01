@@ -4,6 +4,13 @@ import createMiddleware from 'next-intl/middleware';
 import { routing } from '@/core/i18n/routing';
 import type { CustomMiddleware } from '@/core/middlewares/types';
 
+function resolveLocale(pathname: string): string {
+  const segment = pathname.split('/').find(Boolean);
+  return segment && routing.locales.includes(segment as never)
+    ? segment
+    : routing.defaultLocale;
+}
+
 export const withIntl: CustomMiddleware = async (request, _event, _next) => {
   const { pathname } = request.nextUrl;
 
@@ -18,5 +25,9 @@ export const withIntl: CustomMiddleware = async (request, _event, _next) => {
   }
 
   const handleIntl = createMiddleware(routing);
-  return handleIntl(request);
+  const response = handleIntl(request);
+
+  response.headers.set('x-locale', resolveLocale(pathname));
+
+  return response;
 };

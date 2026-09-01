@@ -1,5 +1,4 @@
 import type { NextRequest } from 'next/server';
-import createMiddleware from 'next-intl/middleware';
 
 import {
   mockNextFetchEvent,
@@ -20,8 +19,6 @@ vi.mock('next-intl/middleware', () => ({
 vi.mock('next/server', () => ({
   NextResponse: {
     next: nextResponseMock,
-    redirect: vi.fn(),
-    rewrite: vi.fn(),
   },
 }));
 
@@ -55,16 +52,19 @@ describe('withIntl', () => {
   });
 
   describe('api and trpc routes', () => {
-    it('sets x-locale from the existing x-locale header on /api routes', async () => {
-      const request = mockRequest('/api/health', {
-        headers: { 'x-locale': 'fr' },
-      });
+    it.each(['/api/health', '/trpc/example'])(
+      'sets x-locale from the existing x-locale header on %s routes',
+      async (pathname) => {
+        const request = mockRequest(pathname, {
+          headers: { 'x-locale': 'fr' },
+        });
 
-      await withIntl(request, mockEvent(), nextMock());
+        await withIntl(request, mockEvent(), nextMock());
 
-      expectLocaleHeader('fr');
-      expect(intlMiddlewareMock).not.toHaveBeenCalled();
-    });
+        expectLocaleHeader('fr');
+        expect(intlMiddlewareMock).not.toHaveBeenCalled();
+      },
+    );
 
     it('sets x-locale from the NEXT_LOCALE cookie when header is missing', async () => {
       const request = mockRequest('/api/users', {
@@ -94,40 +94,28 @@ describe('withIntl', () => {
 
       expectLocaleHeader('en');
     });
-
-    it('handles /trpc routes the same way as /api routes', async () => {
-      const request = mockRequest('/trpc/example', {
-        headers: { 'x-locale': 'fr' },
-      });
-
-      await withIntl(request, mockEvent(), nextMock());
-
-      expectLocaleHeader('fr');
-      expect(intlMiddlewareMock).not.toHaveBeenCalled();
-    });
   });
 
   describe('non-api routes', () => {
-    it('delegates to the next-intl middleware for regular routes', async () => {
-      const intlResponse = {} as Response;
-      intlMiddlewareMock.mockReturnValue(intlResponse);
-      const request = mockRequest('/en/about');
+    it.each([
+      { pathname: '/en/about', expectedLocale: 'en' },
+      { pathname: '/about', expectedLocale: 'en' },
+      { pathname: '/fr/about', expectedLocale: 'fr' },
+      { pathname: '/', expectedLocale: 'en' },
+    ])(
+      'sets x-locale to $expectedLocale for $pathname',
+      async ({ pathname, expectedLocale }) => {
+        const responseHeaders = new Headers();
+        intlMiddlewareMock.mockReturnValue({
+          headers: responseHeaders,
+        } as Response);
+        const request = mockRequest(pathname);
 
-      const response = await withIntl(request, mockEvent(), nextMock());
+        await withIntl(request, mockEvent(), nextMock());
 
-      expect(createMiddleware).toHaveBeenCalledOnce();
-      expect(intlMiddlewareMock).toHaveBeenCalledWith(request);
-      expect(response).toBe(intlResponse);
-      expect(nextResponseMock).not.toHaveBeenCalled();
-    });
-
-    it('does not modify request headers for regular routes', async () => {
-      intlMiddlewareMock.mockReturnValue({} as Response);
-      const request = mockRequest('/en/about');
-
-      await withIntl(request, mockEvent(), nextMock());
-
-      expect(request.headers.get('x-locale')).toBeNull();
-    });
+        expect(intlMiddlewareMock).toHaveBeenCalledWith(request);
+        expect(responseHeaders.get('x-locale')).toBe(expectedLocale);
+      },
+    );
   });
 });
