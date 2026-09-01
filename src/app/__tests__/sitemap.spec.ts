@@ -1,7 +1,7 @@
 import { env } from '@/core/env';
 import { routing } from '@/core/i18n/routing';
 
-const { default: sitemap } = await import('../sitemap');
+import sitemap from '../sitemap';
 
 describe('sitemap', () => {
   it('returns one entry per locale per route', () => {

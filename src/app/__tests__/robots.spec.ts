@@ -1,6 +1,6 @@
 import { env } from '@/core/env';
 
-const { default: robots } = await import('../robots');
+import robots from '../robots';
 
 describe('robots', () => {
   it('allows all user agents to access the root', () => {

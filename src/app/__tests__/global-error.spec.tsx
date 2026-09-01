@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { sentryMocks } from '@/tests/unit/mocks/observability';
 
-const { default: GlobalError } = await import('../global-error');
+import GlobalError from '../global-error';
 
 describe('GlobalError', () => {
   beforeEach(() => {

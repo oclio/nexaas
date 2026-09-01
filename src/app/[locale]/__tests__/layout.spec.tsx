@@ -28,12 +28,11 @@ const localeParameters = (locale: string) => ({
   params: Promise.resolve({ locale }),
 });
 
-const {
-  default: RootLayout,
+import RootLayout, {
   generateMetadata,
   generateStaticParams,
   viewport,
-} = await import('../layout');
+} from '../layout';
 
 describe('RootLayout', () => {
   beforeEach(() => {
