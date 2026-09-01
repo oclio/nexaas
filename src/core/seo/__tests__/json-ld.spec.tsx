@@ -107,6 +107,6 @@ describe('JsonLdScript', () => {
     const { container } = render(<JsonLdScript data={data} />);
     const script = container.querySelector('script');
 
-    expect(script?.getHTML()).toBe(JSON.stringify(data));
+    expect(script).toHaveTextContent(JSON.stringify(data));
   });
 });
