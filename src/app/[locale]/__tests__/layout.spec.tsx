@@ -15,6 +15,13 @@ vi.mock('@/core/seo', () => ({
       { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
     ],
   })),
+  JsonLdScript: vi.fn(({ data }: { data: Record<string, unknown> }) => (
+    <script type="application/ld+json" data-testid="json-ld-script">
+      {JSON.stringify(data)}
+    </script>
+  )),
+  organizationJsonLd: vi.fn(() => ({ '@type': 'Organization' })),
+  websiteJsonLd: vi.fn(() => ({ '@type': 'WebSite' })),
 }));
 
 const localeParameters = (locale: string) => ({

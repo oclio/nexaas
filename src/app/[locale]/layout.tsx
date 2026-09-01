@@ -10,7 +10,13 @@ import { ReactNode } from 'react';
 import { ThemeProvider } from '@/app/[locale]/(main)/_components/theme-provider';
 import { routing } from '@/core/i18n/routing';
 import { WebVitals } from '@/core/observability/axiom/components/web-vitals';
-import { createLayoutMetadata, createViewport } from '@/core/seo';
+import {
+  createLayoutMetadata,
+  createViewport,
+  JsonLdScript,
+  organizationJsonLd,
+  websiteJsonLd,
+} from '@/core/seo';
 import ScreenSize from '@/ui/components/dev/screen-size';
 import { fontHeading, fontSans } from '@/ui/fonts';
 import { cn } from '@/ui/helpers';
@@ -60,8 +66,10 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages} locale={locale}>
             <main className="flex flex-1 flex-col">{children}</main>
           </NextIntlClientProvider>
-          <WebVitals />
         </ThemeProvider>
+        <WebVitals />
+        <JsonLdScript data={websiteJsonLd()} />
+        <JsonLdScript data={organizationJsonLd()} />
         <ScreenSize />
       </body>
     </html>
