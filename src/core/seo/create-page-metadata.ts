@@ -10,6 +10,13 @@ const ogLocaleMap: Record<string, string> = {
   fr: 'fr_FR',
 };
 
+function stripLocalePrefix(pathname: string, locale: string): string {
+  const prefix = `/${locale}`;
+  if (pathname === prefix) return '';
+  if (pathname.startsWith(`${prefix}/`)) return pathname.slice(prefix.length);
+  return pathname || '';
+}
+
 /**
  * Builds page-level metadata that overrides the layout defaults.
  *
@@ -19,14 +26,16 @@ const ogLocaleMap: Record<string, string> = {
  * The `title` is returned without a suffix; the layout's
  * `title.template` (`%s | nexaas`) applies automatically.
  *
- * The locale and page path are read from `x-locale` and `x-path` headers
- * set by the `withSeo` middleware, so pages only need to pass their
- * i18n namespace.
+ * The locale is read from the `x-locale` header set by `withIntl`,
+ * and the page path is derived from the `x-pathname` header set by the
+ * proxy middleware (locale prefix stripped), so pages only need to pass
+ * their i18n namespace.
  */
 export async function createPageMetadata(namespace: string): Promise<Metadata> {
   const headerList = await headers();
   const locale = headerList.get('x-locale') ?? routing.defaultLocale;
-  const path = headerList.get('x-path') ?? '';
+  const pathname = headerList.get('x-pathname') ?? '';
+  const path = stripLocalePrefix(pathname, locale);
 
   const t = await getTranslations({ locale, namespace });
 
