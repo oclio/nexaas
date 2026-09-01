@@ -14,36 +14,53 @@ describe('GlobalError', () => {
     vi.restoreAllMocks();
   });
 
-  it('captures exception to Sentry on mount', () => {
-    const error = new Error('Something went wrong');
+  describe('Sentry capture', () => {
+    it('captures exception to Sentry on mount', () => {
+      const error = new Error('Something went wrong');
 
-    render(<GlobalError error={error} />);
+      render(<GlobalError error={error} />);
 
-    expect(sentryMocks.captureException).toHaveBeenCalledWith(error);
-    expect(sentryMocks.captureException).toHaveBeenCalledOnce();
+      expect(sentryMocks.captureException).toHaveBeenCalledWith(error);
+      expect(sentryMocks.captureException).toHaveBeenCalledOnce();
+    });
+
+    it('captures exception again when error changes', () => {
+      const { rerender } = render(<GlobalError error={new Error('First')} />);
+
+      const secondError = new Error('Second');
+      rerender(<GlobalError error={secondError} />);
+
+      expect(sentryMocks.captureException).toHaveBeenCalledTimes(2);
+      expect(sentryMocks.captureException).toHaveBeenLastCalledWith(
+        secondError,
+      );
+    });
+
+    it('does not recapture when error reference stays the same', () => {
+      const error = new Error('Same');
+      const { rerender } = render(<GlobalError error={error} />);
+
+      rerender(<GlobalError error={error} />);
+
+      expect(sentryMocks.captureException).toHaveBeenCalledOnce();
+    });
   });
 
-  it('captures exception again when error changes', () => {
-    const { rerender } = render(<GlobalError error={new Error('First')} />);
+  describe('rendering', () => {
+    it('renders html with lang en', () => {
+      render(<GlobalError error={new Error('Test')} />);
 
-    const secondError = new Error('Second');
-    rerender(<GlobalError error={secondError} />);
+      expect(document.documentElement).toHaveAttribute('lang', 'en');
+    });
 
-    expect(sentryMocks.captureException).toHaveBeenCalledTimes(2);
-    expect(sentryMocks.captureException).toHaveBeenLastCalledWith(secondError);
-  });
+    it('renders the Next.js error page', () => {
+      render(<GlobalError error={new Error('Test')} />);
 
-  it('renders html with lang en', () => {
-    render(<GlobalError error={new Error('Test')} />);
-
-    expect(document.documentElement).toHaveAttribute('lang', 'en');
-  });
-
-  it('renders the Next.js error page', () => {
-    render(<GlobalError error={new Error('Test')} />);
-
-    expect(
-      screen.getByText(/Application error: a client-side exception/),
-    ).toBeInTheDocument();
+      expect(screen.getByTestId('next-error')).toBeInTheDocument();
+      expect(screen.getByTestId('next-error')).toHaveAttribute(
+        'data-status-code',
+        '0',
+      );
+    });
   });
 });

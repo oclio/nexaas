@@ -31,3 +31,9 @@ vi.mock('next/image', () => ({
     />
   ),
 }));
+
+vi.mock('next/error', () => ({
+  default: ({ statusCode }: { statusCode: number }) => (
+    <div data-testid="next-error" data-status-code={statusCode} />
+  ),
+}));

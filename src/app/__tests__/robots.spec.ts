@@ -1,8 +1,6 @@
-import { describe, expect, it } from 'vitest';
-
 import { env } from '@/core/env';
 
-import robots from '../robots';
+const { default: robots } = await import('../robots');
 
 describe('robots', () => {
   it('allows all user agents to access the root', () => {
@@ -15,15 +13,15 @@ describe('robots', () => {
     });
   });
 
-  it('points to the sitemap at the app url', () => {
+  it.each([
+    {
+      prop: 'sitemap' as const,
+      expected: `${env.NEXT_PUBLIC_APP_URL}/sitemap.xml`,
+    },
+    { prop: 'host' as const, expected: env.NEXT_PUBLIC_APP_URL },
+  ])('sets $prop to $expected', ({ prop, expected }) => {
     const result = robots();
 
-    expect(result.sitemap).toBe(`${env.NEXT_PUBLIC_APP_URL}/sitemap.xml`);
-  });
-
-  it('sets host to the app url', () => {
-    const result = robots();
-
-    expect(result.host).toBe(env.NEXT_PUBLIC_APP_URL);
+    expect(result[prop as keyof typeof result]).toBe(expected);
   });
 });

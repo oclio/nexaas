@@ -1,5 +1,3 @@
-import { describe, expect, it } from 'vitest';
-
 import meta from '@/../messages/en/meta';
 import { app } from '@/config';
 
@@ -31,36 +29,27 @@ describe('manifest', () => {
     expect(result.start_url).toBe('/');
   });
 
-  it('declares both PWA icons', () => {
+  it.each([
+    { field: 'sizes' as const, expected: ['192x192', '512x512'] },
+    { field: 'type' as const, expected: ['image/png', 'image/png'] },
+    {
+      field: 'src' as const,
+      expected: ['/images/logo-192.png', '/images/logo-512.png'],
+    },
+  ])('icons have correct $field', ({ field, expected }) => {
     const result = manifest();
-    const sizes = result.icons?.map((index) => index.sizes);
 
-    expect(sizes).toEqual(['192x192', '512x512']);
+    expect(
+      result.icons?.map((icon) => icon[field as keyof typeof icon]),
+    ).toEqual(expected);
   });
 
-  it('uses png type for all icons', () => {
-    const result = manifest();
-    const types = result.icons?.map((index) => index.type);
-
-    expect(types).toEqual(['image/png', 'image/png']);
-  });
-
-  it('points each icon to the matching logo file', () => {
-    const result = manifest();
-    const srcs = result.icons?.map((index) => index.src);
-
-    expect(srcs).toEqual(['/images/logo-192.png', '/images/logo-512.png']);
-  });
-
-  it('uses a dark background color', () => {
+  it.each([
+    { prop: 'background_color' as const, expected: '#0a0a0a' },
+    { prop: 'theme_color' as const, expected: '#0a0a0a' },
+  ])('uses $prop $expected', ({ prop, expected }) => {
     const result = manifest();
 
-    expect(result.background_color).toBe('#0a0a0a');
-  });
-
-  it('uses a dark theme color', () => {
-    const result = manifest();
-
-    expect(result.theme_color).toBe('#0a0a0a');
+    expect(result[prop as keyof typeof result]).toBe(expected);
   });
 });

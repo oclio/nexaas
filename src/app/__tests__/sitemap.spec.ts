@@ -1,9 +1,7 @@
-import { describe, expect, it } from 'vitest';
-
 import { env } from '@/core/env';
 import { routing } from '@/core/i18n/routing';
 
-import sitemap from '../sitemap';
+const { default: sitemap } = await import('../sitemap');
 
 describe('sitemap', () => {
   it('returns one entry per locale per route', () => {
@@ -12,22 +10,23 @@ describe('sitemap', () => {
     expect(result).toHaveLength(routing.locales.length);
   });
 
-  it('builds the url from env and locale', () => {
+  it.each([
+    {
+      prop: 'url' as const,
+      expected: `${env.NEXT_PUBLIC_APP_URL}/${routing.locales[0]}`,
+    },
+    { prop: 'changeFrequency' as const, expected: 'weekly' },
+    { prop: 'priority' as const, expected: 1 },
+  ])('sets $prop correctly on the first entry', ({ prop, expected }) => {
     const [entry] = sitemap();
 
-    expect(entry.url).toBe(`${env.NEXT_PUBLIC_APP_URL}/${routing.locales[0]}`);
+    expect(entry[prop]).toBe(expected);
   });
 
-  it('sets changeFrequency to weekly for the home route', () => {
+  it('sets lastModified to a Date instance', () => {
     const [entry] = sitemap();
 
-    expect(entry.changeFrequency).toBe('weekly');
-  });
-
-  it('sets priority to 1 for the home route', () => {
-    const [entry] = sitemap();
-
-    expect(entry.priority).toBe(1);
+    expect(entry.lastModified).toBeInstanceOf(Date);
   });
 
   it('includes an alternates.languages entry per supported locale', () => {
@@ -40,9 +39,18 @@ describe('sitemap', () => {
     );
   });
 
-  it('sets lastModified to a Date instance', () => {
-    const [entry] = sitemap();
+  it.each(routing.locales)(
+    'builds correct url and alternates for locale %s',
+    (locale) => {
+      const result = sitemap();
+      const entry = result.find(
+        (item) => item.url === `${env.NEXT_PUBLIC_APP_URL}/${locale}`,
+      );
 
-    expect(entry.lastModified).toBeInstanceOf(Date);
-  });
+      expect(entry).toBeDefined();
+      expect(entry?.alternates?.languages?.[locale]).toBe(
+        `${env.NEXT_PUBLIC_APP_URL}/${locale}`,
+      );
+    },
+  );
 });
