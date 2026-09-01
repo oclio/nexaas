@@ -7,19 +7,12 @@ import {
 
 import { withIntl } from '../with-intl';
 
-const { intlMiddlewareMock, nextResponseMock } = vi.hoisted(() => ({
+const { intlMiddlewareMock } = vi.hoisted(() => ({
   intlMiddlewareMock: vi.fn(),
-  nextResponseMock: vi.fn(),
 }));
 
 vi.mock('next-intl/middleware', () => ({
   default: vi.fn(() => intlMiddlewareMock),
-}));
-
-vi.mock('next/server', () => ({
-  NextResponse: {
-    next: nextResponseMock,
-  },
 }));
 
 function mockRequest(
@@ -34,16 +27,12 @@ function mockRequest(
 
 const mockEvent = mockNextFetchEvent;
 
-function nextMock() {
-  return vi.fn().mockResolvedValue({} as Response);
-}
-
-function expectLocaleHeader(value: string) {
-  expect(nextResponseMock).toHaveBeenCalledOnce();
-  const argument = nextResponseMock.mock.calls[0][0] as {
-    request: { headers: Headers };
-  };
-  expect(argument.request.headers.get('x-locale')).toBe(value);
+function createNextMock(headers = new Headers()) {
+  const response = {
+    headers,
+    status: 200,
+  } as Response;
+  return vi.fn().mockResolvedValue(response);
 }
 
 describe('withIntl', () => {
@@ -58,10 +47,13 @@ describe('withIntl', () => {
         const request = mockRequest(pathname, {
           headers: { 'x-locale': 'fr' },
         });
+        const next = createNextMock();
 
-        await withIntl(request, mockEvent(), nextMock());
+        const response = await withIntl(request, mockEvent(), next);
 
-        expectLocaleHeader('fr');
+        expect(next).toHaveBeenCalledOnce();
+        expect(request.headers.get('x-locale')).toBe('fr');
+        expect(response.headers.get('x-locale')).toBe('fr');
         expect(intlMiddlewareMock).not.toHaveBeenCalled();
       },
     );
@@ -70,18 +62,24 @@ describe('withIntl', () => {
       const request = mockRequest('/api/users', {
         cookies: { NEXT_LOCALE: 'fr' },
       });
+      const next = createNextMock();
 
-      await withIntl(request, mockEvent(), nextMock());
+      const response = await withIntl(request, mockEvent(), next);
 
-      expectLocaleHeader('fr');
+      expect(next).toHaveBeenCalledOnce();
+      expect(request.headers.get('x-locale')).toBe('fr');
+      expect(response.headers.get('x-locale')).toBe('fr');
     });
 
     it('falls back to the default locale when neither header nor cookie is present', async () => {
       const request = mockRequest('/api/data');
+      const next = createNextMock();
 
-      await withIntl(request, mockEvent(), nextMock());
+      const response = await withIntl(request, mockEvent(), next);
 
-      expectLocaleHeader('en');
+      expect(next).toHaveBeenCalledOnce();
+      expect(request.headers.get('x-locale')).toBe('en');
+      expect(response.headers.get('x-locale')).toBe('en');
     });
 
     it('prefers the x-locale header over the NEXT_LOCALE cookie', async () => {
@@ -89,10 +87,13 @@ describe('withIntl', () => {
         headers: { 'x-locale': 'en' },
         cookies: { NEXT_LOCALE: 'fr' },
       });
+      const next = createNextMock();
 
-      await withIntl(request, mockEvent(), nextMock());
+      const response = await withIntl(request, mockEvent(), next);
 
-      expectLocaleHeader('en');
+      expect(next).toHaveBeenCalledOnce();
+      expect(request.headers.get('x-locale')).toBe('en');
+      expect(response.headers.get('x-locale')).toBe('en');
     });
   });
 
@@ -102,19 +103,81 @@ describe('withIntl', () => {
       { pathname: '/about', expectedLocale: 'en' },
       { pathname: '/fr/about', expectedLocale: 'fr' },
       { pathname: '/', expectedLocale: 'en' },
+      { pathname: '/xyz/about', expectedLocale: 'en' },
     ])(
-      'sets x-locale to $expectedLocale for $pathname',
+      'sets x-locale to $expectedLocale for $pathname and calls next',
       async ({ pathname, expectedLocale }) => {
-        const responseHeaders = new Headers();
         intlMiddlewareMock.mockReturnValue({
-          headers: responseHeaders,
+          headers: new Headers({ 'x-middleware-rewrite': '/en/about' }),
+          status: 200,
         } as Response);
         const request = mockRequest(pathname);
+        const next = createNextMock(new Headers({ 'x-trace-id': 'abc' }));
 
-        await withIntl(request, mockEvent(), nextMock());
+        const response = await withIntl(request, mockEvent(), next);
 
         expect(intlMiddlewareMock).toHaveBeenCalledWith(request);
-        expect(responseHeaders.get('x-locale')).toBe(expectedLocale);
+        expect(next).toHaveBeenCalledOnce();
+        expect(response.headers.get('x-locale')).toBe(expectedLocale);
+        expect(response.headers.get('x-trace-id')).toBe('abc');
+        expect(response.headers.get('x-middleware-rewrite')).toBe('/en/about');
+      },
+    );
+
+    it('calls next and merges headers when next-intl returns a non-redirect status', async () => {
+      intlMiddlewareMock.mockReturnValue({
+        headers: new Headers(),
+        status: 201,
+      } as Response);
+      const request = mockRequest('/en');
+      const next = createNextMock(new Headers({ 'x-trace-id': 'abc' }));
+
+      const response = await withIntl(request, mockEvent(), next);
+
+      expect(next).toHaveBeenCalledOnce();
+      expect(response.headers.get('x-trace-id')).toBe('abc');
+      expect(response.headers.get('x-locale')).toBe('en');
+    });
+
+    it('returns redirect response directly without calling next when next-intl redirects', async () => {
+      intlMiddlewareMock.mockReturnValue({
+        headers: new Headers({ location: '/en' }),
+        status: 307,
+      } as Response);
+      const request = mockRequest('/');
+      const next = createNextMock();
+
+      const response = await withIntl(request, mockEvent(), next);
+
+      expect(intlMiddlewareMock).toHaveBeenCalledWith(request);
+      expect(next).not.toHaveBeenCalled();
+      expect(response.status).toBe(307);
+      expect(response.headers.get('location')).toBe('/en');
+      expect(response.headers.get('x-locale')).toBe('en');
+    });
+
+    it.each([
+      { status: 300, shouldRedirect: true },
+      { status: 400, shouldRedirect: false },
+    ])(
+      'treats status $status as $shouldRedirect redirect',
+      async ({ status, shouldRedirect }) => {
+        intlMiddlewareMock.mockReturnValue({
+          headers: new Headers(shouldRedirect ? { location: '/en' } : {}),
+          status,
+        } as Response);
+        const request = mockRequest('/');
+        const next = createNextMock(new Headers({ 'x-trace-id': 'abc' }));
+
+        const response = await withIntl(request, mockEvent(), next);
+
+        if (shouldRedirect) {
+          expect(next).not.toHaveBeenCalled();
+          expect(response.status).toBe(status);
+        } else {
+          expect(next).toHaveBeenCalledOnce();
+          expect(response.headers.get('x-trace-id')).toBe('abc');
+        }
       },
     );
   });
