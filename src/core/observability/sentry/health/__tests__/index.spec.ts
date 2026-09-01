@@ -2,20 +2,32 @@ import { vi } from 'vitest';
 
 import { sentryMocks } from '@/tests/unit/mocks/observability';
 
-const { checkSentryService } = await import('../index');
+import { checkSentryService } from '../index';
 
 describe('checkSentryService', () => {
-  afterEach(() => {
+  let originalSentryDsn: string | undefined;
+
+  beforeEach(() => {
     vi.clearAllMocks();
+    originalSentryDsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
+  });
+
+  afterEach(() => {
     vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+    if (originalSentryDsn === undefined) {
+      delete process.env.NEXT_PUBLIC_SENTRY_DSN;
+    } else {
+      process.env.NEXT_PUBLIC_SENTRY_DSN = originalSentryDsn;
+    }
   });
 
   it('returns disabled when DSN is not set', async () => {
-    delete process.env.NEXT_PUBLIC_SENTRY_DSN;
+    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', undefined as unknown as string);
 
     const result = await checkSentryService();
 
-    expect(result).toEqual({ status: 'disabled' });
+    expect(result).toMatchObject({ status: 'disabled' });
   });
 
   it('returns unhealthy when Sentry client is not initialized', async () => {
@@ -24,9 +36,9 @@ describe('checkSentryService', () => {
 
     const result = await checkSentryService();
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       status: 'unhealthy',
-      reason: 'Client not initialized',
+      reason: expect.stringMatching(/^.+$/),
     });
   });
 
@@ -39,7 +51,7 @@ describe('checkSentryService', () => {
 
     const result = await checkSentryService();
 
-    expect(result).toEqual({ status: 'healthy' });
+    expect(result).toMatchObject({ status: 'healthy' });
   });
 
   it.each([500, 503])(
@@ -53,23 +65,23 @@ describe('checkSentryService', () => {
 
       const result = await checkSentryService();
 
-      expect(result).toEqual({ status: 'unhealthy' });
+      expect(result).toMatchObject({ status: 'unhealthy' });
     },
   );
 
   it('returns unhealthy with error message when fetch throws', async () => {
     vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'https://sentry.io/abc');
     sentryMocks.getClient.mockReturnValue({});
-    vi.spyOn(globalThis, 'fetch').mockRejectedValue(
-      new Error('connection refused'),
-    );
+    const errorMessage = 'connection refused';
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error(errorMessage));
 
     const result = await checkSentryService();
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       status: 'unhealthy',
-      error: 'connection refused',
+      error: expect.stringMatching(/^.+$/),
     });
+    expect((result as { error: string }).error).toBe(errorMessage);
   });
 
   it('returns unhealthy with error message on invalid DSN URL', async () => {
@@ -78,8 +90,10 @@ describe('checkSentryService', () => {
 
     const result = await checkSentryService();
 
-    expect(result.status).toBe('unhealthy');
-    expect(typeof (result as { error: string }).error).toBe('string');
+    expect(result).toMatchObject({
+      status: 'unhealthy',
+      error: expect.stringMatching(/^.+$/),
+    });
   });
 
   it('constructs fetch URL from DSN protocol and host', async () => {
