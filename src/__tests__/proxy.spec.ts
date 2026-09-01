@@ -42,61 +42,62 @@ describe('proxy', () => {
     expect(defaultExport).toBe(proxy);
   });
 
-  it('returns error response with traceId when handler throws', async () => {
-    chainMock.mockReturnValue(async () => {
-      throw new Error('middleware failed');
-    });
+  it.each<{
+    errorType: string;
+    headers: Record<string, string>;
+    expectedStatus: number;
+    expectedTraceId: string | undefined;
+  }>([
+    {
+      errorType: 'Error',
+      headers: { 'x-trace-id': 'trace-123' },
+      expectedStatus: 500,
+      expectedTraceId: 'trace-123',
+    },
+    {
+      errorType: 'Error',
+      headers: {},
+      expectedStatus: 500,
+      expectedTraceId: undefined,
+    },
+    {
+      errorType: 'AppError',
+      headers: { 'x-trace-id': 'trace-456' },
+      expectedStatus: 400,
+      expectedTraceId: 'trace-456',
+    },
+    {
+      errorType: 'TypeError',
+      headers: {},
+      expectedStatus: 500,
+      expectedTraceId: undefined,
+    },
+  ])(
+    'returns $expectedStatus with $expectedTraceId traceId when handler throws $errorType',
+    async ({ errorType, headers, expectedStatus, expectedTraceId }) => {
+      const { AppError } = await import('@/core/errors');
+      let error: Error;
+      if (errorType === 'AppError') {
+        error = new AppError(ErrorCode.UNKNOWN_ERROR, 'Bad request', 400);
+      } else if (errorType === 'TypeError') {
+        error = new TypeError('plain error');
+      } else {
+        error = new Error('middleware failed');
+      }
 
-    const { proxy } = await import('@/proxy');
-    const response = await proxy(
-      mockRequest({ 'x-trace-id': 'trace-123' }),
-      mockEvent(),
-    );
-    const body = await response.json();
+      chainMock.mockReturnValue(async () => {
+        throw error;
+      });
 
-    expect(response.status).toBe(500);
-    expect(body.error).toBe('Internal Server Error');
-    expect(body.traceId).toBe('trace-123');
-  });
+      const { proxy } = await import('@/proxy');
+      const response = await proxy(mockRequest(headers), mockEvent());
+      const body = await response.json();
 
-  it('returns error response with undefined traceId when header is missing', async () => {
-    chainMock.mockReturnValue(async () => {
-      throw new Error('middleware failed');
-    });
-
-    const { proxy } = await import('@/proxy');
-    const response = await proxy(mockRequest(), mockEvent());
-    const body = await response.json();
-
-    expect(response.status).toBe(500);
-    expect(body.traceId).toBeUndefined();
-  });
-
-  it('uses statusCode from AppError when thrown', async () => {
-    const { AppError } = await import('@/core/errors');
-    chainMock.mockReturnValue(async () => {
-      throw new AppError(ErrorCode.UNKNOWN_ERROR, 'Bad request', 400);
-    });
-
-    const { proxy } = await import('@/proxy');
-    const response = await proxy(
-      mockRequest({ 'x-trace-id': 'trace-456' }),
-      mockEvent(),
-    );
-
-    expect(response.status).toBe(400);
-  });
-
-  it('defaults to 500 when a non-AppError is thrown', async () => {
-    chainMock.mockReturnValue(async () => {
-      throw new TypeError('plain error');
-    });
-
-    const { proxy } = await import('@/proxy');
-    const response = await proxy(mockRequest(), mockEvent());
-
-    expect(response.status).toBe(500);
-  });
+      expect(response.status).toBe(expectedStatus);
+      expect(body.error).toBe('Internal Server Error');
+      expect(body.traceId).toBe(expectedTraceId);
+    },
+  );
 
   it('passes the stack to chain', async () => {
     chainMock.mockReturnValue(async () => NextResponse.next());
@@ -106,6 +107,17 @@ describe('proxy', () => {
 
     expect(chainMock).toHaveBeenCalledOnce();
     expect(chainMock.mock.calls[0][0]).toBeTruthy();
+  });
+
+  it('sets x-pathname on the request before calling the chain', async () => {
+    const handler = vi.fn(async () => NextResponse.next());
+    chainMock.mockReturnValue(handler);
+
+    const { proxy } = await import('@/proxy');
+    const request = mockRequest();
+    await proxy(request, mockEvent());
+
+    expect(request.headers.get('x-pathname')).toBe(request.nextUrl.pathname);
   });
 });
 

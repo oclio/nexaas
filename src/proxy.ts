@@ -5,6 +5,8 @@ import { chain } from '@/core/middlewares/chain';
 import stack from '@/proxy-stack';
 
 export const proxy = async (request: NextRequest, event: NextFetchEvent) => {
+  request.headers.set('x-pathname', request.nextUrl.pathname);
+
   const handler = chain(stack);
   try {
     return await handler(request, event);
