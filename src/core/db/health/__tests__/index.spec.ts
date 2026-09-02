@@ -12,7 +12,9 @@ vi.mock('@/core/async/helpers/with-timeout', () => ({
   withTimeout: withTimeoutMock,
 }));
 
-const sqlMock = vi.hoisted(() => vi.fn(() => ({})));
+const sqlMock = vi.hoisted(() =>
+  vi.fn((strings: TemplateStringsArray) => strings),
+);
 vi.mock('drizzle-orm', () => ({ sql: sqlMock }));
 
 const { checkDatabaseService } = await import('../index');

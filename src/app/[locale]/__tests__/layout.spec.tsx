@@ -37,6 +37,7 @@ import RootLayout, {
 describe('RootLayout', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(console, 'error').mockImplementation(vi.fn());
   });
 
   afterEach(() => {
