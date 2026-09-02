@@ -4,22 +4,30 @@ nexaas implements a defense-in-depth strategy through composable middleware. Eac
 
 ## Middleware Chain
 
-All security middleware is registered in `src/proxy.ts` and runs in order:
+All security middleware is registered in `src/proxy-stack.ts` and composed by `src/proxy.ts`. The chain follows an onion model — the first middleware is the **outermost** layer (wraps everything, sees the final response) and the last is the **innermost** (closest to `next()`):
 
 ```text
-Request → withAxiom → withCsp → withCsrf → withBodySizeLimit → withArcjet → withSecureCookies → Response
+Request → withSecureCookies → withIntl → withAxiom → withCsp → withCsrf → withBodySizeLimit → withArcjet → next() → Response
+         ←─────────────────────────────────────────────────────────────────────────────────────
 ```
 
 | Order | Middleware          | Purpose                                        |
 | ----- | ------------------- | ---------------------------------------------- |
-| 1     | `withAxiom`         | Request tracing, logging                       |
-| 2     | `withCsp`           | Content-Security-Policy header                 |
-| 3     | `withCsrf`          | CSRF protection via Origin check               |
-| 4     | `withBodySizeLimit` | Rejects oversized request bodies (413)         |
-| 5     | `withArcjet`        | Rate limiting, bot detection, shield           |
-| 6     | `withSecureCookies` | Enforces HttpOnly, Secure, SameSite on cookies |
+| 1     | `withSecureCookies` | Enforces HttpOnly, Secure, SameSite on cookies |
+| 2     | `withIntl`          | Locale detection, sets `NEXT_LOCALE` cookie    |
+| 3     | `withAxiom`         | Request tracing, logging                       |
+| 4     | `withCsp`           | Content-Security-Policy header                 |
+| 5     | `withCsrf`          | CSRF protection via Origin check               |
+| 6     | `withBodySizeLimit` | Rejects oversized request bodies (413)         |
+| 7     | `withArcjet`        | Rate limiting, bot detection, shield           |
 
 Each middleware calls `next()` to pass control to the next layer. If a middleware rejects the request (e.g. CSRF fail, body too large, Arcjet deny), it returns a response directly without calling `next()`.
+
+### Why `withSecureCookies` is outermost
+
+`withSecureCookies` modifies the **response** (adds `HttpOnly`, `SameSite`, `Secure` to every `Set-Cookie` header). In the onion model, response-modifying middleware must be outermost so that no other middleware can alter the `Set-Cookie` header **after** it has been secured.
+
+If `withSecureCookies` were placed innermost (after `withIntl`), `withIntl` would copy the `Set-Cookie` header from next-intl onto the response **after** `withSecureCookies` had already run — bypassing the security attributes entirely and leaving the `NEXT_LOCALE` cookie without `HttpOnly`/`SameSite`.
 
 ## File structure
 

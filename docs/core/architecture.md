@@ -123,13 +123,15 @@ The chain runs middlewares in order, unwinds in reverse, and wraps any non-`AppE
 
 | Order | Middleware          | Purpose                                                      |
 | ----- | ------------------- | ------------------------------------------------------------ |
-| 1     | `withIntl`          | Locale resolution — sets `x-locale` on response (all routes) |
-| 2     | `withAxiom`         | Request logging and tracing via Axiom                        |
-| 3     | `withCsp`           | Content-Security-Policy header                               |
-| 4     | `withCsrf`          | CSRF protection for state-changing requests                  |
-| 5     | `withBodySizeLimit` | Rejects requests exceeding the configured body size          |
-| 6     | `withArcjet`        | Rate limiting and bot detection via Arcjet                   |
-| 7     | `withSecureCookies` | Sets secure flags on cookies                                 |
+| 1     | `withSecureCookies` | Enforces HttpOnly, Secure, SameSite on response cookies      |
+| 2     | `withIntl`          | Locale resolution — sets `x-locale` on response (all routes) |
+| 3     | `withAxiom`         | Request logging and tracing via Axiom                        |
+| 4     | `withCsp`           | Content-Security-Policy header                               |
+| 5     | `withCsrf`          | CSRF protection for state-changing requests                  |
+| 6     | `withBodySizeLimit` | Rejects requests exceeding the configured body size          |
+| 7     | `withArcjet`        | Rate limiting and bot detection via Arcjet                   |
+
+`withSecureCookies` is intentionally first (outermost) so it sees the final response after all other middlewares have set their `Set-Cookie` headers. See [Security](./security#why-withsecurecookies-is-outermost) for details.
 
 ### Header flow
 
