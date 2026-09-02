@@ -1,14 +1,8 @@
 import createMiddleware from 'next-intl/middleware';
 
+import { parsePathname } from '@/core/i18n/parse-pathname';
 import { routing } from '@/core/i18n/routing';
 import type { CustomMiddleware } from '@/core/middlewares/types';
-
-function resolveLocale(pathname: string): string {
-  const segment = pathname.split('/').find(Boolean);
-  return segment && routing.locales.includes(segment as never)
-    ? segment
-    : routing.defaultLocale;
-}
 
 export const withIntl: CustomMiddleware = async (request, _event, next) => {
   const { pathname } = request.nextUrl;
@@ -29,7 +23,7 @@ export const withIntl: CustomMiddleware = async (request, _event, next) => {
   const intlResponse = handleIntl(request);
 
   if (intlResponse.status >= 300 && intlResponse.status < 400) {
-    intlResponse.headers.set('x-locale', resolveLocale(pathname));
+    intlResponse.headers.set('x-locale', parsePathname(pathname).locale);
     return intlResponse;
   }
 
@@ -38,7 +32,7 @@ export const withIntl: CustomMiddleware = async (request, _event, next) => {
   for (const [key, value] of intlResponse.headers) {
     response.headers.set(key, value);
   }
-  response.headers.set('x-locale', resolveLocale(pathname));
+  response.headers.set('x-locale', parsePathname(pathname).locale);
 
   return response;
 };

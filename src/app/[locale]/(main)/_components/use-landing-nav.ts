@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
 
-import { supportedLocales } from '@/core/i18n/routing';
+import { parsePathname } from '@/core/i18n/parse-pathname';
 
 import { useActiveSection } from './use-active-section';
 
@@ -19,15 +19,10 @@ interface Link {
 export function useLandingNav<T extends Link>(links: T[]) {
   const rawPathname = usePathname();
 
-  const pathname = useMemo(() => {
-    const locales = supportedLocales.map((locale) => locale.code);
-
-    if (locales.some((locale) => rawPathname === `/${locale}`)) {
-      return '/';
-    }
-
-    return rawPathname.replace(new RegExp(`^/(${locales.join('|')})`), '');
-  }, [rawPathname]);
+  const pathname = useMemo(
+    () => parsePathname(rawPathname).path,
+    [rawPathname],
+  );
 
   const isLandingPage = pathname === '/';
   const sectionIds = links
