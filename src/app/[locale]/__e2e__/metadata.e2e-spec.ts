@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import metaEn from '@/../messages/en/meta';
-import pageLandingEn from '@/../messages/en/page-landing';
+import pagesProductEn from '@/../messages/en/pages-product';
 import { app } from '@/config';
 import { routing, supportedLocales } from '@/core/i18n/routing';
 
@@ -13,12 +13,12 @@ test('renders all layout metadata from en translations', async ({ page }) => {
     routing.defaultLocale,
   );
   await expect(page).toHaveTitle(
-    `${pageLandingEn.landing.title} | ${app.title}`,
+    `${pagesProductEn.landing.title} | ${app.title}`,
   );
 
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     'content',
-    pageLandingEn.landing.description,
+    pagesProductEn.landing.description,
   );
 
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
@@ -43,12 +43,12 @@ test('renders all layout metadata from en translations', async ({ page }) => {
 
   await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
     'content',
-    pageLandingEn.landing.title,
+    pagesProductEn.landing.title,
   );
 
   await expect(page.locator('meta[property="og:description"]')).toHaveAttribute(
     'content',
-    pageLandingEn.landing.description,
+    pagesProductEn.landing.description,
   );
 
   await expect(page.locator('meta[property="og:type"]')).toHaveAttribute(
@@ -63,12 +63,12 @@ test('renders all layout metadata from en translations', async ({ page }) => {
 
   await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute(
     'content',
-    pageLandingEn.landing.title,
+    pagesProductEn.landing.title,
   );
 
   await expect(
     page.locator('meta[name="twitter:description"]'),
-  ).toHaveAttribute('content', pageLandingEn.landing.description);
+  ).toHaveAttribute('content', pagesProductEn.landing.description);
 
   const robots = await page
     .locator('meta[name="robots"]')
