@@ -168,7 +168,10 @@ jobs:
     needs: [check]
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'docs-only')
+    if: |
+      (github.event_name == 'pull_request' || github.event_name == 'push') &&
+      (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'docs-only')) &&
+      (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'chore(release):'))
     env:
       HUSKY: 0
 
@@ -189,15 +192,6 @@ jobs:
 
       - name: 📦 Install Dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
-
-      - name: 📂 Restore Stryker Incremental Cache
-        uses: actions/cache@v6
-        with:
-          path: .stryker-tmp/incremental.json
-          key: stryker-incremental-${{ github.ref_name }}-${{ github.sha }}
-          restore-keys: |
-            stryker-incremental-${{ github.ref_name }}-
-            stryker-incremental-main-
 
       - name: 🧬 Mutation Testing
         run: pnpm stryker run --incremental
