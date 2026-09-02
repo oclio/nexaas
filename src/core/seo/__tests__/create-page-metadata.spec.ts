@@ -198,7 +198,8 @@ describe('createPageMetadata', () => {
 
     expect(translationMock.raw).toHaveBeenCalledTimes(2);
     expect(translationMock.raw).toHaveBeenNthCalledWith(1, 'keywords');
-    const layoutKeywords = messagesMock.meta.keywords as string[];
+    const layoutKeywords = (messagesMock.meta as { keywords: string[] })
+      .keywords;
     expect(metadata.keywords).toEqual([
       ...new Set([...app.keywords, ...layoutKeywords]),
     ]);

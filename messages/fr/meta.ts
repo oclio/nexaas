@@ -11,6 +11,7 @@ export default {
     'react',
     'saas',
     'saas boilerplate',
+    'saaskip',
     'saas starter',
     'starter kit',
     'tailwindcss',
