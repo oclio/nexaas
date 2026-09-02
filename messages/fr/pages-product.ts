@@ -20,6 +20,9 @@ export default {
     title: 'Bienvenue !',
   },
   whatIsIncluded: {
+    description:
+      'Le détail complet de tout ce qui est inclus dans saaskip : architecture, modules, outillage, tests et intégrations.',
+    keywords: ['architecture', 'fonctionnalités', 'inclus', 'modules'],
     title: 'Ce qui est inclus',
     viewAll: 'Voir toutes les fonctionnalités incluses',
   },
