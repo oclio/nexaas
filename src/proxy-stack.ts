@@ -8,13 +8,13 @@ import { withCsp } from '@/core/security/csp/middlewares/with-csp';
 import { withCsrf } from '@/core/security/csrf/middlewares/with-csrf';
 
 const stack: CustomMiddleware[] = [
+  withSecureCookies,
   withIntl,
   withAxiom,
   withCsp,
   withCsrf,
   withBodySizeLimit,
   withArcjet,
-  withSecureCookies,
 ];
 
 export default stack;
