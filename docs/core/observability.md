@@ -1,6 +1,6 @@
 # Observability
 
-nexaas uses [Axiom](https://axiom.co) for structured logging, request tracing, and web vitals collection, and [Sentry](https://sentry.io) for error tracking and session replays.
+saaskip uses [Axiom](https://axiom.co) for structured logging, request tracing, and web vitals collection, and [Sentry](https://sentry.io) for error tracking and session replays.
 
 ## Setup
 
@@ -30,7 +30,7 @@ SENTRY_AUTH_TOKEN=sntryu-your-auth-token
 | `NEXT_PUBLIC_SENTRY_DSN` | No       | Sentry DSN (client-side accessible). If unset, **Sentry is fully bypassed** — no errors are captured, no replays, and the health check reports `disabled`. |
 | `SENTRY_AUTH_TOKEN`      | No       | Sentry auth token for source map uploads during build. Place in `.env.sentry-build-plugin`.                                                                |
 
-> **Tip:** You can run nexaas locally without any Axiom or Sentry account. Simply leave the env vars unset — everything works, just without telemetry.
+> **Tip:** You can run saaskip locally without any Axiom or Sentry account. Simply leave the env vars unset — everything works, just without telemetry.
 
 ## File structure
 

@@ -8,7 +8,7 @@
 ## Installation
 
 ```bash
-git clone https://github.com/oclio/nexaas.git my-saas
+git clone https://github.com/oclio/saaskip.git my-saas
 cd my-saas
 pnpm install
 ```

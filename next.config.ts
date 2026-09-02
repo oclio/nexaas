@@ -22,7 +22,7 @@ const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
 export default dsn
   ? withSentryConfig(composedConfig, {
       org: 'oclio',
-      project: 'nexaas',
+      project: 'saaskip',
       ...(commitSha && {
         release: { name: commitSha, create: true, finalize: true },
       }),

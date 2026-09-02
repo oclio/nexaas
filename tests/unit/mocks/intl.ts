@@ -2,7 +2,7 @@ import { vi } from 'vitest';
 
 const messagesMock: Record<string, unknown> = {
   meta: {
-    title: 'nexaas',
+    title: 'saaskip',
     description: 'A scalable, production-ready SaaS boilerplate.',
     keywords: ['saas', 'boilerplate', 'nextjs', 'typescript'],
   },

@@ -1,6 +1,6 @@
 # Environment Variables
 
-nexaas uses [`@t3-oss/env-nextjs`](https://github.com/t3-oss/t3-env) with [zod](https://zod.dev) for typed, validated environment variables.
+saaskip uses [`@t3-oss/env-nextjs`](https://github.com/t3-oss/t3-env) with [zod](https://zod.dev) for typed, validated environment variables.
 
 ## How it works
 
@@ -58,4 +58,4 @@ This prevents CI and test runners from failing on missing env vars.
 
 ## Reference
 
-See [`.env.example`](https://github.com/oclio/nexaas/blob/main/.env.example) for the full list of variables and their descriptions.
+See [`.env.example`](https://github.com/oclio/saaskip/blob/main/.env.example) for the full list of variables and their descriptions.

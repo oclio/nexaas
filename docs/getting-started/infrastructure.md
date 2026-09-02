@@ -1,6 +1,6 @@
 # Infrastructure
 
-nexaas ships with a PostgreSQL database (with [pgvector](https://github.com/pgvector/pgvector)) running in Docker, managed by [Drizzle ORM](https://orm.drizzle.team). Everything is configured for zero-friction local development.
+saaskip ships with a PostgreSQL database (with [pgvector](https://github.com/pgvector/pgvector)) running in Docker, managed by [Drizzle ORM](https://orm.drizzle.team). Everything is configured for zero-friction local development.
 
 ## PostgreSQL with pgvector
 
@@ -19,11 +19,11 @@ The database is available on port `5455` (mapped to avoid conflicts with local P
 | Setting         | Value                                |
 | --------------- | ------------------------------------ |
 | Image           | `pgvector/pgvector:pg16`             |
-| Container       | `nexaas-postgres`                    |
+| Container       | `saaskip-postgres`                   |
 | Port            | `5455` → `5432`                      |
 | User / Password | `postgres` / `postgres`              |
 | Database        | `db` (created by `init-postgres.sh`) |
-| Volume          | `nexaas-postgres-data` (persistent)  |
+| Volume          | `saaskip-postgres-data` (persistent) |
 
 The `docker/init-postgres.sh` script runs on first startup and:
 

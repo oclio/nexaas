@@ -1,24 +1,24 @@
 <div align="center">
   <img src="./docs/images/logo.svg" alt="Logo" width="60" />
-  <h1>nexaas</h1>
+  <h1>saaskip</h1>
   <p>
   Forget <i>production-ready</i>.
   <br />
   Build on something <strong>unbreakable</strong>.
   </p>
 
-<a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=coverage&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Coverage" /></a>
-<a href="https://dashboard.stryker-mutator.io/reports/github.com/oclio/nexaas/main"><img src="https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Foclio%2Fnexaas%2Fmain" alt="Mutation testing badge" /></a>
-<a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=alert_status&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Quality gate status" /></a>
-<a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=reliability_rating&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Reliability Rating" /></a>
-<a href="https://sonarcloud.io/summary/new_code?id=oclio_nexaas"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_nexaas&metric=software_quality_security_issues&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Security issues" /></a>
+<a href="https://sonarcloud.io/summary/new_code?id=oclio_saaskip"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_saaskip&metric=coverage&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Coverage" /></a>
+<a href="https://dashboard.stryker-mutator.io/reports/github.com/oclio/saaskip/main"><img src="https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Foclio%2Fsaaskip%2Fmain" alt="Mutation testing badge" /></a>
+<a href="https://sonarcloud.io/summary/new_code?id=oclio_saaskip"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_saaskip&metric=alert_status&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Quality gate status" /></a>
+<a href="https://sonarcloud.io/summary/new_code?id=oclio_saaskip"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_saaskip&metric=reliability_rating&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Reliability Rating" /></a>
+<a href="https://sonarcloud.io/summary/new_code?id=oclio_saaskip"><img src="https://sonarcloud.io/api/project_badges/measure?project=oclio_saaskip&metric=software_quality_security_issues&token=f575e67da74f2486cb1fe0d4cd95f0ea136b6a22" alt="Security issues" /></a>
 </div>
 
 Stop debugging production. Start shipping with total confidence.
 
 A Next.js SaaS architecture hardened by mutation testing and bulletproof TypeScript patterns. Every refactor is safe, every deploy is calm, and your 3am alerts stay silent.
 
-📖 **[Full documentation](https://nexaas-docs.oclio.dev)** — architectures, features, and guides.
+📖 **[Full documentation](https://saaskip-docs.oclio.dev)** — architectures, features, and guides.
 
 ## Features
 

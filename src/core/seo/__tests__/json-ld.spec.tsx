@@ -104,7 +104,7 @@ describe('JsonLdScript', () => {
   });
 
   it('serializes the data as json in the script body', () => {
-    const data = { '@type': 'WebSite', name: 'nexaas' };
+    const data = { '@type': 'WebSite', name: 'saaskip' };
     const { container } = render(<JsonLdScript data={data} />);
     const scripts = container.querySelectorAll('script');
 

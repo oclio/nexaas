@@ -1,6 +1,6 @@
 # Database
 
-nexaas uses [Drizzle ORM](https://orm.drizzle.team) with the `postgres-js` driver for type-safe database access. The client is configured with connection pooling, query logging to Axiom, and a health check integrated into the `/api/health` endpoint.
+saaskip uses [Drizzle ORM](https://orm.drizzle.team) with the `postgres-js` driver for type-safe database access. The client is configured with connection pooling, query logging to Axiom, and a health check integrated into the `/api/health` endpoint.
 
 ## File structure
 

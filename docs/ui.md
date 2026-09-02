@@ -1,6 +1,6 @@
 # UI
 
-The `src/ui/` directory contains the presentation layer of nexaas. It is built on four pillars:
+The `src/ui/` directory contains the presentation layer of saaskip. It is built on four pillars:
 
 - **[Tailwind CSS](https://tailwindcss.com) 4** — utility-first styling with CSS variables for theming (OKLCH color space).
 - **[shadcn/ui](https://ui.shadcn.com)** — component system using the **base-lyra** style. Unlike traditional libraries, components are copied into the project (`src/ui/components/shadcn/`) and fully owned by the codebase.

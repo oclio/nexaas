@@ -1,6 +1,6 @@
 # SEO
 
-nexaas ships with a complete SEO stack: metadata generation, sitemap, robots, OpenGraph/Twitter cards, JSON-LD structured data, and a PWA manifest — all built-in, no extra dependencies.
+saaskip ships with a complete SEO stack: metadata generation, sitemap, robots, OpenGraph/Twitter cards, JSON-LD structured data, and a PWA manifest — all built-in, no extra dependencies.
 
 ## Setup
 

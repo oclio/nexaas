@@ -23,7 +23,7 @@ const config = {
     'hugeicons',
     'isready',
     'msvalidate',
-    'nexaas',
+    'saaskip',
     'nojekyll',
     'nosniff',
     'oclio',
