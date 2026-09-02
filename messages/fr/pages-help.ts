@@ -9,6 +9,9 @@ export default {
     title: 'Documentation',
   },
   faq: {
+    description:
+      'Trouvez les réponses aux questions fréquentes sur saaskip : fonctionnalités, tarifs, déploiement, personnalisation et support.',
+    keywords: ['aide', 'faq', 'questions', 'support'],
     shortTitle: 'FAQ',
     title: 'Questions posées fréquemment',
     viewAll: 'Voir toutes les questions',

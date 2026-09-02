@@ -3,11 +3,11 @@ import { getTranslations } from 'next-intl/server';
 import { createPageMetadata } from '@/core/seo';
 
 export async function generateMetadata() {
-  return createPageMetadata('pages.faq');
+  return createPageMetadata('pages.whatIsIncluded');
 }
 
-export default async function FaqPage() {
-  const t = await getTranslations('pages.faq');
+export default async function WhatIsIncludedPage() {
+  const t = await getTranslations('pages.whatIsIncluded');
 
   return (
     <div>

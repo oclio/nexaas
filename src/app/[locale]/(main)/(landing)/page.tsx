@@ -7,6 +7,7 @@ import { HashScroll } from './_components/hash-scroll';
 import HeroSection from './_components/hero-section';
 import PricingSection from './_components/pricing-section';
 import StatsSection from './_components/stats-section';
+import WhatIsIncluded from './_components/what-is-included-section';
 
 export async function generateMetadata() {
   return createPageMetadata('pages.landing');
@@ -21,6 +22,7 @@ export default async function LandingPage() {
       <FeaturesSection />
       <PricingSection />
       <FaqSection />
+      <WhatIsIncluded />
       <CtaSection />
     </div>
   );

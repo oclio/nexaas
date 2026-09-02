@@ -47,12 +47,6 @@ export const navigationCategories: NavigationCategory[] = [
 
 export const navigation: NavigationItem[] = [
   {
-    label: 'labels.home',
-    href: '/',
-    location: ['navbar', 'footer', 'mobileMenu'],
-    category: 'product',
-  },
-  {
     label: 'pages.landing.features.title',
     href: '/#features-section',
     location: ['navbar', 'footer', 'mobileMenu'],
@@ -65,8 +59,14 @@ export const navigation: NavigationItem[] = [
     category: 'product',
   },
   {
+    label: 'pages.faq.shortTitle',
+    href: '/#faq-section',
+    location: ['navbar', 'mobileMenu', 'footer'],
+    category: 'help',
+  },
+  {
     label: 'pages.whatIsIncluded.title',
-    href: '/what-is-included',
+    href: '/#what-is-included-section',
     location: ['navbar', 'footer', 'mobileMenu'],
     category: 'product',
   },
@@ -80,12 +80,6 @@ export const navigation: NavigationItem[] = [
     label: 'pages.help.shortTitle',
     href: '#',
     location: ['footer'],
-    category: 'help',
-  },
-  {
-    label: 'pages.faq.shortTitle',
-    href: '/#faq-section',
-    location: ['mobileMenu', 'footer'],
     category: 'help',
   },
   {

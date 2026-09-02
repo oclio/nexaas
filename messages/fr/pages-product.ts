@@ -21,5 +21,6 @@ export default {
   },
   whatIsIncluded: {
     title: 'Ce qui est inclus',
+    viewAll: 'Voir toutes les fonctionnalités incluses',
   },
 } as const satisfies TranslationSchema<typeof enPagesProduct>;
