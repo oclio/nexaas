@@ -16,7 +16,7 @@ A resilient Next.js SaaS foundation built for serious projects. Hardened by stri
 
 🚀 **[Live demo](https://saaskip.oclio.dev)** — explore the application in action.
 
-📖 **[Full documentation](https://saaskip-docs.oclio.dev)** — architectures, features, and guides.
+📖 **[Full documentation](https://docs.saaskip.oclio.dev)** — architectures, features, and guides.
 
 ## Features
 
