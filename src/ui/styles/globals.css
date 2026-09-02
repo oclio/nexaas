@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
+@import './typography.css';
+@import './utilities.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -121,10 +123,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+  a {
+    @apply transition-colors duration-200;
+  }
   body {
     @apply bg-background text-foreground;
   }
   html {
     @apply font-sans;
+    scroll-padding-top: 5rem;
   }
 }
