@@ -1,4 +1,14 @@
 import { render, screen } from '@testing-library/react';
+import { getTranslations } from 'next-intl/server';
+
+vi.mock('@/core/seo', () => ({
+  createPageMetadata: vi.fn(async () => ({
+    title: 'mock-title',
+    description: 'mock-description',
+  })),
+}));
+
+import { createPageMetadata } from '@/core/seo';
 
 import LandingPage, { generateMetadata } from '../page';
 
@@ -8,20 +18,18 @@ describe('LandingPage', () => {
   });
 
   describe('generateMetadata', () => {
-    it('returns the translated page title without suffix', async () => {
-      const metadata = await generateMetadata();
-
-      expect(metadata.title).toBe('Welcome!');
-    });
-
-    it('passes the locale and namespace to getTranslations', async () => {
-      const { getTranslations } = await import('next-intl/server');
-
+    it('delegates to createPageMetadata with the landing namespace', async () => {
       await generateMetadata();
 
-      expect(getTranslations).toHaveBeenCalledWith({
-        locale: 'en',
-        namespace: 'pages.landing',
+      expect(createPageMetadata).toHaveBeenCalledWith('pages.landing');
+    });
+
+    it('returns the metadata from createPageMetadata', async () => {
+      const result = await generateMetadata();
+
+      expect(result).toEqual({
+        title: 'mock-title',
+        description: 'mock-description',
       });
     });
   });
@@ -36,11 +44,15 @@ describe('LandingPage', () => {
     });
 
     it('calls getTranslations with the pages.landing namespace', async () => {
-      const { getTranslations } = await import('next-intl/server');
-
       render(await LandingPage());
 
       expect(getTranslations).toHaveBeenCalledWith('pages.landing');
+    });
+
+    it('renders the LocaleSwitcher', async () => {
+      render(await LandingPage());
+
+      expect(screen.getByTestId('locale-switcher-trigger')).toBeInTheDocument();
     });
   });
 });

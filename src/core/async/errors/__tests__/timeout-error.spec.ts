@@ -3,29 +3,15 @@ import { AppError } from '@/core/errors/app-error';
 import { ErrorCode } from '@/core/errors/codes';
 
 describe('TimeoutError', () => {
-  it('extends AppError', () => {
+  it('has correct defaults', () => {
     const error = new TimeoutError();
 
     expect(error).toBeInstanceOf(AppError);
     expect(error).toBeInstanceOf(TimeoutError);
-  });
-
-  it('defaults message to "Operation timed out"', () => {
-    const error = new TimeoutError();
-
     expect(error.message).toBe('Operation timed out');
-  });
-
-  it('sets the correct error code', () => {
-    const error = new TimeoutError();
-
     expect(error.code).toBe(ErrorCode.TIMEOUT);
-  });
-
-  it('defaults to status code 504', () => {
-    const error = new TimeoutError();
-
     expect(error.statusCode).toBe(504);
+    expect(error.name).toBe(TimeoutError.name);
   });
 
   it('accepts a custom message', () => {
@@ -38,7 +24,13 @@ describe('TimeoutError', () => {
     const context = { operation: 'fetchData', duration: 5000 };
     const error = new TimeoutError(undefined, context);
 
-    expect(error.context).toEqual(context);
+    expect(error.context).toMatchObject(context);
+  });
+
+  it('accepts an empty context object', () => {
+    const error = new TimeoutError(undefined, {});
+
+    expect(error.context).toEqual({});
   });
 
   it('accepts ErrorOptions with cause', () => {
@@ -54,13 +46,7 @@ describe('TimeoutError', () => {
     const error = new TimeoutError('DB timeout', context, { cause });
 
     expect(error.message).toBe('DB timeout');
-    expect(error.context).toEqual(context);
+    expect(error.context).toMatchObject(context);
     expect(error.cause).toBe(cause);
-  });
-
-  it('sets name to the constructor name', () => {
-    const error = new TimeoutError();
-
-    expect(error.name).toBe('TimeoutError');
   });
 });

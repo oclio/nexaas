@@ -2,12 +2,23 @@ import { vi } from 'vitest';
 
 import { sentryMocks } from '@/tests/unit/mocks/observability';
 
-const { initSentry } = await import('../index');
+import { initSentry } from '../index';
 
 describe('initSentry', () => {
-  afterEach(() => {
+  let originalSentryDsn: string | undefined;
+
+  beforeEach(() => {
     vi.clearAllMocks();
+    originalSentryDsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
+  });
+
+  afterEach(() => {
     vi.unstubAllEnvs();
+    if (originalSentryDsn === undefined) {
+      delete process.env.NEXT_PUBLIC_SENTRY_DSN;
+    } else {
+      process.env.NEXT_PUBLIC_SENTRY_DSN = originalSentryDsn;
+    }
   });
 
   it('calls Sentry.init with development defaults', () => {
@@ -16,40 +27,44 @@ describe('initSentry', () => {
 
     initSentry();
 
-    expect(sentryMocks.init).toHaveBeenCalledWith({
-      dsn: undefined,
-      tracesSampleRate: 1,
-      enableLogs: true,
-      sendDefaultPii: false,
-    });
+    expect(sentryMocks.init).toHaveBeenCalledWith(
+      expect.objectContaining({
+        dsn: undefined,
+        tracesSampleRate: 1,
+        sendDefaultPii: false,
+      }),
+    );
   });
 
   it('calls Sentry.init with production config when DSN is set', () => {
+    const dsn = 'https://sentry.io/abc';
     vi.stubEnv('NODE_ENV', 'production');
-    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', 'https://sentry.io/abc');
+    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', dsn);
 
     initSentry();
 
-    expect(sentryMocks.init).toHaveBeenCalledWith({
-      dsn: 'https://sentry.io/abc',
-      tracesSampleRate: 0.1,
-      enableLogs: true,
-      sendDefaultPii: true,
-    });
+    expect(sentryMocks.init).toHaveBeenCalledWith(
+      expect.objectContaining({
+        dsn,
+        tracesSampleRate: 0.1,
+        sendDefaultPii: true,
+      }),
+    );
   });
 
   it('passes undefined DSN in production when not configured', () => {
     vi.stubEnv('NODE_ENV', 'production');
-    delete process.env.NEXT_PUBLIC_SENTRY_DSN;
+    vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', undefined as unknown as string);
 
     initSentry();
 
-    expect(sentryMocks.init).toHaveBeenCalledWith({
-      dsn: undefined,
-      tracesSampleRate: 0.1,
-      enableLogs: true,
-      sendDefaultPii: true,
-    });
+    expect(sentryMocks.init).toHaveBeenCalledWith(
+      expect.objectContaining({
+        dsn: undefined,
+        tracesSampleRate: 0.1,
+        sendDefaultPii: true,
+      }),
+    );
   });
 
   it('always enables logs', () => {

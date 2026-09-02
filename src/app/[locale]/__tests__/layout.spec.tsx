@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import RootLayout, { generateMetadata, generateStaticParams } from '../layout';
+import { routing } from '@/core/i18n/routing';
 
 vi.mock('@/core/seo', () => ({
   createLayoutMetadata: vi.fn(async ({ locale }: { locale: string }) => ({
@@ -28,6 +28,12 @@ const localeParameters = (locale: string) => ({
   params: Promise.resolve({ locale }),
 });
 
+import RootLayout, {
+  generateMetadata,
+  generateStaticParams,
+  viewport,
+} from '../layout';
+
 describe('RootLayout', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -50,29 +56,20 @@ describe('RootLayout', () => {
     expect(screen.getByRole('main')).toBeInTheDocument();
   });
 
-  it('sets html lang attribute to the given locale', async () => {
+  it.each(routing.locales)('sets html lang attribute to %s', async (locale) => {
     render(
       await RootLayout({
         children: <div>Content</div>,
-        ...localeParameters('en'),
+        ...localeParameters(locale),
       }),
     );
 
-    expect(document.documentElement).toHaveAttribute('lang', 'en');
+    expect(document.documentElement).toHaveAttribute('lang', locale);
   });
 
-  it('sets html lang attribute to fr for French locale', async () => {
-    render(
-      await RootLayout({
-        children: <div>Content</div>,
-        ...localeParameters('fr'),
-      }),
-    );
+  it('applies font variables to html element', async () => {
+    const { fontSans, fontHeading } = await import('@/ui/fonts');
 
-    expect(document.documentElement).toHaveAttribute('lang', 'fr');
-  });
-
-  it('applies layout classes to html element', async () => {
     render(
       await RootLayout({
         children: <div>Content</div>,
@@ -81,9 +78,8 @@ describe('RootLayout', () => {
     );
 
     const html = document.documentElement;
-    expect(html).toHaveClass('h-full');
-    expect(html).toHaveClass('antialiased');
-    expect(html).toHaveClass('font-sans');
+    expect(html).toHaveClass(fontSans.variable);
+    expect(html).toHaveClass(fontHeading.variable);
   });
 
   it('fetches messages for the given locale', async () => {
@@ -100,12 +96,40 @@ describe('RootLayout', () => {
   });
 
   it('throws notFound for an invalid locale', async () => {
+    const { notFound } = await import('next/navigation');
+
     await expect(
       RootLayout({
         children: <div>Content</div>,
         ...localeParameters('invalid'),
       }),
-    ).rejects.toThrow('NEXT_NOT_FOUND');
+    ).rejects.toThrow();
+
+    expect(notFound).toHaveBeenCalledOnce();
+  });
+
+  it('renders both JsonLd scripts with website and organization data', async () => {
+    const { websiteJsonLd, organizationJsonLd, JsonLdScript } =
+      await import('@/core/seo');
+
+    render(
+      await RootLayout({
+        children: <div>Content</div>,
+        ...localeParameters('en'),
+      }),
+    );
+
+    const scripts = screen.getAllByTestId('json-ld-script');
+    expect(scripts).toHaveLength(2);
+    expect(websiteJsonLd).toHaveBeenCalledOnce();
+    expect(organizationJsonLd).toHaveBeenCalledOnce();
+    const passedData = vi
+      .mocked(JsonLdScript)
+      .mock.calls.map(([props]) => props.data);
+    expect(passedData).toEqual([
+      { '@type': 'WebSite' },
+      { '@type': 'Organization' },
+    ]);
   });
 });
 
@@ -113,20 +137,30 @@ describe('generateStaticParams', () => {
   it('returns all supported locales', () => {
     const parameters = generateStaticParams();
 
-    expect(parameters).toEqual([{ locale: 'en' }, { locale: 'fr' }]);
+    expect(parameters).toEqual(routing.locales.map((locale) => ({ locale })));
   });
 });
 
 describe('generateMetadata', () => {
   it('delegates to createLayoutMetadata with the locale', async () => {
-    const createLayoutMetadata = await import('@/core/seo');
+    const { createLayoutMetadata } = await import('@/core/seo');
 
-    await generateMetadata({
+    const result = await generateMetadata({
       params: Promise.resolve({ locale: 'fr' }),
     });
 
-    expect(createLayoutMetadata.createLayoutMetadata).toHaveBeenCalledWith({
-      locale: 'fr',
+    expect(createLayoutMetadata).toHaveBeenCalledWith({ locale: 'fr' });
+    expect(result).toEqual({
+      title: 'mock-title-fr',
+      description: 'mock-description',
     });
+  });
+});
+
+describe('viewport', () => {
+  it('is built from createViewport', async () => {
+    const { createViewport } = await import('@/core/seo');
+
+    expect(viewport).toEqual(createViewport());
   });
 });

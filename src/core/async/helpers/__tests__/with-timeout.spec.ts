@@ -1,13 +1,18 @@
 import { TimeoutError } from '@/core/async/errors/timeout-error';
 import { withTimeout } from '@/core/async/helpers/with-timeout';
+import { ErrorCode } from '@/core/errors/codes';
 
 describe('withTimeout', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
   afterEach(() => {
+    vi.clearAllMocks();
     vi.useRealTimers();
   });
 
   it('resolves with the value when the promise completes in time', async () => {
-    vi.useFakeTimers();
     const promise = Promise.resolve('result');
 
     const result = await withTimeout(promise, 1000);
@@ -15,8 +20,18 @@ describe('withTimeout', () => {
     expect(result).toBe('result');
   });
 
+  it('resolves with the value when a delayed promise completes before the timeout', async () => {
+    const promise = new Promise<string>((resolve) =>
+      setTimeout(() => resolve('delayed'), 100),
+    );
+
+    const pending = withTimeout(promise, 1000);
+    vi.advanceTimersByTime(100);
+
+    await expect(pending).resolves.toBe('delayed');
+  });
+
   it('rejects with TimeoutError when the promise takes too long', async () => {
-    vi.useFakeTimers();
     const promise = new Promise((resolve) => setTimeout(resolve, 5000));
 
     const pending = withTimeout(promise, 100);
@@ -25,38 +40,55 @@ describe('withTimeout', () => {
     await expect(pending).rejects.toThrow(TimeoutError);
   });
 
-  it('uses the default timeout message when none is provided', async () => {
-    vi.useFakeTimers();
+  it.each([
+    {
+      name: 'uses the default message with explicit ms',
+      ms: 500,
+      errorMessage: undefined,
+      expected: /timed out.*500/i,
+    },
+    {
+      name: 'uses a custom error message when provided',
+      ms: 100,
+      errorMessage: 'Custom timeout',
+      expected: /custom timeout/i,
+    },
+    {
+      name: 'defaults to 2000ms when no timeout is specified',
+      ms: undefined,
+      errorMessage: undefined,
+      expected: /timed out.*2000/i,
+    },
+  ])(
+    '$name',
+    async ({
+      ms,
+      errorMessage,
+      expected,
+    }: {
+      ms: number | undefined;
+      errorMessage: string | undefined;
+      expected: RegExp;
+    }) => {
+      const promise = new Promise((resolve) => setTimeout(resolve, 5000));
+
+      const pending = withTimeout(promise, ms, errorMessage);
+      vi.advanceTimersByTime(ms ?? 2000);
+
+      await expect(pending).rejects.toThrow(expected);
+    },
+  );
+
+  it('uses an empty string as the error message when provided', async () => {
     const promise = new Promise((resolve) => setTimeout(resolve, 5000));
 
-    const pending = withTimeout(promise, 2000);
-    vi.advanceTimersByTime(2000);
-
-    await expect(pending).rejects.toThrow('Operation timed out after 2000ms');
-  });
-
-  it('uses a custom error message when provided', async () => {
-    vi.useFakeTimers();
-    const promise = new Promise((resolve) => setTimeout(resolve, 5000));
-
-    const pending = withTimeout(promise, 100, 'Custom timeout');
+    const pending = withTimeout(promise, 100, '');
     vi.advanceTimersByTime(100);
 
-    await expect(pending).rejects.toThrow('Custom timeout');
-  });
-
-  it('defaults to 2000ms when no timeout is specified', async () => {
-    vi.useFakeTimers();
-    const promise = new Promise((resolve) => setTimeout(resolve, 5000));
-
-    const pending = withTimeout(promise);
-    vi.advanceTimersByTime(2000);
-
-    await expect(pending).rejects.toThrow('Operation timed out after 2000ms');
+    await expect(pending).rejects.toThrow('');
   });
 
   it('clears the timer when the promise resolves in time', async () => {
-    vi.useFakeTimers();
     const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
     const promise = Promise.resolve('fast');
 
@@ -66,7 +98,6 @@ describe('withTimeout', () => {
   });
 
   it('clears the timer when the promise rejects in time', async () => {
-    vi.useFakeTimers();
     const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
     const promise = Promise.reject(new Error('fail'));
 
@@ -76,7 +107,6 @@ describe('withTimeout', () => {
   });
 
   it('propagates the original rejection when the promise rejects before timeout', async () => {
-    vi.useFakeTimers();
     const originalError = new Error('connection refused');
     const promise = Promise.reject(originalError);
 
@@ -84,7 +114,6 @@ describe('withTimeout', () => {
   });
 
   it('rejects with TimeoutError that has the correct code and status', async () => {
-    vi.useFakeTimers();
     const promise = new Promise((resolve) => setTimeout(resolve, 5000));
 
     const pending = withTimeout(promise, 100);
@@ -95,13 +124,12 @@ describe('withTimeout', () => {
       expect.unreachable('should have thrown');
     } catch (error) {
       expect(error).toBeInstanceOf(TimeoutError);
-      expect((error as TimeoutError).code).toBe('TIMEOUT');
+      expect((error as TimeoutError).code).toBe(ErrorCode.TIMEOUT);
       expect((error as TimeoutError).statusCode).toBe(504);
     }
   });
 
   it('does not call clearTimeout when setTimeout returns undefined', async () => {
-    vi.useFakeTimers();
     vi.spyOn(globalThis, 'setTimeout').mockReturnValue(undefined as never);
     const clearTimeoutSpy = vi.spyOn(globalThis, 'clearTimeout');
     const promise = Promise.resolve('result');

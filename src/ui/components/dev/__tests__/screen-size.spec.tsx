@@ -1,5 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
+import ScreenSize from '../screen-size';
+
 const storeState = {
   isColored: false,
   position: 'bottomLeft' as string,
@@ -15,8 +17,6 @@ vi.mock('../screen-size.store', () => ({
   useScreenSizeStore: () => storeState,
 }));
 
-const { default: ScreenSize } = await import('../screen-size');
-
 describe('ScreenSize', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -29,6 +29,10 @@ describe('ScreenSize', () => {
       setSize: vi.fn(),
       size: 'md',
     });
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   describe('rendering', () => {

@@ -1,8 +1,12 @@
 import { renderHook } from '@testing-library/react';
 
-const { useIsMounted } = await import('../use-is-mounted');
+import { useIsMounted } from '../use-is-mounted';
 
 describe('useIsMounted', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('returns true on the client', () => {
     const { result } = renderHook(() => useIsMounted());
 

@@ -1,4 +1,7 @@
+import { isValidElement } from 'react';
 import { vi } from 'vitest';
+
+import { renderTemplate } from '../render';
 
 function mockTemplate() {
   return { type: 'div', props: { children: 'Hello' } };
@@ -12,26 +15,38 @@ vi.mock('@/emails/welcome', () => mockModule);
 vi.mock('@/emails/otp-code', () => mockModule);
 vi.mock('@/emails/my-template', () => mockModule);
 
-const { renderTemplate } = await import('../render');
-
 describe('renderTemplate', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('renders a template by name with props', async () => {
     const result = await renderTemplate('welcome', { name: 'Alice' });
 
+    expect(isValidElement(result)).toBe(true);
     expect(result.type).toBe(mockTemplate);
-    expect(result.props).toEqual({ name: 'Alice' });
+    expect((result.props as Record<string, unknown>).name).toBe('Alice');
   });
 
   it('renders without props when none provided', async () => {
     const result = await renderTemplate('otp-code');
 
+    expect(isValidElement(result)).toBe(true);
     expect(result.type).toBe(mockTemplate);
+    expect(result.props).toEqual({});
+  });
+
+  it('renders with empty props when undefined is passed explicitly', async () => {
+    const result = await renderTemplate('otp-code', undefined);
+
+    expect(isValidElement(result)).toBe(true);
     expect(result.props).toEqual({});
   });
 
   it('renders a template with hyphens', async () => {
     const result = await renderTemplate('my-template');
 
+    expect(isValidElement(result)).toBe(true);
     expect(result.type).toBe(mockTemplate);
   });
 

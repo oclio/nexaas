@@ -42,6 +42,7 @@ export default function LocaleSwitcher({
         key={lang.code}
         onClick={() => handleLocaleChange(lang.code)}
         aria-label={t('ariaLabel')}
+        aria-current={isActive}
         data-testid={`locale-switcher-item-${lang.code}`}
         className={cn(
           'cursor-pointer',
@@ -55,8 +56,6 @@ export default function LocaleSwitcher({
     );
   });
 
-  const isGhost = props.variant === 'ghost';
-
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger
@@ -67,9 +66,6 @@ export default function LocaleSwitcher({
             data-testid="locale-switcher-trigger"
             className={cn(
               'size-7 cursor-pointer text-[12px] font-light focus:outline-none focus-visible:ring-0',
-              isGhost
-                ? 'focus-visible:border-transparent'
-                : 'focus-visible:border-input',
               props.className,
             )}
           >

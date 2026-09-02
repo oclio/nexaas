@@ -8,9 +8,16 @@ vi.mock('@/core/async/helpers/with-timeout', () => ({
   withTimeout: withTimeoutMock,
 }));
 
-const { checkArcjetService } = await import('../index');
+import { checkArcjetService } from '../index';
 
 describe('checkArcjetService', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    withTimeoutMock.mockImplementation(
+      <T>(promise: Promise<T>): Promise<T> => promise,
+    );
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllEnvs();
@@ -21,21 +28,22 @@ describe('checkArcjetService', () => {
 
     const result = await checkArcjetService();
 
-    expect(result).toEqual({ status: 'disabled' });
+    expect(result).toMatchObject({ status: 'disabled' });
   });
 
   it('returns healthy when fetch responds with status < 500', async () => {
-    vi.stubEnv('ARCJET_KEY', 'test-arcjet-key');
+    const key = 'test-arcjet-key';
+    vi.stubEnv('ARCJET_KEY', key);
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(undefined, { status: 200 }),
     );
 
     const result = await checkArcjetService();
 
-    expect(result).toEqual({ status: 'healthy' });
+    expect(result).toMatchObject({ status: 'healthy' });
     expect(fetch).toHaveBeenCalledWith('https://decide.arcjet.com', {
       method: 'HEAD',
-      headers: { Authorization: 'Bearer test-arcjet-key' },
+      headers: { Authorization: `Bearer ${key}` },
     });
   });
 
@@ -49,33 +57,35 @@ describe('checkArcjetService', () => {
 
       const result = await checkArcjetService();
 
-      expect(result).toEqual({ status: 'unhealthy' });
+      expect(result).toMatchObject({ status: 'unhealthy' });
     },
   );
 
   it('returns unhealthy with error message when fetch throws', async () => {
     vi.stubEnv('ARCJET_KEY', 'test-arcjet-key');
-    vi.spyOn(globalThis, 'fetch').mockRejectedValue(
-      new Error('Connection refused'),
-    );
+    const errorMessage = 'Connection refused';
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error(errorMessage));
 
     const result = await checkArcjetService();
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       status: 'unhealthy',
-      error: 'Connection refused',
+      error: expect.stringMatching(/^.+$/),
     });
+    expect((result as { error: string }).error).toBe(errorMessage);
   });
 
   it('returns unhealthy with error message when timeout occurs', async () => {
     vi.stubEnv('ARCJET_KEY', 'test-arcjet-key');
-    withTimeoutMock.mockRejectedValueOnce(new Error('Timeout exceeded'));
+    const errorMessage = 'Timeout exceeded';
+    withTimeoutMock.mockRejectedValueOnce(new Error(errorMessage));
 
     const result = await checkArcjetService();
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       status: 'unhealthy',
-      error: 'Timeout exceeded',
+      error: expect.stringMatching(/^.+$/),
     });
+    expect((result as { error: string }).error).toBe(errorMessage);
   });
 });

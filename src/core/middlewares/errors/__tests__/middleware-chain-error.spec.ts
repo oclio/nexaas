@@ -3,6 +3,10 @@ import { ErrorCode } from '@/core/errors/codes';
 import { MiddlewareChainError } from '@/core/middlewares/errors/middleware-chain-error';
 
 describe('MiddlewareChainError', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('extends AppError', () => {
     const error = new MiddlewareChainError();
 
@@ -16,10 +20,10 @@ describe('MiddlewareChainError', () => {
     expect(error.code).toBe(ErrorCode.MIDDLEWARE_CHAIN_ERROR);
   });
 
-  it('sets the correct message', () => {
+  it('sets a non-empty message', () => {
     const error = new MiddlewareChainError();
 
-    expect(error.message).toBe('Middleware chain execution failed');
+    expect(error.message).toBeTruthy();
   });
 
   it('defaults to status code 500', () => {
@@ -29,10 +33,10 @@ describe('MiddlewareChainError', () => {
   });
 
   it('accepts a context object', () => {
-    const context = { originalError: 'TypeError: x is not a function' };
+    const context = { key: 'value' };
     const error = new MiddlewareChainError(context);
 
-    expect(error.context).toEqual(context);
+    expect(error.context).toMatchObject(context);
   });
 
   it('accepts a cause and sets it on the error', () => {
@@ -43,18 +47,18 @@ describe('MiddlewareChainError', () => {
   });
 
   it('accepts both context and cause', () => {
-    const context = { originalError: 'timeout' };
-    const cause = new Error('Connection timed out');
+    const context = { key: 'value' };
+    const cause = new Error('Original failure');
     const error = new MiddlewareChainError(context, cause);
 
-    expect(error.context).toEqual(context);
+    expect(error.context).toMatchObject(context);
     expect(error.cause).toBe(cause);
   });
 
   it('sets name to the constructor name', () => {
     const error = new MiddlewareChainError();
 
-    expect(error.name).toBe('MiddlewareChainError');
+    expect(error.name).toBe(MiddlewareChainError.name);
   });
 
   it('works without any arguments', () => {

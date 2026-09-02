@@ -22,6 +22,7 @@ describe('buildCSP', () => {
 
     expect(csp).toContain("'unsafe-inline'");
     expect(csp).not.toContain("'nonce-undefined'");
+    expect(csp).not.toContain("'strict-dynamic'");
   });
 
   it('includes unsafe-eval in development', () => {

@@ -2,24 +2,28 @@ import { vi } from 'vitest';
 
 import { axiomClientReference } from '@/tests/unit/mocks/observability';
 
+import { checkAxiomService } from '../index';
+
 const datasetsGetMock = vi.fn();
 
-const { checkAxiomService } = await import('../index');
-
 describe('checkAxiomService', () => {
-  afterEach(() => {
+  beforeEach(() => {
     vi.clearAllMocks();
+    datasetsGetMock.mockReset();
+    axiomClientReference.value = undefined;
+  });
+
+  afterEach(() => {
     vi.unstubAllEnvs();
     axiomClientReference.value = undefined;
   });
 
   it('returns disabled when axiomClient is undefined', async () => {
     vi.stubEnv('AXIOM_DATASET', 'test-dataset');
-    axiomClientReference.value = undefined;
 
     const result = await checkAxiomService();
 
-    expect(result).toEqual({ status: 'disabled' });
+    expect(result).toMatchObject({ status: 'disabled' });
   });
 
   it('returns disabled when AXIOM_DATASET is not set', async () => {
@@ -28,45 +32,38 @@ describe('checkAxiomService', () => {
 
     const result = await checkAxiomService();
 
-    expect(result).toEqual({ status: 'disabled' });
+    expect(result).toMatchObject({ status: 'disabled' });
   });
 
   it('returns healthy when datasets.get succeeds', async () => {
-    vi.stubEnv('AXIOM_DATASET', 'test-dataset');
+    const dataset = 'test-dataset';
+    vi.stubEnv('AXIOM_DATASET', dataset);
     axiomClientReference.value = { datasets: { get: datasetsGetMock } };
-    datasetsGetMock.mockResolvedValue({ id: 'test-dataset' });
+    datasetsGetMock.mockResolvedValue({ id: dataset });
 
     const result = await checkAxiomService();
 
-    expect(result).toEqual({ status: 'healthy' });
-    expect(datasetsGetMock).toHaveBeenCalledWith('test-dataset');
+    expect(result).toMatchObject({ status: 'healthy' });
+    expect(datasetsGetMock).toHaveBeenCalledWith(dataset);
   });
 
-  it('returns unhealthy with error message when datasets.get throws', async () => {
-    vi.stubEnv('AXIOM_DATASET', 'test-dataset');
-    axiomClientReference.value = { datasets: { get: datasetsGetMock } };
-    datasetsGetMock.mockRejectedValue(new Error('connection refused'));
+  it.each([
+    { name: 'connection error', message: 'connection refused' },
+    { name: 'timeout error', message: 'Operation timed out after 2000ms' },
+  ])(
+    'returns unhealthy with error message when datasets.get throws ($name)',
+    async ({ message }) => {
+      vi.stubEnv('AXIOM_DATASET', 'test-dataset');
+      axiomClientReference.value = { datasets: { get: datasetsGetMock } };
+      datasetsGetMock.mockRejectedValue(new Error(message));
 
-    const result = await checkAxiomService();
+      const result = await checkAxiomService();
 
-    expect(result).toEqual({
-      status: 'unhealthy',
-      error: 'connection refused',
-    });
-  });
-
-  it('returns unhealthy with error message when withTimeout throws TimeoutError', async () => {
-    vi.stubEnv('AXIOM_DATASET', 'test-dataset');
-    axiomClientReference.value = { datasets: { get: datasetsGetMock } };
-    datasetsGetMock.mockRejectedValue(
-      new Error('Operation timed out after 2000ms'),
-    );
-
-    const result = await checkAxiomService();
-
-    expect(result).toEqual({
-      status: 'unhealthy',
-      error: 'Operation timed out after 2000ms',
-    });
-  });
+      expect(result).toMatchObject({
+        status: 'unhealthy',
+        error: expect.any(String),
+      });
+      expect((result as { error: string }).error).toBe(message);
+    },
+  );
 });

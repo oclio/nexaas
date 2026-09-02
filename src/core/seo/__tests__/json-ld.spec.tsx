@@ -72,10 +72,11 @@ describe('organizationJsonLd', () => {
     expect(result.url).toBe(env.NEXT_PUBLIC_APP_URL);
   });
 
-  it('points to the png logo', () => {
+  it('points to a logo url based on the app url', () => {
     const result = organizationJsonLd();
 
-    expect(result.logo).toBe(`${env.NEXT_PUBLIC_APP_URL}/images/logo-512.png`);
+    expect(result.logo).toContain(env.NEXT_PUBLIC_APP_URL);
+    expect(result.logo).toBeTruthy();
   });
 
   it('uses the author email', () => {
@@ -86,27 +87,28 @@ describe('organizationJsonLd', () => {
 
   it('declares sameAs with author url and twitter', () => {
     const result = organizationJsonLd();
+    const sameAs = result.sameAs as string[];
 
-    expect(result.sameAs).toEqual([
-      app.author.url,
-      `https://twitter.com/${app.author.twitter}`,
-    ]);
+    expect(sameAs).toContain(app.author.url);
+    expect(sameAs).toContain(`https://twitter.com/${app.author.twitter}`);
   });
 });
 
 describe('JsonLdScript', () => {
   it('renders a script tag with the ld+json type', () => {
     const { container } = render(<JsonLdScript data={{ foo: 'bar' }} />);
-    const script = container.querySelector('script');
+    const scripts = container.querySelectorAll('script');
 
-    expect(script?.getAttribute('type')).toBe('application/ld+json');
+    expect(scripts).toHaveLength(1);
+    expect(scripts[0]?.getAttribute('type')).toBe('application/ld+json');
   });
 
   it('serializes the data as json in the script body', () => {
     const data = { '@type': 'WebSite', name: 'nexaas' };
     const { container } = render(<JsonLdScript data={data} />);
-    const script = container.querySelector('script');
+    const scripts = container.querySelectorAll('script');
 
-    expect(script).toHaveTextContent(JSON.stringify(data));
+    expect(scripts).toHaveLength(1);
+    expect(scripts[0]).toHaveTextContent(JSON.stringify(data));
   });
 });

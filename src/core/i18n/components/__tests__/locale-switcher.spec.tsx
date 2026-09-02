@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
+import { supportedLocales } from '@/core/i18n/routing';
 import { pathnameRef, routerPushMock } from '@/tests/unit/mocks/intl';
 
 const { localeRef, useTranslationsMock, dropdownMenuMock } = vi.hoisted(() => ({
@@ -15,8 +16,6 @@ function translateLocaleSwitcher(key: string): string {
   };
   return labels[key] ?? key;
 }
-
-useTranslationsMock.mockReturnValue(translateLocaleSwitcher);
 
 vi.mock('next-intl', () => ({
   useLocale: () => localeRef.current,
@@ -46,6 +45,7 @@ async function openMenu() {
 describe('LocaleSwitcher', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    useTranslationsMock.mockReturnValue(translateLocaleSwitcher);
     localeRef.current = 'en';
     pathnameRef.current = '/test';
   });
@@ -85,10 +85,16 @@ describe('LocaleSwitcher', () => {
     });
 
     it('capitalizes the locale code correctly', () => {
-      localeRef.current = 'fr';
+      const nonDefault = supportedLocales.find((l) => l.code !== 'en');
+      if (!nonDefault) return; // skip if only default locale configured
+      localeRef.current = nonDefault.code;
       render(<LocaleSwitcher />);
 
-      expect(screen.getByRole('button', { name: 'Fr' })).toBeInTheDocument();
+      const expected =
+        nonDefault.code.charAt(0).toUpperCase() + nonDefault.code.slice(1);
+      expect(
+        screen.getByRole('button', { name: expected }),
+      ).toBeInTheDocument();
     });
 
     it('passes custom className to the trigger button', () => {
@@ -96,18 +102,6 @@ describe('LocaleSwitcher', () => {
 
       expect(screen.getByRole('button').className).toContain('custom-class');
     });
-
-    it.each<[variant: 'ghost' | 'outline', expectedClass: string]>([
-      ['ghost', 'focus-visible:border-transparent'],
-      ['outline', 'focus-visible:border-input'],
-    ])(
-      'applies %s focus style when variant is %s',
-      (variant, expectedClass) => {
-        render(<LocaleSwitcher variant={variant} />);
-
-        expect(screen.getByRole('button').className).toContain(expectedClass);
-      },
-    );
 
     it('renders an empty label when the current locale is not supported', () => {
       localeRef.current = 'de';
@@ -119,16 +113,13 @@ describe('LocaleSwitcher', () => {
   });
 
   describe('locale switching', () => {
-    it.each([
-      [1, 'fr'],
-      [0, 'en'],
-    ])(
-      'calls router.push with /test and locale %s when clicking item at index %i',
-      async (index, locale) => {
+    it.each(supportedLocales.map((lang) => [lang.code] as const))(
+      'calls router.push with /test and locale %s when clicking the corresponding item',
+      async (locale) => {
         render(<LocaleSwitcher />);
         await openMenu();
 
-        fireEvent.click(screen.getAllByRole('menuitem')[index]);
+        fireEvent.click(screen.getByTestId(`locale-switcher-item-${locale}`));
 
         expect(routerPushMock).toHaveBeenCalledWith('/test', { locale });
       },
@@ -140,17 +131,27 @@ describe('LocaleSwitcher', () => {
       render(<LocaleSwitcher />);
       await openMenu();
 
-      expect(screen.getAllByRole('menuitem')).toHaveLength(2);
+      expect(screen.getAllByRole('menuitem')).toHaveLength(
+        supportedLocales.length,
+      );
     });
 
-    it('marks the active locale item with the active class', async () => {
-      localeRef.current = 'fr';
+    it('marks the active locale item with aria-current', async () => {
+      const nonDefault = supportedLocales.find((l) => l.code !== 'en');
+      if (!nonDefault) return; // skip if only default locale configured
+      localeRef.current = nonDefault.code;
       render(<LocaleSwitcher />);
       await openMenu();
 
-      const items = screen.getAllByRole('menuitem');
-      expect(items[1].className).toContain('bg-primary/3');
-      expect(items[0].className).toContain('text-muted-foreground');
+      const activeItem = screen.getByTestId(
+        `locale-switcher-item-${nonDefault.code}`,
+      );
+      const inactiveItem = screen
+        .getAllByRole('menuitem')
+        .find((item) => item !== activeItem);
+
+      expect(activeItem).toHaveAttribute('aria-current', 'true');
+      expect(inactiveItem).toHaveAttribute('aria-current', 'false');
     });
 
     it('sets aria-label on each locale item', async () => {
@@ -158,7 +159,10 @@ describe('LocaleSwitcher', () => {
       await openMenu();
 
       for (const item of screen.getAllByRole('menuitem')) {
-        expect(item).toHaveAttribute('aria-label', 'Change language');
+        expect(item).toHaveAttribute(
+          'aria-label',
+          translateLocaleSwitcher('ariaLabel'),
+        );
       }
     });
 
@@ -166,15 +170,11 @@ describe('LocaleSwitcher', () => {
       render(<LocaleSwitcher />);
       await openMenu();
 
-      const items = screen.getAllByRole('menuitem');
-      expect(items[0]).toHaveAttribute(
-        'data-testid',
-        'locale-switcher-item-en',
-      );
-      expect(items[1]).toHaveAttribute(
-        'data-testid',
-        'locale-switcher-item-fr',
-      );
+      for (const lang of supportedLocales) {
+        expect(
+          screen.getByTestId(`locale-switcher-item-${lang.code}`),
+        ).toBeInTheDocument();
+      }
     });
   });
 });

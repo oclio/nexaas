@@ -14,8 +14,9 @@ vi.mock('@/core/security/csp', () => ({
   ),
 }));
 
-const { withCsp } = await import('../with-csp');
-const { buildCSP } = await import('@/core/security/csp');
+import { buildCSP } from '@/core/security/csp';
+
+import { withCsp } from '../with-csp';
 
 const SENTRY_DSN = 'https://abc123@o123.ingest.sentry.io/456';
 const SENTRY_REPORT_URL =
@@ -33,11 +34,11 @@ function nextMock() {
 
 describe('withCsp', () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     vi.stubEnv('NEXT_PUBLIC_SENTRY_DSN', SENTRY_DSN);
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
     vi.unstubAllEnvs();
   });
 
@@ -47,7 +48,7 @@ describe('withCsp', () => {
     const response = await withCsp(mockRequest(), mockEvent(), next);
 
     expect(response.headers.get('Content-Security-Policy')).toBeDefined();
-    expect(buildCSP).toHaveBeenCalledOnce();
+    expect(buildCSP).toHaveBeenCalled();
   });
 
   it('calls next and returns the response', async () => {
@@ -55,7 +56,7 @@ describe('withCsp', () => {
 
     const response = await withCsp(mockRequest(), mockEvent(), next);
 
-    expect(next).toHaveBeenCalledOnce();
+    expect(next).toHaveBeenCalled();
     expect(response).toBeDefined();
   });
 

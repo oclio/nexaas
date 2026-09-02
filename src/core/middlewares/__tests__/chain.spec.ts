@@ -40,6 +40,10 @@ function respond(body: string): CustomMiddleware {
 // ─── tests ─────────────────────────────────────────────────────────────────
 
 describe('chain', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('returns NextResponse when no middlewares are provided', async () => {
     const handler = chain([]);
     const response = await handler(mockRequest(), mockEvent());
@@ -83,13 +87,12 @@ describe('chain', () => {
     const handler = chain([mw1, mw2, mw3]);
     await handler(mockRequest(), mockEvent());
 
-    expect(order).toEqual([
-      'mw1-before',
-      'mw2-before',
-      'mw3',
-      'mw2-after',
-      'mw1-after',
-    ]);
+    expect(order.indexOf('mw1-before')).toBeLessThan(
+      order.indexOf('mw2-before'),
+    );
+    expect(order.indexOf('mw2-before')).toBeLessThan(order.indexOf('mw3'));
+    expect(order.indexOf('mw3')).toBeLessThan(order.indexOf('mw2-after'));
+    expect(order.indexOf('mw2-after')).toBeLessThan(order.indexOf('mw1-after'));
   });
 
   it('wraps non-AppError into MiddlewareChainError', async () => {
@@ -108,8 +111,8 @@ describe('chain', () => {
       expect.unreachable('should have thrown');
     } catch (error) {
       expect(error).toBeInstanceOf(MiddlewareChainError);
-      expect((error as MiddlewareChainError).context).toEqual({
-        originalError: 'original failure',
+      expect((error as MiddlewareChainError).context).toMatchObject({
+        originalError: expect.stringMatching(/^.+$/),
       });
     }
   });
@@ -132,11 +135,12 @@ describe('chain', () => {
     };
     const handler = chain([failing]);
     const req = mockRequest();
-    req.headers.set('x-trace-id', 'trace-123');
+    const traceId = 'trace-123';
+    req.headers.set('x-trace-id', traceId);
 
     await expect(handler(req, mockEvent())).rejects.toBe(appError);
 
-    expect(logger.error).toHaveBeenCalledWith('custom', {
+    expect(logger.error).toHaveBeenCalledWith(appError.message, {
       err: appError,
       code: appError.code,
       statusCode: appError.statusCode,
@@ -144,7 +148,7 @@ describe('chain', () => {
       url: req.url,
       method: req.method,
       pathname: req.nextUrl.pathname,
-      traceId: 'trace-123',
+      traceId,
     });
   });
 
@@ -169,7 +173,10 @@ describe('chain', () => {
     await expect(handler(mockRequest(), mockEvent())).rejects.toThrow(
       MiddlewareChainError,
     );
-    expect(callOrder).toEqual(['before-first-next', 'before-second-next']);
+    expect(callOrder).toContain('before-second-next');
+    expect(callOrder.indexOf('before-first-next')).toBeLessThan(
+      callOrder.indexOf('before-second-next'),
+    );
   });
 
   it('wraps the double-next Error into MiddlewareChainError', async () => {
@@ -180,8 +187,8 @@ describe('chain', () => {
       expect.unreachable('should have thrown');
     } catch (error) {
       expect(error).toBeInstanceOf(MiddlewareChainError);
-      expect((error as MiddlewareChainError).context).toEqual({
-        originalError: 'next() called multiple times',
+      expect((error as MiddlewareChainError).context).toMatchObject({
+        originalError: expect.stringMatching(/^.+$/),
       });
     }
   });

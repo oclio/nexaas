@@ -1,5 +1,8 @@
 import { vi } from 'vitest';
 
+import { env } from '@/core/env';
+import { axiomLoggerMock } from '@/tests/unit/mocks/observability';
+
 const { postgresInstance, drizzleInstance } = vi.hoisted(() => ({
   postgresInstance: {},
   drizzleInstance: {},
@@ -31,8 +34,6 @@ vi.mock('drizzle-orm/postgres-js', () => ({
   },
 }));
 
-const { axiomLoggerMock } = await import('@/tests/unit/mocks/observability');
-
 describe('db', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -43,33 +44,20 @@ describe('db', () => {
     vi.resetModules();
   });
 
-  it('creates a postgres client with the DATABASE_URL from env', async () => {
-    await import('../index');
-
-    expect(postgresCalls.url).toEqual([
-      'postgresql://postgres:postgres@localhost:5455/db',
-    ]);
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
-  it('passes pool configuration from env to the postgres client', async () => {
-    await import('../index');
-
-    expect(postgresCalls.options[0]).toMatchObject({
-      max: 10,
-      idle_timeout: 30,
-      connect_timeout: 10,
-    });
-  });
-
-  it('creates a drizzle instance with the postgres client', async () => {
-    await import('../index');
-
-    expect(drizzleCalls.client[0]).toBe(postgresInstance);
-  });
-
-  it('exports the drizzle instance as db', async () => {
+  it('initializes db with env configuration', async () => {
     const { db } = await import('../index');
 
+    expect(postgresCalls.url[0]).toBe(env.DATABASE_URL);
+    expect(postgresCalls.options[0]).toMatchObject({
+      max: env.DATABASE_POOL_MAX,
+      idle_timeout: env.DATABASE_IDLE_TIMEOUT,
+      connect_timeout: env.DATABASE_CONNECT_TIMEOUT,
+    });
+    expect(drizzleCalls.client[0]).toBe(postgresInstance);
     expect(db).toBe(drizzleInstance);
   });
 
@@ -84,10 +72,9 @@ describe('db', () => {
   it('disables the logger in production', async () => {
     vi.stubEnv('NODE_ENV', 'production');
     await import('../index');
-    vi.unstubAllEnvs();
 
     const config = drizzleCalls.config[0];
-    expect(config.logger).toBe(false);
+    expect(config.logger).toBeFalsy();
   });
 });
 
@@ -111,6 +98,22 @@ describe('DrizzleLogger', () => {
     expect(axiomLoggerMock.debug).toHaveBeenCalledWith('Drizzle SQL Query', {
       query: 'SELECT * FROM users',
       params: [1, 'alice'],
+    });
+  });
+
+  it('logs queries with empty parameters', async () => {
+    await import('../index');
+
+    const config = drizzleCalls.config[0];
+    const loggerInstance = config.logger as {
+      logQuery: (query: string, parameters: unknown[]) => void;
+    };
+
+    loggerInstance.logQuery('SELECT 1', []);
+
+    expect(axiomLoggerMock.debug).toHaveBeenCalledWith('Drizzle SQL Query', {
+      query: 'SELECT 1',
+      params: [],
     });
   });
 });

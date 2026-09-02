@@ -46,7 +46,6 @@ export const app = {
   url: env.NEXT_PUBLIC_APP_URL,
   author: 'oclio',
   logo: '/images/logo.svg',
-  emailLogo: '/images/logo.png',
 };
 ```
 
@@ -102,7 +101,7 @@ Next.js middleware is composed via a chain pattern instead of a single monolithi
 | `chain.ts`                         | Composes an array of middlewares into a single handler with `next()` dispatch |
 | `errors/middleware-chain-error.ts` | Wraps non-`AppError` thrown inside the chain                                  |
 
-The entrypoint is `src/proxy.ts`. Middlewares are registered in the `proxies` array:
+The entrypoint is `src/proxy.ts`. It sets the `x-pathname` header on the request before calling the chain, so downstream middlewares and server components can access the original pathname. Middlewares are registered in `src/proxy-stack.ts`:
 
 ```ts
 import type { CustomMiddleware } from '@/core/middlewares/types';
@@ -114,10 +113,32 @@ const myMiddleware: CustomMiddleware = async (req, event, next) => {
   return response;
 };
 
-const proxies: CustomMiddleware[] = [myMiddleware];
+const stack: CustomMiddleware[] = [myMiddleware];
+export default stack;
 ```
 
 The chain runs middlewares in order, unwinds in reverse, and wraps any non-`AppError` into a `MiddlewareChainError` with the original message preserved in `context.originalError`.
+
+### Middleware stack
+
+| Order | Middleware          | Purpose                                                      |
+| ----- | ------------------- | ------------------------------------------------------------ |
+| 1     | `withSecureCookies` | Enforces HttpOnly, Secure, SameSite on response cookies      |
+| 2     | `withIntl`          | Locale resolution — sets `x-locale` on response (all routes) |
+| 3     | `withAxiom`         | Request logging and tracing via Axiom                        |
+| 4     | `withCsp`           | Content-Security-Policy header                               |
+| 5     | `withCsrf`          | CSRF protection for state-changing requests                  |
+| 6     | `withBodySizeLimit` | Rejects requests exceeding the configured body size          |
+| 7     | `withArcjet`        | Rate limiting and bot detection via Arcjet                   |
+
+`withSecureCookies` is intentionally first (outermost) so it sees the final response after all other middlewares have set their `Set-Cookie` headers. See [Security](./security#why-withsecurecookies-is-outermost) for details.
+
+### Header flow
+
+| Header       | Set by     | Read by              | Purpose                            |
+| ------------ | ---------- | -------------------- | ---------------------------------- |
+| `x-pathname` | `proxy.ts` | `createPageMetadata` | Full pathname (with locale prefix) |
+| `x-locale`   | `withIntl` | `createPageMetadata` | Resolved locale (`en`, `fr`, etc.) |
 
 ## observability
 

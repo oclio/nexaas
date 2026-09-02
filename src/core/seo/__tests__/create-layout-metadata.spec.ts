@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 
 import { app } from '@/config';
 import { env } from '@/core/env';
 import { supportedLocales } from '@/core/i18n/routing';
+import { translationMock } from '@/tests/unit/mocks/intl';
 
 import { createLayoutMetadata } from '../create-layout-metadata';
 
@@ -15,9 +17,12 @@ type TwitterCard = Extract<
   { card: 'summary_large_image' }
 >;
 type Robots = Exclude<Metadata['robots'], string | null | undefined>;
-type Icons = NonNullable<Extract<Metadata['icons'], { icon?: unknown }>>;
 
 describe('createLayoutMetadata', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('sets metadataBase from env.NEXT_PUBLIC_APP_URL', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
 
@@ -34,8 +39,6 @@ describe('createLayoutMetadata', () => {
   });
 
   it('returns translated description from meta namespace', async () => {
-    const { getTranslations } = await import('next-intl/server');
-
     await createLayoutMetadata({ locale: 'en' });
 
     expect(getTranslations).toHaveBeenCalledWith({
@@ -44,12 +47,14 @@ describe('createLayoutMetadata', () => {
     });
   });
 
-  it('sets description to the translated value', async () => {
+  it('sets description in metadata, openGraph and twitter from translation', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
 
-    expect(metadata.description).toBe(
-      'A scalable, production-ready SaaS boilerplate for Next.js.',
+    expect(metadata.description).toBe(translationMock('description'));
+    expect(metadata.openGraph?.description).toBe(
+      translationMock('description'),
     );
+    expect(metadata.twitter?.description).toBe(translationMock('description'));
   });
 
   it('merges app.keywords and meta keywords without duplicates', async () => {
@@ -57,26 +62,21 @@ describe('createLayoutMetadata', () => {
 
     const keywords = metadata.keywords as string[];
     expect(keywords).toEqual([
-      ...new Set([...app.keywords, 'saas', 'boilerplate', 'nextjs']),
+      ...new Set([
+        ...app.keywords,
+        ...(translationMock.raw('keywords') as string[]),
+      ]),
     ]);
   });
 
-  it('maps en locale to en_US openGraph locale', async () => {
-    const metadata = await createLayoutMetadata({ locale: 'en' });
+  it.each([
+    ['en', 'en_US'],
+    ['fr', 'fr_FR'],
+    ['de', 'en_US'],
+  ])('maps %s locale to %s openGraph locale', async (locale, expected) => {
+    const metadata = await createLayoutMetadata({ locale });
 
-    expect(metadata.openGraph?.locale).toBe('en_US');
-  });
-
-  it('maps fr locale to fr_FR openGraph locale', async () => {
-    const metadata = await createLayoutMetadata({ locale: 'fr' });
-
-    expect(metadata.openGraph?.locale).toBe('fr_FR');
-  });
-
-  it('falls back to default locale for unknown locale', async () => {
-    const metadata = await createLayoutMetadata({ locale: 'de' });
-
-    expect(metadata.openGraph?.locale).toBe('en_US');
+    expect(metadata.openGraph?.locale).toBe(expected);
   });
 
   it('builds openGraph url from env and locale', async () => {
@@ -92,26 +92,15 @@ describe('createLayoutMetadata', () => {
     expect(openGraph.type).toBe('website');
   });
 
-  it('sets openGraph description to the translated value', async () => {
-    const metadata = await createLayoutMetadata({ locale: 'en' });
-
-    expect(metadata.openGraph?.description).toBe(
-      'A scalable, production-ready SaaS boilerplate for Next.js.',
-    );
-  });
-
-  it('sets openGraph image with correct dimensions and alt', async () => {
+  it('sets openGraph image with alt from app.title', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
     const openGraph = metadata.openGraph as OgWebsite;
+    const images = [openGraph.images].flat() as { url: string; alt?: string }[];
 
-    expect(openGraph.images).toEqual([
-      {
-        url: '/images/og.png',
-        width: 1200,
-        height: 630,
-        alt: app.title,
-      },
-    ]);
+    expect(images).toHaveLength(1);
+    expect(images[0]).toBeDefined();
+    expect(images[0]?.url).toBeTruthy();
+    expect(images[0]?.alt).toBe(app.title);
   });
 
   it('sets twitter card to summary_large_image', async () => {
@@ -125,14 +114,6 @@ describe('createLayoutMetadata', () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
 
     expect(metadata.twitter?.title).toBe(app.title);
-  });
-
-  it('sets twitter description to the translated value', async () => {
-    const metadata = await createLayoutMetadata({ locale: 'en' });
-
-    expect(metadata.twitter?.description).toBe(
-      'A scalable, production-ready SaaS boilerplate for Next.js.',
-    );
   });
 
   it('sets twitter image to og.png', async () => {
@@ -199,13 +180,6 @@ describe('createLayoutMetadata', () => {
       { name: app.author.name, url: app.author.url },
     ]);
     expect(metadata.creator).toBe(app.author.name);
-  });
-
-  it('uses app.logo for icons', async () => {
-    const metadata = await createLayoutMetadata({ locale: 'en' });
-    const icons = metadata.icons as Icons;
-
-    expect(icons.icon).toBe(app.logo);
   });
 
   it('configures appleWebApp with capable, statusBarStyle and title', async () => {

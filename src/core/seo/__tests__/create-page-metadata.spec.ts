@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 
 import { env } from '@/core/env';
 import { routing, supportedLocales } from '@/core/i18n/routing';
+import { translationMock } from '@/tests/unit/mocks/intl';
 
 import { createPageMetadata } from '../create-page-metadata';
 
@@ -15,10 +17,10 @@ type TwitterCard = Extract<
   { card: 'summary_large_image' }
 >;
 
-const mockHeaders = (locale: string | null, path: string | null) => {
+const mockHeaders = (locale: string | null, pathname: string | null) => {
   const headersList = new Headers();
-  if (locale) headersList.set('x-locale', locale);
-  if (path) headersList.set('x-path', path);
+  if (locale !== null) headersList.set('x-locale', locale);
+  if (pathname !== null) headersList.set('x-pathname', pathname);
 
   vi.mocked(headers).mockResolvedValue(headersList);
 };
@@ -28,27 +30,19 @@ describe('createPageMetadata', () => {
     vi.clearAllMocks();
   });
 
-  it('returns the translated title without suffix', async () => {
-    mockHeaders('en', null);
+  it.each(['title', 'description'] as const)(
+    'returns the translated %s without suffix',
+    async (field) => {
+      mockHeaders('en', null);
 
-    const metadata = await createPageMetadata('pages.landing');
+      const metadata = await createPageMetadata('pages.landing');
 
-    expect(metadata.title).toBe('Welcome!');
-  });
-
-  it('returns the translated description', async () => {
-    mockHeaders('en', null);
-
-    const metadata = await createPageMetadata('pages.landing');
-
-    expect(metadata.description).toBe(
-      'A scalable, production-ready SaaS boilerplate for Next.js.',
-    );
-  });
+      expect(metadata[field]).toBe(translationMock(field));
+    },
+  );
 
   it('passes locale and namespace to getTranslations', async () => {
     mockHeaders('fr', null);
-    const { getTranslations } = await import('next-intl/server');
 
     await createPageMetadata('pages.landing');
 
@@ -60,7 +54,6 @@ describe('createPageMetadata', () => {
 
   it('defaults locale to routing.defaultLocale when header is missing', async () => {
     mockHeaders(null, null);
-    const { getTranslations } = await import('next-intl/server');
 
     await createPageMetadata('pages.landing');
 
@@ -71,14 +64,22 @@ describe('createPageMetadata', () => {
   });
 
   it('sets canonical to /{locale}{path}', async () => {
-    mockHeaders('fr', '/login');
+    mockHeaders('fr', '/fr/login');
 
     const metadata = await createPageMetadata('pages.login');
 
     expect(metadata.alternates?.canonical).toBe('/fr/login');
   });
 
-  it('sets canonical to /{locale} when path is empty', async () => {
+  it('sets canonical to /{locale} when pathname is exactly the locale prefix', async () => {
+    mockHeaders('en', '/en');
+
+    const metadata = await createPageMetadata('pages.landing');
+
+    expect(metadata.alternates?.canonical).toBe('/en');
+  });
+
+  it('sets canonical to /{locale} when pathname is missing', async () => {
     mockHeaders('en', null);
 
     const metadata = await createPageMetadata('pages.landing');
@@ -86,8 +87,24 @@ describe('createPageMetadata', () => {
     expect(metadata.alternates?.canonical).toBe('/en');
   });
 
+  it('sets canonical to /{locale} when pathname is missing with non-default locale', async () => {
+    mockHeaders('fr', null);
+
+    const metadata = await createPageMetadata('pages.landing');
+
+    expect(metadata.alternates?.canonical).toBe('/fr');
+  });
+
+  it('prepends locale to path when pathname has no locale prefix', async () => {
+    mockHeaders('fr', '/about');
+
+    const metadata = await createPageMetadata('pages.landing');
+
+    expect(metadata.alternates?.canonical).toBe('/fr/about');
+  });
+
   it('includes all supported locales with path in alternates.languages', async () => {
-    mockHeaders('en', '/login');
+    mockHeaders('en', '/en/login');
 
     const metadata = await createPageMetadata('pages.login');
     const languages = metadata.alternates?.languages as Record<string, string>;
@@ -98,7 +115,7 @@ describe('createPageMetadata', () => {
   });
 
   it('includes x-default with default locale and path', async () => {
-    mockHeaders('fr', '/login');
+    mockHeaders('fr', '/fr/login');
 
     const metadata = await createPageMetadata('pages.login');
     const languages = metadata.alternates?.languages as Record<string, string>;
@@ -119,7 +136,7 @@ describe('createPageMetadata', () => {
   });
 
   it('builds openGraph url from env, locale and path', async () => {
-    mockHeaders('fr', '/login');
+    mockHeaders('fr', '/fr/login');
 
     const metadata = await createPageMetadata('pages.login');
 
@@ -131,9 +148,9 @@ describe('createPageMetadata', () => {
 
     const metadata = await createPageMetadata('pages.landing');
 
-    expect(metadata.openGraph?.title).toBe('Welcome!');
+    expect(metadata.openGraph?.title).toBe(translationMock('title'));
     expect(metadata.openGraph?.description).toBe(
-      'A scalable, production-ready SaaS boilerplate for Next.js.',
+      translationMock('description'),
     );
   });
 
@@ -153,9 +170,7 @@ describe('createPageMetadata', () => {
     const twitter = metadata.twitter as TwitterCard;
 
     expect(twitter.card).toBe('summary_large_image');
-    expect(twitter.title).toBe('Welcome!');
-    expect(twitter.description).toBe(
-      'A scalable, production-ready SaaS boilerplate for Next.js.',
-    );
+    expect(twitter.title).toBe(translationMock('title'));
+    expect(twitter.description).toBe(translationMock('description'));
   });
 });

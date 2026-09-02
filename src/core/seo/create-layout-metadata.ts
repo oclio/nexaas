@@ -45,9 +45,6 @@ export async function createLayoutMetadata({
     keywords: [
       ...new Set([...app.keywords, ...(t.raw('keywords') as string[])]),
     ],
-    icons: {
-      icon: app.logo,
-    },
     appleWebApp: {
       capable: true,
       statusBarStyle: 'default',
