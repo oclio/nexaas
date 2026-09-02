@@ -15,19 +15,13 @@ test.describe('middleware headers', () => {
     expect(response?.headers()['x-locale']).toBe('fr');
   });
 
-  test('sets x-pathname on the response for a normal route', async ({
-    page,
-  }) => {
-    const response = await page.goto('/en');
+  for (const locale of ['en', 'fr']) {
+    test(`sets x-pathname on the response for /${locale}`, async ({ page }) => {
+      const response = await page.goto(`/${locale}`);
 
-    expect(response?.headers()['x-pathname']).toBe('/en');
-  });
-
-  test('sets x-pathname with full path for nested routes', async ({ page }) => {
-    const response = await page.goto('/fr');
-
-    expect(response?.headers()['x-pathname']).toBe('/fr');
-  });
+      expect(response?.headers()['x-pathname']).toBe(`/${locale}`);
+    });
+  }
 
   test('sets a non-empty Content-Security-Policy header', async ({ page }) => {
     const response = await page.goto('/en');
@@ -77,13 +71,14 @@ test.describe('middleware headers', () => {
 
   test('sets HttpOnly and SameSite on cookies when present', async ({
     page,
+    context,
   }) => {
-    const response = await page.goto('/en');
-    const setCookie = response?.headers()['set-cookie'];
+    await page.goto('/fr');
 
-    if (setCookie) {
-      expect(setCookie.toLowerCase()).toContain('httponly');
-      expect(setCookie.toLowerCase()).toContain('samesite');
-    }
+    const cookies = await context.cookies();
+    const localeCookie = cookies.find((c) => c.name === 'NEXT_LOCALE');
+    expect(localeCookie).toBeTruthy();
+    expect(localeCookie?.httpOnly).toBe(true);
+    expect(localeCookie?.sameSite).toBeTruthy();
   });
 });

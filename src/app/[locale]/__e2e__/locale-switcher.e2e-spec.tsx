@@ -6,6 +6,8 @@ import { supportedLocales } from '@/core/i18n/routing';
 
 const messages = { en: enMessages, fr: frMessages } as const;
 
+const [defaultLocale, secondLocale] = supportedLocales.map((l) => l.code);
+
 const capitalize = (value: string) =>
   value.charAt(0).toUpperCase() + value.slice(1);
 
@@ -25,8 +27,6 @@ test.describe('LocaleSwitcher', () => {
   test('switches from default to second locale and updates page content', async ({
     page,
   }) => {
-    const [defaultLocale, secondLocale] = supportedLocales.map((l) => l.code);
-
     await page.goto(`/${defaultLocale}`);
 
     await page.getByTestId('locale-switcher-trigger').click();
@@ -39,8 +39,6 @@ test.describe('LocaleSwitcher', () => {
   });
 
   test('switches back from second locale to default', async ({ page }) => {
-    const [defaultLocale, secondLocale] = supportedLocales.map((l) => l.code);
-
     await page.goto(`/${secondLocale}`);
 
     await page.getByTestId('locale-switcher-trigger').click();
@@ -53,8 +51,6 @@ test.describe('LocaleSwitcher', () => {
   });
 
   test('persists the locale choice across page reloads', async ({ page }) => {
-    const [defaultLocale, secondLocale] = supportedLocales.map((l) => l.code);
-
     await page.goto(`/${defaultLocale}`);
 
     await page.getByTestId('locale-switcher-trigger').click();

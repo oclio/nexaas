@@ -8,67 +8,67 @@ import { routing, supportedLocales } from '@/core/i18n/routing';
 test('renders all layout metadata from en translations', async ({ page }) => {
   await page.goto(`/${routing.defaultLocale}`);
 
-  expect(await page.getAttribute('html', 'lang')).toBe(routing.defaultLocale);
-  expect(await page.title()).toBe(
+  await expect(page.locator('html')).toHaveAttribute(
+    'lang',
+    routing.defaultLocale,
+  );
+  await expect(page).toHaveTitle(
     `${pageLandingEn.landing.title} | ${app.title}`,
   );
 
-  const description = await page
-    .locator('meta[name="description"]')
-    .getAttribute('content');
-  expect(description).toBe(pageLandingEn.landing.description);
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    'content',
+    pageLandingEn.landing.description,
+  );
 
-  const canonical = await page
-    .locator('link[rel="canonical"]')
-    .getAttribute('href');
-  expect(canonical).toContain(`/${routing.defaultLocale}`);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    new RegExp(`/${routing.defaultLocale}$`),
+  );
 
   for (const { code } of supportedLocales) {
-    const alternate = await page
-      .locator(`link[rel="alternate"][hreflang="${code}"]`)
-      .getAttribute('href');
-    expect(alternate).toContain(`/${code}`);
+    await expect(
+      page.locator(`link[rel="alternate"][hreflang="${code}"]`),
+    ).toHaveAttribute('href', new RegExp(`/${code}$`));
   }
 
-  const xDefault = await page
-    .locator('link[rel="alternate"][hreflang="x-default"]')
-    .getAttribute('href');
-  expect(xDefault).toContain(`/${routing.defaultLocale}`);
+  await expect(
+    page.locator('link[rel="alternate"][hreflang="x-default"]'),
+  ).toHaveAttribute('href', new RegExp(`/${routing.defaultLocale}$`));
 
-  const ogLocale = await page
-    .locator('meta[property="og:locale"]')
-    .getAttribute('content');
-  expect(ogLocale).toBe('en_US');
+  await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute(
+    'content',
+    'en_US',
+  );
 
-  const ogTitle = await page
-    .locator('meta[property="og:title"]')
-    .getAttribute('content');
-  expect(ogTitle).toBe(pageLandingEn.landing.title);
+  await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+    'content',
+    pageLandingEn.landing.title,
+  );
 
-  const ogDescription = await page
-    .locator('meta[property="og:description"]')
-    .getAttribute('content');
-  expect(ogDescription).toBe(pageLandingEn.landing.description);
+  await expect(page.locator('meta[property="og:description"]')).toHaveAttribute(
+    'content',
+    pageLandingEn.landing.description,
+  );
 
-  const ogType = await page
-    .locator('meta[property="og:type"]')
-    .getAttribute('content');
-  expect(ogType).toBe('website');
+  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute(
+    'content',
+    'website',
+  );
 
-  const twitterCard = await page
-    .locator('meta[name="twitter:card"]')
-    .getAttribute('content');
-  expect(twitterCard).toBe('summary_large_image');
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute(
+    'content',
+    'summary_large_image',
+  );
 
-  const twitterTitle = await page
-    .locator('meta[name="twitter:title"]')
-    .getAttribute('content');
-  expect(twitterTitle).toBe(pageLandingEn.landing.title);
+  await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute(
+    'content',
+    pageLandingEn.landing.title,
+  );
 
-  const twitterDescription = await page
-    .locator('meta[name="twitter:description"]')
-    .getAttribute('content');
-  expect(twitterDescription).toBe(pageLandingEn.landing.description);
+  await expect(
+    page.locator('meta[name="twitter:description"]'),
+  ).toHaveAttribute('content', pageLandingEn.landing.description);
 
   const robots = await page
     .locator('meta[name="robots"]')

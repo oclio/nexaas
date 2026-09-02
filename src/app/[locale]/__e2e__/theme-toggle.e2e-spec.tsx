@@ -1,6 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('ThemeToggle', () => {
+  test.describe.configure({ mode: 'serial' });
+
   test('toggles the dark class on <html> when clicked', async ({ page }) => {
     await page.goto('/');
 
