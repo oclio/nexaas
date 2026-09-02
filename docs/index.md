@@ -3,8 +3,8 @@ layout: home
 
 hero:
   name: saaskip
-  text: Ship SaaS. Skip the setup.
-  tagline: The opinionated Next.js SaaS starter for senior devs. Strict tooling, mutation testing, and conventions that scale.
+  text: Forget "Production-Ready".<br>Build on Something Unbreakable.
+  tagline: A resilient Next.js SaaS foundation built for serious projects. Hardened by strict tooling, exhaustive test suites, and mutation testing — with zero compromises on quality.
   image:
     src: /logo.svg
     alt: saaskip logo
@@ -12,9 +12,6 @@ hero:
     - theme: brand
       text: Quick Start
       link: /getting-started/
-    - theme: alt
-      text: Roadmap
-      link: /roadmap
 
 features:
   - title: Strict Tooling
