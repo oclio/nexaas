@@ -11,6 +11,12 @@ export default {
     features: {
       title: 'Fonctionnalités',
     },
+    keywords: [
+      'ce qui est inclus',
+      'fonctionnalités',
+      'statistiques',
+      'tarifs',
+    ],
     pricing: {
       title: 'Tarifs',
     },

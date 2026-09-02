@@ -8,6 +8,7 @@ export default {
     features: {
       title: 'Features',
     },
+    keywords: ['features', 'pricing', 'stats', 'what is included'],
     pricing: {
       title: 'Pricing',
     },

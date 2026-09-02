@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 
+import { app } from '@/config';
 import { env } from '@/core/env';
 import { routing, supportedLocales } from '@/core/i18n/routing';
-import { translationMock } from '@/tests/unit/mocks/intl';
+import { messagesMock, translationMock } from '@/tests/unit/mocks/intl';
 
 import { createPageMetadata } from '../create-page-metadata';
 
@@ -172,5 +173,45 @@ describe('createPageMetadata', () => {
     expect(twitter.card).toBe('summary_large_image');
     expect(twitter.title).toBe(translationMock('title'));
     expect(twitter.description).toBe(translationMock('description'));
+  });
+
+  it('returns page keywords merged with layout keywords', async () => {
+    mockHeaders('en', null);
+    const pageKeywords = ['faq', 'help'];
+    vi.mocked(translationMock.raw).mockReturnValueOnce(pageKeywords);
+
+    const metadata = await createPageMetadata('pages.faq');
+
+    expect(translationMock.raw).toHaveBeenCalledTimes(2);
+    expect(translationMock.raw).toHaveBeenNthCalledWith(1, 'keywords');
+    expect(translationMock.raw).toHaveBeenNthCalledWith(2, 'keywords');
+    expect(metadata.keywords).toEqual(
+      expect.arrayContaining([...app.keywords, ...pageKeywords]),
+    );
+  });
+
+  it('returns layout keywords when page has no keywords', async () => {
+    mockHeaders('en', null);
+    vi.mocked(translationMock.raw).mockReturnValueOnce('not-an-array');
+
+    const metadata = await createPageMetadata('pages.landing');
+
+    expect(translationMock.raw).toHaveBeenCalledTimes(2);
+    expect(translationMock.raw).toHaveBeenNthCalledWith(1, 'keywords');
+    const layoutKeywords = messagesMock.meta.keywords as string[];
+    expect(metadata.keywords).toEqual([
+      ...new Set([...app.keywords, ...layoutKeywords]),
+    ]);
+  });
+
+  it('calls getTranslations with locale and meta namespace for layout keywords', async () => {
+    mockHeaders('fr', null);
+
+    await createPageMetadata('pages.landing');
+
+    expect(getTranslations).toHaveBeenCalledWith({
+      locale: 'fr',
+      namespace: 'meta',
+    });
   });
 });
