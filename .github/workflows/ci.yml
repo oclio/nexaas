@@ -193,6 +193,16 @@ jobs:
       - name: 📦 Install Dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
+      - name: 📂 Restore Stryker Incremental Cache
+        uses: actions/cache@v6
+        with:
+          path: .stryker-tmp/incremental.json
+          key: stryker-incremental-${{ github.ref_name }}-${{ github.sha }}
+          # PR branches can read main's cache; main can read its own previous cache
+          restore-keys: |
+            stryker-incremental-${{ github.ref_name }}-
+            stryker-incremental-main-
+
       - name: 🧬 Mutation Testing
         run: pnpm stryker run --incremental
         env:
