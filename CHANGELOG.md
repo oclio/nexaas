@@ -1,5 +1,11 @@
 # saaskip
 
+## 0.11.1
+
+### Patch Changes
+
+- c25c81e: Rename project to saaskip across configuration, documentation, and brand assets.
+
 ## 0.11.0
 
 ### Minor Changes

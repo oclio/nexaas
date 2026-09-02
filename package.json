@@ -1,6 +1,6 @@
 {
   "name": "saaskip",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "A resilient Next.js SaaS foundation built for serious projects. Hardened by strict tooling, exhaustive test suites, and mutation testing — with zero compromises on quality.",
   "keywords": [
     "nextjs",
