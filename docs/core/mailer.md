@@ -1,6 +1,6 @@
 # Mailer
 
-nexaas sends transactional emails via [Resend](https://resend.com) with [React Email](https://react.email) templates. Templates are authored with Tailwind CSS classes and previewed locally with the `email dev` server.
+saaskip sends transactional emails via [Resend](https://resend.com) with [React Email](https://react.email) templates. Templates are authored with Tailwind CSS classes and previewed locally with the `email dev` server.
 
 ## Configuration
 
@@ -13,7 +13,7 @@ Add them to `.env`:
 
 ```bash
 RESEND_API_KEY=re_xxxxxxxxxxxx
-EMAIL_FROM=nexaas <noreply@nexaas.dev>
+EMAIL_FROM=saaskip <noreply@saaskip.dev>
 ```
 
 ## File structure

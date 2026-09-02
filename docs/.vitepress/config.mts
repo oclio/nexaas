@@ -10,7 +10,7 @@ export default defineConfig({
       },
     },
   },
-  title: 'nexaas',
+  title: 'saaskip',
   description: 'The opinionated Next.js SaaS starter for senior devs.',
 
   base: '/',
@@ -20,7 +20,7 @@ export default defineConfig({
   head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }]],
 
   sitemap: {
-    hostname: 'https://nexaas-docs.oclio.dev',
+    hostname: 'https://saaskip-docs.oclio.dev',
   },
 
   themeConfig: {
@@ -73,15 +73,15 @@ export default defineConfig({
 
     footer: {
       message:
-        'Released under the <a href="https://github.com/oclio/nexaas/blob/main/LICENSE">MIT License</a> · <a href="https://github.com/sponsors/oclio">GitHub Sponsors</a> · <a href="https://buymeacoffee.com/oclio">Buy Me a Coffee</a>',
+        'Released under the <a href="https://github.com/oclio/saaskip/blob/main/LICENSE">MIT License</a> · <a href="https://github.com/sponsors/oclio">GitHub Sponsors</a> · <a href="https://buymeacoffee.com/oclio">Buy Me a Coffee</a>',
       copyright:
         'Copyright © 2026 <a href="https://oclio.dev">@oclio</a> — TypeScript Engineer',
     },
 
-    socialLinks: [{ icon: 'github', link: 'https://github.com/oclio/nexaas' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/oclio/saaskip' }],
 
     editLink: {
-      pattern: 'https://github.com/oclio/nexaas/edit/main/docs/:path',
+      pattern: 'https://github.com/oclio/saaskip/edit/main/docs/:path',
       text: 'Edit this page on GitHub',
     },
   },

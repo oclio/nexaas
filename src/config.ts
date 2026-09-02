@@ -1,5 +1,5 @@
 export const app = {
-  title: 'nexaas',
+  title: 'saaskip',
   author: {
     name: 'oclio',
     email: 'hello@oclio.dev',

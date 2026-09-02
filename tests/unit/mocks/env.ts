@@ -5,7 +5,7 @@ const envDefaults: Record<string, unknown> = {
   DATABASE_IDLE_TIMEOUT: 30,
   DATABASE_POOL_MAX: 10,
   DATABASE_URL: 'postgresql://postgres:postgres@localhost:5455/db',
-  EMAIL_FROM: 'nexaas <noreply@nexaas.dev>',
+  EMAIL_FROM: 'saaskip <noreply@saaskip.dev>',
   LOG_LEVEL: 'info',
   NEXT_PUBLIC_APP_URL: 'http://localhost:3000',
   RESEND_API_KEY: 're_test_key_1234567890',

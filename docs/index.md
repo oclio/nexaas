@@ -2,12 +2,12 @@
 layout: home
 
 hero:
-  name: nexaas
+  name: saaskip
   text: Ship SaaS. Skip the setup.
   tagline: The opinionated Next.js SaaS starter for senior devs. Strict tooling, mutation testing, and conventions that scale.
   image:
     src: /logo.svg
-    alt: nexaas logo
+    alt: saaskip logo
   actions:
     - theme: brand
       text: Quick Start

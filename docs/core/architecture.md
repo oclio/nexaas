@@ -1,6 +1,6 @@
 # Architecture
 
-The `src/core/` directory contains the foundational infrastructure of nexaas. These modules are not features — they are the building blocks that features build on.
+The `src/core/` directory contains the foundational infrastructure of saaskip. These modules are not features — they are the building blocks that features build on.
 
 App-level configuration lives at `src/config.ts` — the first file to edit when customizing the boilerplate (title, description, URL, author, logos).
 
@@ -41,7 +41,7 @@ App-level metadata consumed by the root layout, emails, and metadata APIs:
 
 ```ts
 export const app = {
-  title: 'nexaas',
+  title: 'saaskip',
   description: '...',
   url: env.NEXT_PUBLIC_APP_URL,
   author: 'oclio',

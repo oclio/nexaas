@@ -1,6 +1,6 @@
 # Security
 
-nexaas implements a defense-in-depth strategy through composable middleware. Each security layer runs in the proxy chain and can be independently enabled or disabled via environment variables.
+saaskip implements a defense-in-depth strategy through composable middleware. Each security layer runs in the proxy chain and can be independently enabled or disabled via environment variables.
 
 ## Middleware Chain
 

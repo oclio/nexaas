@@ -3,7 +3,7 @@ import type { TranslationSchema } from '../types';
 
 export default {
   description:
-    'Arrêtez de débugger en production. Livrez en toute confiance. Une architecture SaaS Next.js aux conventions strictes, renforcée par le mutation testing et des patterns TypeScript à toute épreuve. Chaque refactor est sûr, chaque déploiement est calme, et vos alertes de 3h du matin restent silencieuses.',
+    'Un socle SaaS Next.js résilient conçu pour des projets sérieux. Basé sur un outillage strict et des suites de tests exhaustives, renforcé par le mutation testing — sans aucun compromis sur la qualité.',
   keywords: [
     'boilerplate',
     'nextjs',

@@ -24,7 +24,7 @@ function stripLocalePrefix(pathname: string, locale: string): string {
  * from `createLayoutMetadata` via Next.js metadata merging.
  *
  * The `title` is returned without a suffix; the layout's
- * `title.template` (`%s | nexaas`) applies automatically.
+ * `title.template` (`%s | saaskip`) applies automatically.
  *
  * The locale is read from the `x-locale` header set by `withIntl`,
  * and the page path is derived from the `x-pathname` header set by the

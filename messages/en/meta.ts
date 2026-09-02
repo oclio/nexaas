@@ -1,6 +1,6 @@
 export default {
   description:
-    'Stop debugging production. Start shipping with total confidence. An opinionated Next.js SaaS architecture hardened by mutation testing and bulletproof TypeScript patterns. Every refactor is safe, every deploy is calm, and your 3am alerts stay silent.',
+    'A resilient Next.js SaaS foundation built for serious projects. Hardened by strict tooling, exhaustive test suites, and mutation testing — with zero compromises on quality.',
   keywords: [
     'boilerplate',
     'nextjs',
