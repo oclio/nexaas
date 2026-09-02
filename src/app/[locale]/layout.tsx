@@ -7,7 +7,6 @@ import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { ThemeProvider } from '@/app/[locale]/(main)/_components/theme-provider';
 import { routing } from '@/core/i18n/routing';
 import { WebVitals } from '@/core/observability/axiom/components/web-vitals';
 import {
@@ -18,6 +17,7 @@ import {
   websiteJsonLd,
 } from '@/core/seo';
 import ScreenSize from '@/ui/components/dev/screen-size';
+import { ThemeProvider } from '@/ui/components/theme-provider';
 import { fontHeading, fontSans } from '@/ui/fonts';
 import { cn } from '@/ui/helpers';
 
@@ -60,11 +60,12 @@ export default async function RootLayout({
         'font-sans',
       )}
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
     >
       <body className="flex min-h-full flex-col">
         <ThemeProvider>
           <NextIntlClientProvider messages={messages} locale={locale}>
-            <main className="flex flex-1 flex-col">{children}</main>
+            {children}
           </NextIntlClientProvider>
         </ThemeProvider>
         <WebVitals />

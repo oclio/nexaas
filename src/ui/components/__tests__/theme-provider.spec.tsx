@@ -14,7 +14,7 @@ vi.mock('next-themes', () => ({
   ThemeProvider: NextThemesProviderMock,
 }));
 
-import { ThemeProvider } from '@/app/[locale]/(main)/_components/theme-provider';
+import { ThemeProvider } from '@/ui/components/theme-provider';
 
 const lastCallProps = () =>
   vi.mocked(NextThemesProviderMock).mock.calls.at(-1)?.[0];
@@ -95,7 +95,7 @@ describe('ThemeProvider', () => {
       const innerSpy = vi.fn();
       vi.spyOn(console, 'error').mockImplementation(innerSpy);
 
-      await import('@/app/[locale]/(main)/_components/theme-provider');
+      await import('@/ui/components/theme-provider');
 
       console.error('Encountered a script tag in the document');
 
@@ -109,7 +109,7 @@ describe('ThemeProvider', () => {
       const innerSpy = vi.fn();
       vi.spyOn(console, 'error').mockImplementation(innerSpy);
 
-      await import('@/app/[locale]/(main)/_components/theme-provider');
+      await import('@/ui/components/theme-provider');
 
       console.error('some other error');
 
@@ -123,7 +123,7 @@ describe('ThemeProvider', () => {
       const innerSpy = vi.fn();
       vi.spyOn(console, 'error').mockImplementation(innerSpy);
 
-      await import('@/app/[locale]/(main)/_components/theme-provider');
+      await import('@/ui/components/theme-provider');
 
       const errorObject = new Error('boom');
       console.error(errorObject);
@@ -138,7 +138,7 @@ describe('ThemeProvider', () => {
       const innerSpy = vi.fn();
       const spy = vi.spyOn(console, 'error').mockImplementation(innerSpy);
 
-      await import('@/app/[locale]/(main)/_components/theme-provider');
+      await import('@/ui/components/theme-provider');
 
       console.error('Encountered a script tag in the document');
 
