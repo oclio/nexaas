@@ -28,9 +28,7 @@ export function useActiveSection(sectionIds: string[]) {
         currentSection = '';
       }
 
-      setActiveSection((previous) =>
-        previous === currentSection ? previous : currentSection,
-      );
+      setActiveSection(currentSection);
     };
 
     // eslint-disable-next-line unicorn/prefer-observer-apis
