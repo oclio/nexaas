@@ -29,4 +29,13 @@ describe('parsePathname', () => {
       });
     },
   );
+
+  it('returns default locale and root path for null pathname', () => {
+    const result = parsePathname(null);
+
+    expect(result).toMatchObject({
+      locale: 'en',
+      path: '/',
+    });
+  });
 });

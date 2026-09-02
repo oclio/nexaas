@@ -9,10 +9,11 @@ import { routing } from './routing';
  * parsePathname('/fr/faq')  → \{ locale: 'fr', path: '/faq' \}
  * parsePathname('/about')   → \{ locale: 'en', path: '/about' \}
  */
-export function parsePathname(pathname: string): {
+export function parsePathname(pathname: string | null): {
   locale: string;
   path: string;
 } {
+  if (!pathname) return { locale: routing.defaultLocale, path: '/' };
   const segment = pathname.split('/').find(Boolean);
   if (segment && routing.locales.includes(segment as never)) {
     const path = pathname.slice(`/${segment}`.length) || '/';

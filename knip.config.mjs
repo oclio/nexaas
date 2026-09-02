@@ -10,7 +10,6 @@ const knipConfig = {
     'src/navigation.ts',
     'src/ui/components/shadcn/button.tsx',
     'src/ui/components/shadcn/dropdown-menu.tsx',
-    'tests/unit/mocks/intl.tsx',
   ],
   ignoreBinaries: ['gitleaks'],
   ignoreDependencies: [

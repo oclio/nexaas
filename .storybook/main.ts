@@ -26,6 +26,10 @@ const config: StorybookConfig = {
 
     config.resolve.alias = [
       {
+        find: 'next/navigation',
+        replacement: path.resolve(storybookDirectory, 'mocks/navigation.ts'),
+      },
+      {
         find: '@/core/env',
         replacement: path.resolve(storybookDirectory, 'mocks/env.ts'),
       },
