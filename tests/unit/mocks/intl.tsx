@@ -52,11 +52,25 @@ const routerPushMock = vi.fn();
 const pathnameReference = { current: '/' };
 
 vi.mock('@/core/i18n/navigation', () => ({
+  Link: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
   usePathname: () => pathnameReference.current,
   useRouter: () => ({ push: routerPushMock }),
 }));
 
 export {
+  // @lintignore
   messagesMock,
   pathnameReference as pathnameRef,
   routerPushMock,

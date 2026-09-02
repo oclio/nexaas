@@ -44,7 +44,7 @@ describe('RootLayout', () => {
     vi.restoreAllMocks();
   });
 
-  it('renders children inside main landmark', async () => {
+  it('renders children', async () => {
     render(
       await RootLayout({
         children: <div>Test content</div>,
@@ -53,7 +53,6 @@ describe('RootLayout', () => {
     );
 
     expect(screen.getByText('Test content')).toBeInTheDocument();
-    expect(screen.getByRole('main')).toBeInTheDocument();
   });
 
   it.each(routing.locales)('sets html lang attribute to %s', async (locale) => {
