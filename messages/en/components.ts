@@ -1,4 +1,12 @@
 export default {
+  footer: {
+    categories: {
+      company: 'Company',
+      help: 'Help',
+      legal: 'Legal',
+      product: 'Product',
+    },
+  },
   localeSwitcher: {
     ariaLabel: 'Change language',
   },

@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 import metaEn from '@/../messages/en/meta';
-import pageLandingEn from '@/../messages/en/page-landing';
+import pagesHelpEn from '@/../messages/en/pages-help';
+import pagesProductEn from '@/../messages/en/pages-product';
 import { app } from '@/config';
 import { routing, supportedLocales } from '@/core/i18n/routing';
 
@@ -13,12 +14,12 @@ test('renders all layout metadata from en translations', async ({ page }) => {
     routing.defaultLocale,
   );
   await expect(page).toHaveTitle(
-    `${pageLandingEn.landing.title} | ${app.title}`,
+    `${pagesProductEn.landing.title} | ${app.title}`,
   );
 
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     'content',
-    pageLandingEn.landing.description,
+    pagesProductEn.landing.description,
   );
 
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
@@ -43,12 +44,12 @@ test('renders all layout metadata from en translations', async ({ page }) => {
 
   await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
     'content',
-    pageLandingEn.landing.title,
+    pagesProductEn.landing.title,
   );
 
   await expect(page.locator('meta[property="og:description"]')).toHaveAttribute(
     'content',
-    pageLandingEn.landing.description,
+    pagesProductEn.landing.description,
   );
 
   await expect(page.locator('meta[property="og:type"]')).toHaveAttribute(
@@ -63,12 +64,12 @@ test('renders all layout metadata from en translations', async ({ page }) => {
 
   await expect(page.locator('meta[name="twitter:title"]')).toHaveAttribute(
     'content',
-    pageLandingEn.landing.title,
+    pagesProductEn.landing.title,
   );
 
   await expect(
     page.locator('meta[name="twitter:description"]'),
-  ).toHaveAttribute('content', pageLandingEn.landing.description);
+  ).toHaveAttribute('content', pagesProductEn.landing.description);
 
   const robots = await page
     .locator('meta[name="robots"]')
@@ -76,7 +77,41 @@ test('renders all layout metadata from en translations', async ({ page }) => {
   expect(robots).toContain('index');
   expect(robots).toContain('follow');
 
-  const expectedKeywords = [...new Set([...app.keywords, ...metaEn.keywords])];
+  const expectedKeywords = [
+    ...new Set([
+      ...app.keywords,
+      ...metaEn.keywords,
+      ...pagesProductEn.landing.keywords,
+    ]),
+  ];
+  const keywords = await page
+    .locator('meta[name="keywords"]')
+    .getAttribute('content');
+  const renderedKeywords = keywords?.split(',').map((k) => k.trim()) ?? [];
+  for (const keyword of expectedKeywords) {
+    expect(renderedKeywords).toContain(keyword);
+  }
+});
+
+test('renders faq page metadata merged with layout metadata', async ({
+  page,
+}) => {
+  await page.goto(`/${routing.defaultLocale}/faq`);
+
+  await expect(page).toHaveTitle(`${pagesHelpEn.faq.title} | ${app.title}`);
+
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+    'content',
+    pagesHelpEn.faq.description,
+  );
+
+  const expectedKeywords = [
+    ...new Set([
+      ...app.keywords,
+      ...metaEn.keywords,
+      ...pagesHelpEn.faq.keywords,
+    ]),
+  ];
   const keywords = await page
     .locator('meta[name="keywords"]')
     .getAttribute('content');

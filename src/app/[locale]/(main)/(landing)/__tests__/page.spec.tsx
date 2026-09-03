@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { getTranslations } from 'next-intl/server';
 
 vi.mock('@/core/seo', () => ({
   createPageMetadata: vi.fn(async () => ({
@@ -35,24 +34,10 @@ describe('LandingPage', () => {
   });
 
   describe('rendering', () => {
-    it('renders the translated title in an h1', async () => {
+    it('renders the hero section', async () => {
       render(await LandingPage());
 
-      expect(
-        screen.getByRole('heading', { level: 1, name: 'Welcome!' }),
-      ).toBeInTheDocument();
-    });
-
-    it('calls getTranslations with the pages.landing namespace', async () => {
-      render(await LandingPage());
-
-      expect(getTranslations).toHaveBeenCalledWith('pages.landing');
-    });
-
-    it('renders the LocaleSwitcher', async () => {
-      render(await LandingPage());
-
-      expect(screen.getByTestId('locale-switcher-trigger')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument();
     });
   });
 });

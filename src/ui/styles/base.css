@@ -1,0 +1,9 @@
+@layer base {
+  html {
+    scroll-padding-top: 5rem;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+}

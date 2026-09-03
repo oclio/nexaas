@@ -34,7 +34,7 @@ export default function Logo({ className, priority = false }: Readonly<Props>) {
           className="object-contain"
         />
       </div>
-      <span className="font-heading truncate text-lg font-semibold text-zinc-700 dark:text-zinc-400">
+      <span className="font-heading truncate text-base font-medium tracking-tight text-zinc-700 dark:text-zinc-400">
         {app.title}
       </span>
     </div>

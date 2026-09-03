@@ -73,23 +73,21 @@
   margin-bottom: 0.5rem;
 }
 
-/* saaskip title gradient */
+/* saaskip title color */
 :root {
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(
-    120deg,
-    #3e5aa2 30%,
-    #5b7fc7
-  );
+  --vp-c-brand-1: #13701a;
+  --vp-c-brand-2: #289933;
+  --vp-c-brand-3: #39b54a;
+  --vp-home-hero-name-color: #289933;
+  --vp-home-hero-name-background: transparent;
 }
 
 .dark {
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: -webkit-linear-gradient(
-    120deg,
-    #5b7fc7 30%,
-    #8ca9e6
-  );
+  --vp-c-brand-1: #289933;
+  --vp-c-brand-2: #39b54a;
+  --vp-c-brand-3: #5bc866;
+  --vp-home-hero-name-color: #39b54a;
+  --vp-home-hero-name-background: transparent;
 }
 
 .VPHero .text {

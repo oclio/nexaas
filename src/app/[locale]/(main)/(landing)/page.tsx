@@ -1,25 +1,29 @@
-import { getTranslations } from 'next-intl/server';
-
-import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
 import { createPageMetadata } from '@/core/seo';
-import ThemeToggle from '@/ui/components/theme-toggle';
+
+import CtaSection from './_components/cta-section';
+import FaqSection from './_components/faq-section';
+import FeaturesSection from './_components/features-section';
+import { HashScroll } from './_components/hash-scroll';
+import HeroSection from './_components/hero-section';
+import PricingSection from './_components/pricing-section';
+import StatsSection from './_components/stats-section';
+import WhatIsIncluded from './_components/what-is-included-section';
 
 export async function generateMetadata() {
   return createPageMetadata('pages.landing');
 }
 
 export default async function LandingPage() {
-  const t = await getTranslations('pages.landing');
-
   return (
-    <div className="flex flex-col gap-6 p-4">
-      <header className="flex items-center justify-between gap-4">
-        <h1>{t('title')}</h1>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <LocaleSwitcher />
-        </div>
-      </header>
+    <div className="flex min-h-svh w-full flex-col">
+      <HashScroll />
+      <HeroSection />
+      <StatsSection />
+      <FeaturesSection />
+      <PricingSection />
+      <FaqSection />
+      <WhatIsIncluded />
+      <CtaSection />
     </div>
   );
 }

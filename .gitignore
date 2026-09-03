@@ -5,7 +5,7 @@ docs/.vitepress/cache/
 docs/.vitepress/deps/
 docs/.vitepress/dist/
 /.vitepress/
-ops/
+.ops/
 .temp/
 pr.md
 AGENTS.md

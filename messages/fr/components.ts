@@ -2,6 +2,14 @@ import type enComponents from '../en/components';
 import type { TranslationSchema } from '../types';
 
 export default {
+  footer: {
+    categories: {
+      company: 'Entreprise',
+      help: 'Aide',
+      legal: 'Légal',
+      product: 'Produit',
+    },
+  },
   localeSwitcher: {
     ariaLabel: 'Changer de langue',
   },

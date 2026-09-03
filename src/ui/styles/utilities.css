@@ -1,0 +1,14 @@
+@layer utilities {
+  /* ─── SECTIONS ─────────────────────────────────────────────────────────── */
+  .page-section {
+    @apply mx-auto max-w-6xl px-4 xl:px-0;
+  }
+
+  .landing > .page-section {
+    @apply py-16 md:py-24 xl:py-32;
+  }
+
+  .landing.highlight {
+    @apply border-border/50 bg-muted/30 border-t border-b;
+  }
+}

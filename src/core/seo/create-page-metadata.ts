@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 
+import { app } from '@/config';
 import { env } from '@/core/env';
 import { routing, supportedLocales } from '@/core/i18n/routing';
 
@@ -43,9 +44,24 @@ export async function createPageMetadata(namespace: string): Promise<Metadata> {
     supportedLocales.map((l) => [l.code, `/${l.code}${path}`]),
   );
 
+  let pageKeywords: string[] = [];
+  try {
+    const rawKeywords = t.raw('keywords');
+    if (Array.isArray(rawKeywords)) pageKeywords = rawKeywords;
+  } catch {
+    // keywords is optional — pages without it inherit layout keywords
+  }
+
+  const metaT = await getTranslations({ locale, namespace: 'meta' });
+  const layoutKeywords = metaT.raw('keywords') as string[];
+  const keywords = [
+    ...new Set([...app.keywords, ...layoutKeywords, ...pageKeywords]),
+  ];
+
   return {
     title: t('title'),
     description: t('description'),
+    keywords,
     alternates: {
       canonical: `/${locale}${path}`,
       languages: {

@@ -10,13 +10,17 @@
 
 <br />
 
-Stop debugging production. Start shipping with total confidence.
+<div align="center">
+  <strong>Stop debugging production. Start shipping with total confidence.</strong>
+</div>
 
-A resilient Next.js SaaS foundation built for serious projects. Hardened by strict tooling, exhaustive test suites, and mutation testing — with zero compromises on quality.
+<br />
+
+A Next.js SaaS foundation that won't break when you customize it. Production-ready, zero-bug, safe to modify from day one. Shaped for business-critical, rock-solid products.
 
 🚀 **[Live demo](https://saaskip.oclio.dev)** — explore the application in action.
 
-📖 **[Full documentation](https://saaskip-docs.oclio.dev)** — architectures, features, and guides.
+📖 **[Full documentation](https://docs.saaskip.oclio.dev)** — architectures, features, and guides.
 
 ## Features
 
