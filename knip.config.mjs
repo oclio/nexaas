@@ -8,8 +8,8 @@ const knipConfig = {
     'src/core/mailer/index.ts',
     'src/core/mailer/types.ts',
     'src/navigation.ts',
-    'src/ui/components/shadcn/button.tsx',
     'src/ui/components/shadcn/dropdown-menu.tsx',
+    'src/ui/components/shadcn/sheet.tsx',
   ],
   ignoreBinaries: ['gitleaks'],
   ignoreDependencies: [

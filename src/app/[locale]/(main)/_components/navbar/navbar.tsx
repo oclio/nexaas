@@ -40,6 +40,7 @@ export default function Navbar() {
           ? 'bg-background/80 border-border/50 backdrop-blur-lg'
           : 'border-transparent bg-transparent',
       )}
+      data-testid="navbar"
     >
       <div className="mx-auto max-w-6xl px-4 xl:px-0">
         <div className="flex items-center justify-between gap-6 py-3 lg:gap-0">

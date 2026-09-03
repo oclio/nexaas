@@ -40,7 +40,7 @@ export default function MobileMenu({
   );
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open} onOpenChange={setOpen} data-testid="mobile-menu">
       <SheetTrigger
         render={
           <Button
@@ -57,7 +57,6 @@ export default function MobileMenu({
           </Button>
         }
       />
-
       <SheetContent
         showCloseButton={false}
         side="left"
@@ -68,6 +67,7 @@ export default function MobileMenu({
 
         <header className="flex items-center justify-between">
           <SheetClose
+            nativeButton={false}
             render={
               <Link href="/">
                 <Logo />
@@ -85,6 +85,7 @@ export default function MobileMenu({
             {items.map((item) => (
               <SheetClose
                 key={item.label}
+                nativeButton={false}
                 render={
                   <NavLink
                     href={item.href}
