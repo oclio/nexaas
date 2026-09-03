@@ -16,7 +16,7 @@
 
 <br />
 
-A Next.js SaaS foundation that won't break when you customize it. Production-ready, zero-bug, safe to modify from day one. Shaped for business-critical, rock-solid products.
+A Next.js SaaS foundation that won't break when you customize it. Zero-bug, fully tested and documented, safe to modify from day one. Built for business-critical, rock-solid products.
 
 🚀 **[Live demo](https://saaskip.oclio.dev)** — explore the application in action.
 

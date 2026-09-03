@@ -5,7 +5,7 @@ import {
   renderLink,
   renderSmall,
   renderStrong,
-} from '../render-rich';
+} from '../helpers/render-rich';
 
 vi.mock('next/link', () => ({
   default: ({

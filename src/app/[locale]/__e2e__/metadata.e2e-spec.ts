@@ -7,6 +7,10 @@ import { app } from '@/config';
 import { routing, supportedLocales } from '@/core/i18n/routing';
 
 test('renders all layout metadata from en translations', async ({ page }) => {
+  const landingDescription = pagesProductEn.landing.description
+    .split('{app}')
+    .join(app.title);
+
   await page.goto(`/${routing.defaultLocale}`);
 
   await expect(page.locator('html')).toHaveAttribute(
@@ -19,7 +23,7 @@ test('renders all layout metadata from en translations', async ({ page }) => {
 
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     'content',
-    pagesProductEn.landing.description,
+    landingDescription,
   );
 
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
@@ -49,7 +53,7 @@ test('renders all layout metadata from en translations', async ({ page }) => {
 
   await expect(page.locator('meta[property="og:description"]')).toHaveAttribute(
     'content',
-    pagesProductEn.landing.description,
+    landingDescription,
   );
 
   await expect(page.locator('meta[property="og:type"]')).toHaveAttribute(
@@ -69,7 +73,7 @@ test('renders all layout metadata from en translations', async ({ page }) => {
 
   await expect(
     page.locator('meta[name="twitter:description"]'),
-  ).toHaveAttribute('content', pagesProductEn.landing.description);
+  ).toHaveAttribute('content', landingDescription);
 
   const robots = await page
     .locator('meta[name="robots"]')
@@ -96,13 +100,17 @@ test('renders all layout metadata from en translations', async ({ page }) => {
 test('renders faq page metadata merged with layout metadata', async ({
   page,
 }) => {
+  const faqDescription = pagesHelpEn.faq.description
+    .split('{app}')
+    .join(app.title);
+
   await page.goto(`/${routing.defaultLocale}/faq`);
 
   await expect(page).toHaveTitle(`${pagesHelpEn.faq.title} | ${app.title}`);
 
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     'content',
-    pagesHelpEn.faq.description,
+    faqDescription,
   );
 
   const expectedKeywords = [

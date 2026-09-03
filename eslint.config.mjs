@@ -87,7 +87,7 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    files: ['src/ui/helpers/render-rich.tsx'],
+    files: ['src/core/i18n/helpers/render-rich.tsx'],
     rules: {
       'react/display-name': 'off',
     },
