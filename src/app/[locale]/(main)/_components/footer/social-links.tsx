@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 import { brand } from '@/config/brand';
-import { socialLinks } from '@/navigation';
+import { socialLinks } from '@/config/navigation';
 
 export default function SocialLinks() {
   const t = useTranslations('components.footer');

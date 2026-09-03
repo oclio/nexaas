@@ -22,7 +22,7 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-vi.mock('@/navigation', () => ({
+vi.mock('@/config/navigation', () => ({
   navigation: [
     {
       label: 'pages.landing.features.title',

@@ -59,7 +59,7 @@ vi.mock('@/config/brand', () => ({
   brand: { title: 'Saaskip' },
 }));
 
-vi.mock('@/navigation', () => ({
+vi.mock('@/config/navigation', () => ({
   socialLinks: [
     { name: 'X/Twitter', icon: 'icon-twitter', href: 'https://x.com/saaskip' },
     {

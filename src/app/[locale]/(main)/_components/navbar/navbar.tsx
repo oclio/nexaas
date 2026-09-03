@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 
 import { NavLink } from '@/app/[locale]/(main)/_components/nav-link';
 import { useLandingNav } from '@/app/[locale]/(main)/_components/use-landing-nav';
+import { navigation } from '@/config/navigation';
 import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
-import { navigation } from '@/navigation';
 import Logo from '@/ui/components/logo';
 import { buttonVariants } from '@/ui/components/shadcn/button';
 import ThemeToggle from '@/ui/components/theme-toggle';

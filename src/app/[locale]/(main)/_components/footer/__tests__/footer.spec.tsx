@@ -87,7 +87,7 @@ vi.mock('@/core/i18n/components/locale-switcher', () => ({
   default: () => <div data-testid="locale-switcher" />,
 }));
 
-vi.mock('@/navigation', () => ({
+vi.mock('@/config/navigation', () => ({
   navigation: [
     {
       label: 'pages.landing.features.title',

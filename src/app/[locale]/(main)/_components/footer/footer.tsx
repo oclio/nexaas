@@ -5,14 +5,14 @@ import { useTranslations } from 'next-intl';
 import { NavLink } from '@/app/[locale]/(main)/_components/nav-link';
 import { useLandingNav } from '@/app/[locale]/(main)/_components/use-landing-nav';
 import { brand } from '@/config/brand';
-import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
-import { Link } from '@/core/i18n/navigation';
 import {
   navigation,
   navigationCategories,
   NavigationCategory,
   NavigationItem,
-} from '@/navigation';
+} from '@/config/navigation';
+import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
+import { Link } from '@/core/i18n/navigation';
 import Logo from '@/ui/components/logo';
 
 import SocialLinks from './social-links';

@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ComponentProps, useState } from 'react';
 
+import { navigation } from '@/config/navigation';
 import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
-import { navigation } from '@/navigation';
 import Logo from '@/ui/components/logo';
 import { Button } from '@/ui/components/shadcn/button';
 import {
