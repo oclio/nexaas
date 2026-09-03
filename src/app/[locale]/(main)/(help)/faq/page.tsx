@@ -4,8 +4,15 @@ import { createPageMetadata } from '@/core/seo';
 
 import PageLayout from '../../_components/page-layout';
 
-export async function generateMetadata() {
-  return createPageMetadata('pages.faq');
+export async function generateMetadata({
+  params,
+}: Readonly<{ params: Promise<{ locale: string }> }>) {
+  const { locale } = await params;
+  return createPageMetadata({
+    locale,
+    namespace: 'pages.faq',
+    path: '/faq',
+  });
 }
 
 export default async function FaqPage() {

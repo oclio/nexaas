@@ -9,8 +9,11 @@ import PricingSection from './_components/pricing-section';
 import StatsSection from './_components/stats-section';
 import WhatIsIncluded from './_components/what-is-included-section';
 
-export async function generateMetadata() {
-  return createPageMetadata('pages.landing');
+export async function generateMetadata({
+  params,
+}: Readonly<{ params: Promise<{ locale: string }> }>) {
+  const { locale } = await params;
+  return createPageMetadata({ locale, namespace: 'pages.landing', path: '' });
 }
 
 export default async function LandingPage() {

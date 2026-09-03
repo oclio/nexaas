@@ -4,8 +4,15 @@ import { createPageMetadata } from '@/core/seo';
 
 import PageLayout from '../../_components/page-layout';
 
-export async function generateMetadata() {
-  return createPageMetadata('pages.whatIsIncluded');
+export async function generateMetadata({
+  params,
+}: Readonly<{ params: Promise<{ locale: string }> }>) {
+  const { locale } = await params;
+  return createPageMetadata({
+    locale,
+    namespace: 'pages.whatIsIncluded',
+    path: '/what-is-included',
+  });
 }
 
 export default async function WhatIsIncludedPage() {

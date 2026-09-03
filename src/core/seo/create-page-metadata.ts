@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 
 import { app } from '@/config';
@@ -11,11 +10,10 @@ const ogLocaleMap: Record<string, string> = {
   fr: 'fr_FR',
 };
 
-function stripLocalePrefix(pathname: string, locale: string): string {
-  const prefix = `/${locale}`;
-  if (pathname === prefix) return '';
-  if (pathname.startsWith(`${prefix}/`)) return pathname.slice(prefix.length);
-  return pathname || '';
+interface Props {
+  locale: string;
+  namespace: string;
+  path: string;
 }
 
 /**
@@ -27,17 +25,14 @@ function stripLocalePrefix(pathname: string, locale: string): string {
  * The `title` is returned without a suffix; the layout's
  * `title.template` (`%s | saaskip`) applies automatically.
  *
- * The locale is read from the `x-locale` header set by `withIntl`,
- * and the page path is derived from the `x-pathname` header set by the
- * proxy middleware (locale prefix stripped), so pages only need to pass
- * their i18n namespace.
+ * The `locale` and `path` are passed explicitly by each page from its
+ * `params`, avoiding `headers()` and enabling static prerendering.
  */
-export async function createPageMetadata(namespace: string): Promise<Metadata> {
-  const headerList = await headers();
-  const locale = headerList.get('x-locale') ?? routing.defaultLocale;
-  const pathname = headerList.get('x-pathname') ?? '';
-  const path = stripLocalePrefix(pathname, locale);
-
+export async function createPageMetadata({
+  locale,
+  namespace,
+  path,
+}: Readonly<Props>): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace });
 
   const languages = Object.fromEntries(
