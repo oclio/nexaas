@@ -93,16 +93,23 @@ cn('px-2 py-1', condition && 'bg-red-500', 'px-4');
 
 ## Icons
 
-Icons are centralized in `src/config/icons.ts` via the `ICONS` registry. The goal is consistency: every component imports from the same registry instead of referencing icon objects directly. This ensures the same icon is reused across the app and can be swapped in one place without touching component code.
+Icons are centralized in `src/config/icons.tsx` via the `ICONS` registry and the `icon()` render function. Every component uses `icon()` instead of importing icon objects directly — this ensures the same icon is reused across the app and can be swapped in one place without touching component code.
 
-```ts
-import { ICONS } from '@/config/icons';
-import { HugeiconsIcon } from '@hugeicons/react';
+```tsx
+import { icon } from '@/config/icons';
 
-<HugeiconsIcon icon={ICONS.themeDark} />
+{
+  icon('themeDark', { className: 'size-4', 'aria-hidden': true });
+}
 ```
 
-To add a new icon, import it from `@hugeicons/core-free-icons` and add it to the `ICONS` registry — then use `ICONS.myIcon` everywhere.
+`icon()` accepts all standard SVG attributes (`className`, `aria-hidden`, `strokeWidth`, etc.).
+
+To add a new icon, import it from `@hugeicons/core-free-icons`, add it to the `ICONS` registry, then call `icon('myIcon', ...)` everywhere.
+
+### Swapping icon library
+
+To swap from Hugeicons to another library (Lucide, Heroicons, Radix), change only `src/config/icons.tsx` — the `ICONS` registry and the `icon()` function. No component or test needs to change.
 
 ## Hooks
 

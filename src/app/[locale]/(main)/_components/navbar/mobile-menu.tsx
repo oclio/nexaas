@@ -1,11 +1,10 @@
 'use client';
 
-import { HugeiconsIcon } from '@hugeicons/react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ComponentProps, useState } from 'react';
 
-import { ICONS } from '@/config/icons';
+import { icon } from '@/config/icons';
 import { navigation } from '@/config/navigation';
 import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
 import Logo from '@/ui/components/logo';
@@ -49,11 +48,10 @@ export default function MobileMenu({
             aria-label={t('labels.menu')}
             {...props}
           >
-            <HugeiconsIcon
-              icon={ICONS.menu}
-              className="size-3.5"
-              aria-hidden="true"
-            />
+            {icon('menu', {
+              className: 'size-3.5',
+              'aria-hidden': true,
+            })}
           </Button>
         }
       />

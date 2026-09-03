@@ -1,10 +1,9 @@
 'use client';
 
 import { Menu as MenuPrimitive } from '@base-ui/react/menu';
-import { HugeiconsIcon } from '@hugeicons/react';
 import * as React from 'react';
 
-import { ICONS } from '@/config/icons';
+import { icon } from '@/config/icons';
 import { cn } from '@/ui/helpers';
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
@@ -123,11 +122,7 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <HugeiconsIcon
-        icon={ICONS.chevronRight}
-        strokeWidth={2}
-        className="ml-auto"
-      />
+      {icon('chevronRight', { strokeWidth: 2, className: 'ml-auto' })}
     </MenuPrimitive.SubmenuTrigger>
   );
 }
@@ -181,7 +176,7 @@ function DropdownMenuCheckboxItem({
         data-slot="dropdown-menu-checkbox-item-indicator"
       >
         <MenuPrimitive.CheckboxItemIndicator>
-          <HugeiconsIcon icon={ICONS.tick} strokeWidth={2} />
+          {icon('tick', { strokeWidth: 2 })}
         </MenuPrimitive.CheckboxItemIndicator>
       </span>
       {children}
@@ -221,7 +216,7 @@ function DropdownMenuRadioItem({
         data-slot="dropdown-menu-radio-item-indicator"
       >
         <MenuPrimitive.RadioItemIndicator>
-          <HugeiconsIcon icon={ICONS.tick} strokeWidth={2} />
+          {icon('tick', { strokeWidth: 2 })}
         </MenuPrimitive.RadioItemIndicator>
       </span>
       {children}

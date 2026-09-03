@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  ArrowDownLeft01Icon,
-  ArrowDownRight01Icon,
-  ArrowUpLeft01Icon,
-  ArrowUpRight01Icon,
-  SquareIcon,
-} from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react';
-
+import { icon } from '@/config/icons';
 import { Button } from '@/ui/components/shadcn/button';
 import {
   DropdownMenu,
@@ -31,10 +23,10 @@ const SIZE_OPTIONS = [
 ] as const;
 
 const POSITION_OPTIONS = [
-  { pos: 'bottomLeft', label: 'Bottom Left', icon: ArrowDownLeft01Icon },
-  { pos: 'bottomRight', label: 'Bottom Right', icon: ArrowDownRight01Icon },
-  { pos: 'topRight', label: 'Top Right', icon: ArrowUpRight01Icon },
-  { pos: 'topLeft', label: 'Top Left', icon: ArrowUpLeft01Icon },
+  { pos: 'bottomLeft', label: 'Bottom Left', icon: 'screenBottomLeft' },
+  { pos: 'bottomRight', label: 'Bottom Right', icon: 'screenBottomRight' },
+  { pos: 'topRight', label: 'Top Right', icon: 'screenTopRight' },
+  { pos: 'topLeft', label: 'Top Left', icon: 'screenTopLeft' },
 ] as const;
 
 interface Props {
@@ -95,15 +87,14 @@ export default function ScreenSize({ className }: Readonly<Props>) {
               checked={size === s.size}
               onCheckedChange={() => setSize(s.size)}
             >
-              <HugeiconsIcon
-                icon={SquareIcon}
-                className={cn('text-muted-foreground', {
+              {icon('screenSquare', {
+                className: cn('text-muted-foreground', {
                   'size-2': s.size === 'sm',
                   'size-2.5': s.size === 'md',
                   'size-3': s.size === 'lg',
-                })}
-                aria-hidden="true"
-              />
+                }),
+                'aria-hidden': true,
+              })}
               {s.label}
             </DropdownMenuCheckboxItem>
           ))}
@@ -117,11 +108,10 @@ export default function ScreenSize({ className }: Readonly<Props>) {
               checked={position === p.pos}
               onCheckedChange={() => setPosition(p.pos)}
             >
-              <HugeiconsIcon
-                icon={p.icon}
-                className="text-muted-foreground"
-                aria-hidden="true"
-              />
+              {icon(p.icon, {
+                className: 'text-muted-foreground',
+                'aria-hidden': true,
+              })}
               {p.label}
             </DropdownMenuCheckboxItem>
           ))}
