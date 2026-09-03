@@ -1,11 +1,10 @@
 'use client';
 
-import { HugeiconsIcon } from '@hugeicons/react';
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { type ComponentProps } from 'react';
 
-import { ICONS } from '@/config/icons';
+import { icon } from '@/config/icons';
 import { Button } from '@/ui/components/shadcn/button';
 import { useIsMounted } from '@/ui/hooks/use-is-mounted';
 
@@ -32,20 +31,18 @@ export default function ThemeToggle({
       aria-label={t(isDark ? 'toggleLight' : 'toggleDark')}
       data-testid="theme-toggle"
     >
-      <HugeiconsIcon
-        icon={ICONS.themeDark}
-        className={`size-4 shrink-0 transition-all ${
+      {icon('themeDark', {
+        className: `size-4 shrink-0 transition-all ${
           isDark ? 'scale-100 opacity-100' : 'absolute scale-0 opacity-0'
-        }`}
-        aria-hidden="true"
-      />
-      <HugeiconsIcon
-        icon={ICONS.themeLight}
-        className={`size-4 shrink-0 transition-all ${
+        }`,
+        'aria-hidden': true,
+      })}
+      {icon('themeLight', {
+        className: `size-4 shrink-0 transition-all ${
           isDark ? 'absolute scale-0 opacity-0' : 'scale-100 opacity-100'
-        }`}
-        aria-hidden="true"
-      />
+        }`,
+        'aria-hidden': true,
+      })}
     </Button>
   );
 }

@@ -1,10 +1,9 @@
 'use client';
 
 import { Dialog as SheetPrimitive } from '@base-ui/react/dialog';
-import { HugeiconsIcon } from '@hugeicons/react';
 import * as React from 'react';
 
-import { ICONS } from '@/config/icons';
+import { icon } from '@/config/icons';
 import { Button } from '@/ui/components/shadcn/button';
 import { cn } from '@/ui/helpers/index';
 
@@ -71,7 +70,7 @@ function SheetContent({
               />
             }
           >
-            <HugeiconsIcon icon={ICONS.cancel} strokeWidth={2} />
+            {icon('cancel', { strokeWidth: 2 })}
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
         )}

@@ -64,6 +64,44 @@ Keep the same filenames and dimensions — no code changes needed.
 
 ## 5. Icons (optional)
 
-The icon registry lives at `src/config/icons.ts`. Every component imports from this single source of truth. If you're happy with Hugeicons, skip this step.
+The icon registry lives at `src/config/icons.tsx`. Every component — including shadcn primitives — routes through this single file. If you're happy with Hugeicons, skip this step.
 
-To switch to another library (Lucide, Heroicons, Radix), see the [Icon System](../ui#icons) documentation.
+Want Lucide instead? Change one file, run one command, done. No find-and-replace across 20 files. No broken imports.
+
+```tsx
+// src/config/icons.tsx — the only file to change
+import { Check, ChevronRight, Menu, Moon, Sun, X } from 'lucide-react';
+
+export const ICONS = {
+  cancel: X,
+  chevronRight: ChevronRight,
+  menu: Menu,
+  themeDark: Moon,
+  themeLight: Sun,
+  tick: Check,
+  // ...
+};
+
+export function icon(
+  name: keyof typeof ICONS,
+  props?: Record<string, unknown>,
+) {
+  const Icon = ICONS[name];
+  return <Icon {...props} />;
+}
+```
+
+```bash
+pnpm remove @hugeicons/react @hugeicons/core-free-icons
+pnpm add lucide-react
+```
+
+Update `components.json` so new shadcn components are generated with the right icon library:
+
+```json
+{
+  "iconLibrary": "lucide"
+}
+```
+
+New shadcn components added via `pnpm dlx shadcn@latest add <component>` will import from `lucide-react` directly. Replace those imports with `icon()` from `@/config/icons` for consistency — or leave them as-is, both work.

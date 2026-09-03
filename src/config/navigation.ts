@@ -1,5 +1,3 @@
-import { IconSvgElement } from '@hugeicons/react';
-
 import { ICONS } from '@/config/icons';
 
 export interface NavigationItem {
@@ -11,7 +9,7 @@ export interface NavigationItem {
 
 interface SocialLink {
   name: string; // platform name, used in aria-label
-  icon: IconSvgElement; // pulled from the ICONS registry
+  icon: keyof typeof ICONS; // key into the ICONS registry
   href: string; // profile URL
 }
 
@@ -152,32 +150,32 @@ Social profile links rendered in the footer — icons come from the ICONS regist
 export const socialLinks: SocialLink[] = [
   {
     href: '#',
-    icon: ICONS.socialFacebook,
+    icon: 'socialFacebook',
     name: 'Facebook',
   },
   {
     href: '#',
-    icon: ICONS.socialInstagram,
+    icon: 'socialInstagram',
     name: 'Instagram',
   },
   {
     href: '#',
-    icon: ICONS.socialLinkedin,
+    icon: 'socialLinkedin',
     name: 'Linkedin',
   },
   {
     href: '#',
-    icon: ICONS.socialThreads,
+    icon: 'socialThreads',
     name: 'Threads',
   },
   {
     href: '#',
-    icon: ICONS.socialTiktok,
+    icon: 'socialTiktok',
     name: 'Tiktok',
   },
   {
     href: '#',
-    icon: ICONS.socialTwitter,
+    icon: 'socialTwitter',
     name: 'X/Twitter',
   },
 ];

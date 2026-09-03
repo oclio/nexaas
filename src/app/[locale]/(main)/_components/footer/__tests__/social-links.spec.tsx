@@ -36,21 +36,16 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-vi.mock('@hugeicons/react', () => ({
-  HugeiconsIcon: ({
-    icon,
-    className,
-    'aria-hidden': ariaHidden,
-  }: {
-    icon: unknown;
-    className?: string;
-    'aria-hidden'?: boolean;
-  }) => (
+vi.mock('@/config/icons', () => ({
+  icon: (
+    name: string,
+    props?: { className?: string; 'aria-hidden'?: boolean },
+  ) => (
     <span
       data-testid="social-icon"
-      data-icon={String(icon)}
-      data-class={className}
-      aria-hidden={ariaHidden}
+      data-icon={name}
+      data-class={props?.className}
+      aria-hidden={props?.['aria-hidden']}
     />
   ),
 }));

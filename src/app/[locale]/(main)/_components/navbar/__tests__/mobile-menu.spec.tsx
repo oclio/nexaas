@@ -145,14 +145,10 @@ vi.mock('../../nav-link', () => ({
   ),
 }));
 
-vi.mock('@hugeicons/react', () => ({
-  HugeiconsIcon: ({ icon }: { icon: unknown }) => (
-    <span data-testid="hugeicons-icon" data-icon={String(icon)} />
-  ),
-}));
-
 vi.mock('@/config/icons', () => ({
-  ICONS: { menu: 'menu-icon', cancel: 'cancel-icon' },
+  icon: (name: string) => (
+    <span data-testid="hugeicons-icon" data-icon={name} />
+  ),
 }));
 
 vi.mock('@/ui/components/shadcn/button', () => ({

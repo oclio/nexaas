@@ -11,26 +11,18 @@ The `src/ui/` directory contains the presentation layer of saaskip. It is built 
 
 ```text
 src/ui/
-  components/
-    shadcn/         → shadcn/ui primitives (Button, DropdownMenu, …)
-    dev/            → development-only tools (ScreenSize, …)
-    theme-toggle.tsx
+  components/       → app components (theme-toggle, shadcn primitives, dev tools)
   helpers/          → cn() class merge utility
   hooks/            → reusable hooks (useIsMounted, …)
-  icons/            → Hugeicons registry
   fonts/            → Next.js font definitions
   styles/           → globals.css (Tailwind + CSS variables)
 ```
 
+Icons live in `src/config/icons.tsx` — see [Icons](#icons) below.
+
 ## Component system
 
 Components are built on [shadcn/ui](https://ui.shadcn.com) using the **base-lyra** style, with [Base UI](https://base-ui.com) as the headless primitive layer. Unlike traditional component libraries, shadcn components are copied into the project — they live in `src/ui/components/shadcn/` and are fully owned by the codebase.
-
-### Available components
-
-| Component | Path                            |
-| --------- | ------------------------------- |
-| Button    | `@/ui/components/shadcn/button` |
 
 To add a new shadcn component:
 
@@ -93,16 +85,21 @@ cn('px-2 py-1', condition && 'bg-red-500', 'px-4');
 
 ## Icons
 
-Icons are centralized in `src/config/icons.ts` via the `ICONS` registry. The goal is consistency: every component imports from the same registry instead of referencing icon objects directly. This ensures the same icon is reused across the app and can be swapped in one place without touching component code.
+Icons are centralized in `src/config/icons.tsx` via the `ICONS` registry and the `icon()` render function. Every component uses `icon()` instead of importing icon objects directly — this ensures the same icon is reused across the app and can be swapped in one place without touching component code.
 
-```ts
-import { ICONS } from '@/config/icons';
-import { HugeiconsIcon } from '@hugeicons/react';
+```tsx
+import { icon } from '@/config/icons';
 
-<HugeiconsIcon icon={ICONS.themeDark} />
+{
+  icon('themeDark', { className: 'size-4', 'aria-hidden': true });
+}
 ```
 
-To add a new icon, import it from `@hugeicons/core-free-icons` and add it to the `ICONS` registry — then use `ICONS.myIcon` everywhere.
+`icon()` accepts all standard SVG attributes (`className`, `aria-hidden`, `strokeWidth`, etc.).
+
+To add a new icon, import it from `@hugeicons/core-free-icons`, add it to the `ICONS` registry, then call `icon('myIcon', ...)` everywhere.
+
+To swap icon library, see [Onboarding → Icons](../getting-started/onboarding#icons-optional).
 
 ## Hooks
 
