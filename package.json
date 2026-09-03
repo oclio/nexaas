@@ -1,7 +1,7 @@
 {
   "name": "saaskip",
   "version": "0.11.1",
-  "description": "A resilient Next.js SaaS foundation built for serious projects. Hardened by strict tooling, exhaustive test suites, and mutation testing — with zero compromises on quality.",
+  "description": "A Next.js SaaS foundation that won't break when you customize it. Production-ready, zero-bug, safe to modify from day one. Shaped for business-critical, rock-solid products.",
   "keywords": [
     "nextjs",
     "nextjs-boilerplate",
