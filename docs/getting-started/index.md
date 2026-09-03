@@ -33,7 +33,7 @@ This runs types, lint, knip, gitleaks, markdownlint, cspell, and build.
 
 ```bash
 pnpm test          # unit tests
-pnpm test:e2e      # e2e tests (requires dev server)
+pnpm test:e2e      # e2e tests
 pnpm test:coverage # unit tests with coverage
 pnpm test:mutate   # mutation testing
 ```
