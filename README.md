@@ -11,7 +11,7 @@
 <br />
 
 <div align="center">
-  <strong>Stop debugging production. Start shipping with total confidence.</strong>
+  <strong>Stop debugging production. Ship fast. With total confidence.</strong>
 </div>
 
 <br />
