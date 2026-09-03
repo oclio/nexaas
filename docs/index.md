@@ -4,7 +4,7 @@ layout: home
 hero:
   name: saaskip
   text: Forget "Production-Ready".<br>Build on Something Unbreakable.
-  tagline: A Next.js SaaS foundation that won't break when you customize it. Production-ready, zero-bug, safe to modify from day one. Shaped for business-critical, rock-solid products.
+  tagline: A Next.js SaaS foundation that won't break when you customize it. Zero-bug, fully tested and documented, safe to modify from day one. Built for business-critical, rock-solid products.
   image:
     src: /logo.svg
     alt: saaskip logo
