@@ -27,7 +27,7 @@ export default function Logo({ className, priority = false }: Readonly<Props>) {
       <div className="relative size-(--logo-size,1.25rem) shrink-0">
         <Image
           src="/images/logo.svg"
-          alt={t('alt', { app: brand.title })}
+          alt={t('alt', { brand: brand.title })}
           fill
           priority={priority}
           sizes="3.25rem"

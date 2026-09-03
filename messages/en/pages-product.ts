@@ -19,7 +19,7 @@ export default {
   },
   whatIsIncluded: {
     description:
-      'A complete breakdown of everything included in {app}: architecture, modules, tooling, tests, and integrations.',
+      'A complete breakdown of everything included in {brand}: architecture, modules, tooling, tests, and integrations.',
     keywords: ['architecture', 'features', 'included', 'modules'],
     title: "What's included",
     viewAll: 'View all included features',

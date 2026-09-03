@@ -134,7 +134,7 @@ describe('createPageMetadata', () => {
     });
 
     expect(translationMock).toHaveBeenCalledWith('description', {
-      app: brand.title,
+      brand: brand.title,
     });
   });
 

@@ -8,7 +8,7 @@ import { routing, supportedLocales } from '@/core/i18n/routing';
 
 test('renders all layout metadata from en translations', async ({ page }) => {
   const landingDescription = pagesProductEn.landing.description
-    .split('{app}')
+    .split('{brand}')
     .join(brand.title);
 
   await page.goto(`/${routing.defaultLocale}`);
@@ -97,7 +97,7 @@ test('renders faq page metadata merged with layout metadata', async ({
   page,
 }) => {
   const faqDescription = pagesHelpEn.faq.description
-    .split('{app}')
+    .split('{brand}')
     .join(brand.title);
 
   await page.goto(`/${routing.defaultLocale}/faq`);

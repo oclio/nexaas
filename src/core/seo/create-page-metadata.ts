@@ -51,7 +51,7 @@ export async function createPageMetadata({
   const layoutKeywords = metaT.raw('keywords') as string[];
   const keywords = [...new Set([...layoutKeywords, ...pageKeywords])];
 
-  const description = t('description', { app: brand.title });
+  const description = t('description', { brand: brand.title });
 
   return {
     title: t('title'),

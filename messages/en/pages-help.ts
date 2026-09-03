@@ -7,7 +7,7 @@ export default {
   },
   faq: {
     description:
-      'Find answers to common questions about {app}: features, pricing, deployment, customization, and support.',
+      'Find answers to common questions about {brand}: features, pricing, deployment, customization, and support.',
     keywords: ['faq', 'help', 'questions', 'support'],
     shortTitle: 'FAQ',
     title: 'Frequently asked questions',

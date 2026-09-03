@@ -16,7 +16,7 @@ export default function SocialLinks() {
         <Link
           href={link.href}
           aria-label={t('appOn', {
-            app: brand.title,
+            brand: brand.title,
             platform: link.name,
           })}
           key={link.name}

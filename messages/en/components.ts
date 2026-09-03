@@ -1,7 +1,7 @@
 export default {
   footer: {
     allRightsReserved: 'All rights reserved.',
-    appOn: '{app} on {platform}',
+    appOn: '{brand} on {platform}',
     categories: {
       company: 'Company',
       help: 'Help',
@@ -15,7 +15,7 @@ export default {
     ariaLabel: 'Change language',
   },
   logo: {
-    alt: '{app} logo',
+    alt: '{brand} logo',
   },
   themeToggle: {
     toggleDark: 'Toggle dark mode',

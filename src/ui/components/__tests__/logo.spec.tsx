@@ -45,7 +45,9 @@ describe('Logo', () => {
     it('passes the translated alt text with app title to the image', () => {
       render(<Logo />);
 
-      expect(translationMock).toHaveBeenCalledWith('alt', { app: brand.title });
+      expect(translationMock).toHaveBeenCalledWith('alt', {
+        brand: brand.title,
+      });
     });
   });
 

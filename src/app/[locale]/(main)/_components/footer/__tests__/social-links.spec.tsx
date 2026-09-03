@@ -110,11 +110,11 @@ describe('SocialLinks', () => {
     const links = screen.getAllByTestId('social-link');
     expect(links[0]).toHaveAttribute(
       'aria-label',
-      'appOn:{"app":"Saaskip","platform":"X/Twitter"}',
+      'appOn:{"brand":"Saaskip","platform":"X/Twitter"}',
     );
     expect(links[1]).toHaveAttribute(
       'aria-label',
-      'appOn:{"app":"Saaskip","platform":"Linkedin"}',
+      'appOn:{"brand":"Saaskip","platform":"Linkedin"}',
     );
   });
 
