@@ -1,5 +1,11 @@
 # saaskip
 
+## 0.14.0
+
+### Minor Changes
+
+- 0e5ec79: Add footer with social links, categorized navigation, locale switcher, and scroll-to-top logo click behavior
+
 ## 0.13.0
 
 ### Minor Changes
