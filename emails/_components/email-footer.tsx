@@ -13,7 +13,7 @@ export default function EmailFooter({ note }: Readonly<Properties>) {
 
       <Text className="text-center text-xs text-gray-400">
         © {new Date().getFullYear()} &middot;{' '}
-        <a href="https://oclio.dev" target="_blank">
+        <a href={brand.author.url} target="_blank">
           {brand.title}
         </a>
         {` · ${note}`}
