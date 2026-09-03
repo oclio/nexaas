@@ -6,7 +6,7 @@ export function handleHashScroll(
   pathname: string,
   callback?: () => void,
 ) {
-  const match = href.match(/#([^#]+)/);
+  const match = /#([^#]+)/.exec(href);
   if (!match) {
     return;
   }
