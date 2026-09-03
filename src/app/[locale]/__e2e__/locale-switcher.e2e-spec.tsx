@@ -12,9 +12,7 @@ const capitalize = (value: string) =>
   value.charAt(0).toUpperCase() + value.slice(1);
 
 test.describe('LocaleSwitcher', () => {
-  // Skipped: LocaleSwitcher is not yet rendered in the new navbar layout.
-  // Will be re-enabled once the component is integrated.
-  test.skip('displays the current locale code on the trigger button', async ({
+  test('displays the current locale code on the trigger button', async ({
     page,
   }) => {
     for (const { code } of supportedLocales) {
@@ -26,8 +24,7 @@ test.describe('LocaleSwitcher', () => {
     }
   });
 
-  // Skipped: LocaleSwitcher is not yet rendered in the new navbar layout.
-  test.skip('switches from default to second locale and updates page content', async ({
+  test('switches from default to second locale and updates page content', async ({
     page,
   }) => {
     await page.goto(`/${defaultLocale}`);
@@ -41,8 +38,7 @@ test.describe('LocaleSwitcher', () => {
     );
   });
 
-  // Skipped: LocaleSwitcher is not yet rendered in the new navbar layout.
-  test.skip('switches back from second locale to default', async ({ page }) => {
+  test('switches back from second locale to default', async ({ page }) => {
     await page.goto(`/${secondLocale}`);
 
     await page.getByTestId('locale-switcher-trigger').click();
@@ -54,10 +50,7 @@ test.describe('LocaleSwitcher', () => {
     );
   });
 
-  // Skipped: LocaleSwitcher is not yet rendered in the new navbar layout.
-  test.skip('persists the locale choice across page reloads', async ({
-    page,
-  }) => {
+  test('persists the locale choice across page reloads', async ({ page }) => {
     await page.goto(`/${defaultLocale}`);
 
     await page.getByTestId('locale-switcher-trigger').click();
