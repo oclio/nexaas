@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 
 import Navbar from '../navbar';
 
@@ -13,18 +13,21 @@ vi.mock('next/link', () => ({
     href,
     children,
     className,
+    onClick,
     'aria-label': ariaLabel,
     'aria-current': ariaCurrent,
   }: {
     href: string;
     children: React.ReactNode;
     className?: string;
+    onClick?: (event_: React.MouseEvent<HTMLAnchorElement>) => void;
     'aria-label'?: string;
     'aria-current'?: 'page';
   }) => (
     <a
       href={href}
       className={className}
+      onClick={onClick}
       aria-label={ariaLabel}
       aria-current={ariaCurrent}
       data-testid="next-link"
@@ -183,6 +186,50 @@ describe('Navbar', () => {
       .getAllByTestId('next-link')
       .find((l) => l.getAttribute('href') === '/');
     expect(homeLink).not.toHaveAttribute('aria-current');
+  });
+
+  describe('logo click behavior', () => {
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('prevents default and scrolls to top when on the landing page', () => {
+      const scrollToSpy = vi.spyOn(globalThis, 'scrollTo');
+      render(<Navbar />);
+
+      const homeLink = screen
+        .getAllByTestId('next-link')
+        .find((l) => l.getAttribute('href') === '/');
+      const event = new MouseEvent('click', { bubbles: true });
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+      fireEvent(homeLink as HTMLElement, event);
+
+      expect(preventDefaultSpy).toHaveBeenCalled();
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 0,
+        behavior: 'smooth',
+      });
+    });
+
+    it('does not prevent default when not on the landing page', () => {
+      navHookMock.mockReturnValue({
+        pathname: '/faq',
+        isLandingPage: false,
+        activeSection: '',
+      });
+      const scrollToSpy = vi.spyOn(globalThis, 'scrollTo');
+      render(<Navbar />);
+
+      const homeLink = screen
+        .getAllByTestId('next-link')
+        .find((l) => l.getAttribute('href') === '/');
+      const event = new MouseEvent('click', { bubbles: true });
+      const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+      fireEvent(homeLink as HTMLElement, event);
+
+      expect(preventDefaultSpy).not.toHaveBeenCalled();
+      expect(scrollToSpy).not.toHaveBeenCalled();
+    });
   });
 
   it('renders only navigation items with navbar in their location', () => {

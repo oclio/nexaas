@@ -2,6 +2,7 @@ import '@/ui/styles/globals.css';
 
 import type { Preview } from '@storybook/nextjs-vite';
 import { NextIntlClientProvider } from 'next-intl';
+import { ThemeProvider } from 'next-themes';
 
 import enMessages from '../messages/en';
 import frMessages from '../messages/fr';
@@ -59,21 +60,41 @@ const preview: Preview = {
         ],
       },
     },
+    theme: {
+      description: 'Theme mode',
+      defaultValue: 'light',
+      toolbar: {
+        icon: 'circlehollow',
+        items: [
+          { value: 'light', icon: 'sun', title: 'Light' },
+          { value: 'dark', icon: 'moon', title: 'Dark' },
+        ],
+      },
+    },
   },
   decorators: [
     (Story, context) => {
       const locale = context.globals.locale || 'en';
+      const theme = context.globals.theme || 'light';
       const messages =
         messagesMap[locale as keyof typeof messagesMap] || enMessages;
 
       return (
-        <NextIntlClientProvider
-          key={locale}
-          locale={locale}
-          messages={messages}
+        <ThemeProvider
+          key={`${locale}-${theme}`}
+          attribute="class"
+          defaultTheme={theme}
+          forcedTheme={theme}
+          enableSystem={false}
         >
-          <Story />
-        </NextIntlClientProvider>
+          <NextIntlClientProvider
+            key={locale}
+            locale={locale}
+            messages={messages}
+          >
+            <Story />
+          </NextIntlClientProvider>
+        </ThemeProvider>
       );
     },
   ],

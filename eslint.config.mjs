@@ -86,6 +86,12 @@ const eslintConfig = defineConfig([
       'unicorn/prefer-string-raw': 'off',
     },
   },
+  {
+    files: ['src/ui/helpers/render-rich.tsx'],
+    rules: {
+      'react/display-name': 'off',
+    },
+  },
   // TESTS
   {
     files: ['**/*.spec.{ts,tsx}', '**/*.e2e-spec.{ts,tsx}', 'tests/unit/**'],
