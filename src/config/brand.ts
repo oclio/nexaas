@@ -1,4 +1,4 @@
-export const app = {
+export const brand = {
   title: 'saaskip',
   author: {
     name: 'oclio',

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 import { env } from '@/core/env';
 import { supportedLocales } from '@/core/i18n/routing';
 import { translationMock } from '@/tests/unit/mocks/intl';
@@ -29,12 +29,12 @@ describe('createLayoutMetadata', () => {
     expect(metadata.metadataBase).toEqual(new URL(env.NEXT_PUBLIC_APP_URL));
   });
 
-  it('uses app.title as default title and template suffix', async () => {
+  it('uses brand.title as default title and template suffix', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
 
     expect(metadata.title).toEqual({
-      default: app.title,
-      template: `%s | ${app.title}`,
+      default: brand.title,
+      template: `%s | ${brand.title}`,
     });
   });
 
@@ -89,7 +89,7 @@ describe('createLayoutMetadata', () => {
     expect(openGraph.type).toBe('website');
   });
 
-  it('sets openGraph image with alt from app.title', async () => {
+  it('sets openGraph image with alt from brand.title', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
     const openGraph = metadata.openGraph as OgWebsite;
     const images = [openGraph.images].flat() as { url: string; alt?: string }[];
@@ -97,7 +97,7 @@ describe('createLayoutMetadata', () => {
     expect(images).toHaveLength(1);
     expect(images[0]).toBeDefined();
     expect(images[0]?.url).toBeTruthy();
-    expect(images[0]?.alt).toBe(app.title);
+    expect(images[0]?.alt).toBe(brand.title);
   });
 
   it('sets twitter card to summary_large_image', async () => {
@@ -107,10 +107,10 @@ describe('createLayoutMetadata', () => {
     expect(twitter.card).toBe('summary_large_image');
   });
 
-  it('sets twitter title to app.title', async () => {
+  it('sets twitter title to brand.title', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
 
-    expect(metadata.twitter?.title).toBe(app.title);
+    expect(metadata.twitter?.title).toBe(brand.title);
   });
 
   it('sets twitter image to og.png', async () => {
@@ -120,11 +120,11 @@ describe('createLayoutMetadata', () => {
     expect(twitter.images).toEqual(['/images/og.png']);
   });
 
-  it('sets twitter creator to app.twitter handle', async () => {
+  it('sets twitter creator to brand.twitter handle', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
     const twitter = metadata.twitter as TwitterCard;
 
-    expect(twitter.creator).toBe(app.author.twitter);
+    expect(twitter.creator).toBe(brand.author.twitter);
   });
 
   it('sets canonical to /{locale}', async () => {
@@ -170,13 +170,13 @@ describe('createLayoutMetadata', () => {
     });
   });
 
-  it('uses app.author for authors and creator', async () => {
+  it('uses brand.author for authors and creator', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
 
     expect(metadata.authors).toEqual([
-      { name: app.author.name, url: app.author.url },
+      { name: brand.author.name, url: brand.author.url },
     ]);
-    expect(metadata.creator).toBe(app.author.name);
+    expect(metadata.creator).toBe(brand.author.name);
   });
 
   it('configures appleWebApp with capable, statusBarStyle and title', async () => {
@@ -185,7 +185,7 @@ describe('createLayoutMetadata', () => {
     expect(metadata.appleWebApp).toEqual({
       capable: true,
       statusBarStyle: 'default',
-      title: app.title,
+      title: brand.title,
     });
   });
 });

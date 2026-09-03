@@ -33,7 +33,7 @@ public/images/
 
 ### Layout metadata
 
-`createLayoutMetadata` generates the root metadata applied to every page. It pulls translated fields from the `meta` namespace and static fields from `src/config.ts`.
+`createLayoutMetadata` generates the root metadata applied to every page. It pulls translated fields from the `meta` namespace and static fields from `src/config/brand.ts`.
 
 ```ts
 // src/app/[locale]/layout.tsx
@@ -119,7 +119,7 @@ The `JsonLdScript` component renders a `<script type="application/ld+json">` tag
 
 ### Customizing
 
-Edit `src/config.ts` to change the organization name, author URL, email, and Twitter handle. The JSON-LD generators pick up these values automatically.
+Edit `src/config/brand.ts` to change the organization name, author URL, email, and Twitter handle. The JSON-LD generators pick up these values automatically.
 
 ## PWA manifest
 
@@ -147,7 +147,7 @@ Next.js serves it at `/manifest.webmanifest` automatically.
 - [ ] Replace `public/images/og.png` with your own OG image
 - [ ] Replace `src/app/icon.svg` and `apple-icon.png` with your branding
 - [ ] Replace `public/images/logo-192.png` and `logo-512.png` with your icons
-- [ ] Edit `src/config.ts` with your app title, author, and social links
+- [ ] Edit `src/config/brand.ts` with your app title and author
 - [ ] Add Google Search Console verification code in `createLayoutMetadata` (`verification.google`)
 - [ ] Submit `https://your-domain.com/sitemap.xml` to Google Search Console
 - [ ] Verify that all locales are indexed separately in GSC

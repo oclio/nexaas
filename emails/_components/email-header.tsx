@@ -1,6 +1,6 @@
 import { Heading, Img, Section, Tailwind, Text } from '@react-email/components';
 
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 
 interface Properties {
   title: string;
@@ -18,7 +18,7 @@ export default function EmailHeader({ title }: Readonly<Properties>) {
           className="mx-auto mb-2"
         />
         <Text className="-mt-1 text-center text-xl font-light">
-          {app.title}
+          {brand.title}
         </Text>
       </Section>
 

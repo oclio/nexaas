@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 import { cn } from '@/ui/helpers';
 
 /**
@@ -27,7 +27,7 @@ export default function Logo({ className, priority = false }: Readonly<Props>) {
       <div className="relative size-(--logo-size,1.25rem) shrink-0">
         <Image
           src="/images/logo.svg"
-          alt={t('alt', { app: app.title })}
+          alt={t('alt', { app: brand.title })}
           fill
           priority={priority}
           sizes="3.25rem"
@@ -35,7 +35,7 @@ export default function Logo({ className, priority = false }: Readonly<Props>) {
         />
       </div>
       <span className="font-heading truncate text-base font-medium tracking-tight text-zinc-700 dark:text-zinc-200">
-        {app.title}
+        {brand.title}
       </span>
     </div>
   );

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 import { env } from '@/core/env';
 import { routing, supportedLocales } from '@/core/i18n/routing';
 import { messagesMock, translationMock } from '@/tests/unit/mocks/intl';
@@ -134,7 +134,7 @@ describe('createPageMetadata', () => {
     });
 
     expect(translationMock).toHaveBeenCalledWith('description', {
-      app: app.title,
+      app: brand.title,
     });
   });
 

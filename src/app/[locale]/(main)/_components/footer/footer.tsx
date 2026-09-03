@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 
 import { NavLink } from '@/app/[locale]/(main)/_components/nav-link';
 import { useLandingNav } from '@/app/[locale]/(main)/_components/use-landing-nav';
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
 import { Link } from '@/core/i18n/navigation';
 import {
@@ -77,7 +77,7 @@ export default function Footer() {
 
         <div className="mt-8 flex items-center justify-between gap-6 border-t py-6">
           <small className="text-muted-foreground block text-center text-xs sm:text-sm">
-            {`© ${year} · ${app.title} · ${t('components.footer.allRightsReserved')}`}
+            {`© ${year} · ${brand.title} · ${t('components.footer.allRightsReserved')}`}
           </small>
           <LocaleSwitcher />
         </div>

@@ -7,7 +7,7 @@ const exclude = [
   'src/**/db-schemas/**',
   'src/**/types.ts',
   'src/**/types/**',
-  'src/config.ts',
+  'src/config/**',
   'src/core/env/index.ts',
   'src/core/errors/codes.ts',
   'src/core/errors/index.ts',

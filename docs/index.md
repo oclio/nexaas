@@ -29,7 +29,7 @@ features:
   - title: Typed Env Validation
     details: '@t3-oss/env-nextjs with zod schemas. Server and client variables validated at startup. No more undefined at runtime.'
   - title: One-File Config
-    details: 'src/config.ts surfaces app metadata at the root — title, description, URL, author, logos. The first file to edit when forking.'
+    details: 'src/config/brand.ts surfaces brand metadata at the root — title, author. The first file to edit when forking.'
   - title: Next.js 16
     details: Built on the latest Next.js with Turbopack. App Router, Server Components, and modern conventions from day one.
 ---

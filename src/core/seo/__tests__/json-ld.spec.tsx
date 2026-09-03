@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 
 import meta from '@/../messages/en/meta';
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 import { env } from '@/core/env';
 
 import { JsonLdScript, organizationJsonLd, websiteJsonLd } from '../json-ld';
@@ -22,7 +22,7 @@ describe('websiteJsonLd', () => {
   it('uses the app title as name', () => {
     const result = websiteJsonLd();
 
-    expect(result.name).toBe(app.title);
+    expect(result.name).toBe(brand.title);
   });
 
   it('uses the app url as url', () => {
@@ -42,7 +42,7 @@ describe('websiteJsonLd', () => {
     const publisher = result.publisher as Record<string, string>;
 
     expect(publisher['@type']).toBe('Organization');
-    expect(publisher.name).toBe(app.title);
+    expect(publisher.name).toBe(brand.title);
     expect(publisher.url).toBe(env.NEXT_PUBLIC_APP_URL);
   });
 });
@@ -63,7 +63,7 @@ describe('organizationJsonLd', () => {
   it('uses the app title as name', () => {
     const result = organizationJsonLd();
 
-    expect(result.name).toBe(app.title);
+    expect(result.name).toBe(brand.title);
   });
 
   it('uses the app url as url', () => {
@@ -82,15 +82,15 @@ describe('organizationJsonLd', () => {
   it('uses the author email', () => {
     const result = organizationJsonLd();
 
-    expect(result.email).toBe(app.author.email);
+    expect(result.email).toBe(brand.author.email);
   });
 
   it('declares sameAs with author url and twitter', () => {
     const result = organizationJsonLd();
     const sameAs = result.sameAs as string[];
 
-    expect(sameAs).toContain(app.author.url);
-    expect(sameAs).toContain(`https://twitter.com/${app.author.twitter}`);
+    expect(sameAs).toContain(brand.author.url);
+    expect(sameAs).toContain(`https://twitter.com/${brand.author.twitter}`);
   });
 });
 

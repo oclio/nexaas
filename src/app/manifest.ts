@@ -1,12 +1,12 @@
 import type { MetadataRoute } from 'next';
 
 import meta from '@/../messages/en/meta';
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: app.title,
-    short_name: app.title,
+    name: brand.title,
+    short_name: brand.title,
     description: meta.description,
     start_url: '/',
     display: 'standalone',

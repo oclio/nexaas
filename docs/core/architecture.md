@@ -2,13 +2,13 @@
 
 The `src/core/` directory contains the foundational infrastructure of saaskip. These modules are not features — they are the building blocks that features build on.
 
-App-level configuration lives at `src/config.ts` — the first file to edit when customizing the boilerplate (title, description, URL, author, logos).
+App-level configuration lives at `src/config/brand.ts` — the first file to edit when customizing the boilerplate (title, author).
 
 ## Structure
 
 ```text
 src/
-  config.ts          → app metadata (title, description, URL, author, logos)
+  config/brand.ts    → brand metadata (title, author)
   core/
     async/           → withTimeout helper, TimeoutError
     auth/            → Better Auth schemas and role types
@@ -35,21 +35,23 @@ src/
 
 Validates environment variables at startup using `@t3-oss/env-nextjs` and zod. See [Environment Variables](./env) for the full guide.
 
-## config (`src/config.ts`)
+## config (`src/config/brand.ts`)
 
 App-level metadata consumed by the root layout, emails, and metadata APIs:
 
 ```ts
-export const app = {
+export const brand = {
   title: 'saaskip',
-  description: '...',
-  url: env.NEXT_PUBLIC_APP_URL,
-  author: 'oclio',
-  logo: '/images/logo.svg',
+  author: {
+    name: 'oclio',
+    email: 'hello@oclio.dev',
+    url: 'https://oclio.dev',
+    twitter: '@oclio',
+  },
 };
 ```
 
-This is the first file to edit when forking the boilerplate — change the title, description, author, and logos to match your product.
+This is the first file to edit when forking the boilerplate — change the title and author to match your product.
 
 ## db
 

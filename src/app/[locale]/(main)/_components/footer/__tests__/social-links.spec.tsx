@@ -55,8 +55,8 @@ vi.mock('@hugeicons/react', () => ({
   ),
 }));
 
-vi.mock('@/config', () => ({
-  app: { title: 'Saaskip' },
+vi.mock('@/config/brand', () => ({
+  brand: { title: 'Saaskip' },
 }));
 
 vi.mock('@/navigation', () => ({
