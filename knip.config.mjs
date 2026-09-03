@@ -7,7 +7,6 @@ const knipConfig = {
     'src/core/i18n/**',
     'src/core/mailer/index.ts',
     'src/core/mailer/types.ts',
-    'src/navigation.ts',
     'src/ui/components/shadcn/dropdown-menu.tsx',
     'src/ui/components/shadcn/sheet.tsx',
   ],

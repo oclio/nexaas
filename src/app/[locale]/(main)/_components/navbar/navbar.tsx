@@ -49,6 +49,14 @@ export default function Navbar() {
             href="/"
             aria-label={t('labels.backToHome')}
             aria-current={isLandingPage ? 'page' : undefined}
+            onClick={(event_) => {
+              if (!isLandingPage) {
+                return;
+              }
+
+              event_.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           >
             <Logo priority />
           </Link>

@@ -150,6 +150,40 @@ describe('NavLink', () => {
     });
   });
 
+  describe('active state for page-current (non-hash) links', () => {
+    it('marks a non-hash link as active when pathname matches href', () => {
+      render(<NavLink href="/contact" label="Contact" pathname="/contact" />);
+
+      expect(screen.getByTestId('nav-link')).toHaveAttribute(
+        'aria-current',
+        'page',
+      );
+    });
+
+    it('does not mark a non-hash link as active when pathname differs', () => {
+      render(<NavLink href="/contact" label="Contact" pathname="/about" />);
+
+      expect(screen.getByTestId('nav-link')).not.toHaveAttribute(
+        'aria-current',
+      );
+    });
+
+    it('does not mark a non-hash link as active on the landing page', () => {
+      render(
+        <NavLink
+          href="/contact"
+          label="Contact"
+          pathname="/"
+          activeSection=""
+        />,
+      );
+
+      expect(screen.getByTestId('nav-link')).not.toHaveAttribute(
+        'aria-current',
+      );
+    });
+  });
+
   describe('click behavior', () => {
     it('calls handleHashScroll with the event, href, and pathname on click', () => {
       render(<NavLink href="/#features" label="Features" pathname="/" />);

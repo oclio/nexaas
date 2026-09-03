@@ -24,6 +24,9 @@ interface Props {
  *   clicking the link smoothly scrolls to the target section.
  * - If `activeSection` is provided and matches the hash, the link is styled
  *   as active.
+ * - For non-hash links, the link is styled as active when the current
+ *   pathname matches the `href` (page-current highlighting). On the landing
+ *   page, the home link (`/`) is active only when no section is active.
  */
 export function NavLink({
   href,
@@ -35,9 +38,15 @@ export function NavLink({
   const sectionId = href.split('#', 2)[1] ?? '';
   const isHashLink = Boolean(sectionId);
   const isLandingPage = pathname === '/';
-  const isActive = isHashLink
-    ? isLandingPage && activeSection === sectionId
-    : isLandingPage && href === '/' && activeSection === '';
+
+  let isActive: boolean;
+  if (isHashLink) {
+    isActive = isLandingPage && activeSection === sectionId;
+  } else if (isLandingPage) {
+    isActive = href === '/' && activeSection === '';
+  } else {
+    isActive = pathname === href;
+  }
 
   return (
     <Link

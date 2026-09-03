@@ -3,12 +3,16 @@ import type { TranslationSchema } from '../types';
 
 export default {
   footer: {
+    allRightsReserved: 'Tous droits réservés.',
+    appOn: '{app} sur {platform}',
     categories: {
-      company: 'Entreprise',
+      company: 'Compagnie',
       help: 'Aide',
       legal: 'Légal',
       product: 'Produit',
     },
+    description:
+      'Oubliez "Production-Ready".<br></br>Construisez sur de l\'incassable.',
   },
   localeSwitcher: {
     ariaLabel: 'Changer de langue',

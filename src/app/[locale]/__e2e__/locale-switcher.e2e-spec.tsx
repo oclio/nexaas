@@ -18,9 +18,9 @@ test.describe('LocaleSwitcher', () => {
     for (const { code } of supportedLocales) {
       await page.goto(`/${code}`);
 
-      await expect(page.getByTestId('locale-switcher-trigger')).toHaveText(
-        capitalize(code),
-      );
+      await expect(
+        page.getByTestId('navbar').getByTestId('locale-switcher-trigger'),
+      ).toHaveText(capitalize(code));
     }
   });
 
@@ -29,8 +29,14 @@ test.describe('LocaleSwitcher', () => {
   }) => {
     await page.goto(`/${defaultLocale}`);
 
-    await page.getByTestId('locale-switcher-trigger').click();
-    await page.getByTestId(`locale-switcher-item-${secondLocale}`).click();
+    await page
+      .getByTestId('navbar')
+      .getByTestId('locale-switcher-trigger')
+      .click();
+    await page
+      .getByTestId(`locale-switcher-item-${secondLocale}`)
+      .first()
+      .click();
 
     await expect(page).toHaveURL(new RegExp(`/${secondLocale}`));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
@@ -41,8 +47,14 @@ test.describe('LocaleSwitcher', () => {
   test('switches back from second locale to default', async ({ page }) => {
     await page.goto(`/${secondLocale}`);
 
-    await page.getByTestId('locale-switcher-trigger').click();
-    await page.getByTestId(`locale-switcher-item-${defaultLocale}`).click();
+    await page
+      .getByTestId('navbar')
+      .getByTestId('locale-switcher-trigger')
+      .click();
+    await page
+      .getByTestId(`locale-switcher-item-${defaultLocale}`)
+      .first()
+      .click();
 
     await expect(page).toHaveURL(new RegExp(`/${defaultLocale}`));
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(
@@ -53,16 +65,22 @@ test.describe('LocaleSwitcher', () => {
   test('persists the locale choice across page reloads', async ({ page }) => {
     await page.goto(`/${defaultLocale}`);
 
-    await page.getByTestId('locale-switcher-trigger').click();
-    await page.getByTestId(`locale-switcher-item-${secondLocale}`).click();
+    await page
+      .getByTestId('navbar')
+      .getByTestId('locale-switcher-trigger')
+      .click();
+    await page
+      .getByTestId(`locale-switcher-item-${secondLocale}`)
+      .first()
+      .click();
 
     await expect(page).toHaveURL(new RegExp(`/${secondLocale}`));
 
     await page.reload();
 
     await expect(page).toHaveURL(new RegExp(`/${secondLocale}`));
-    await expect(page.getByTestId('locale-switcher-trigger')).toHaveText(
-      capitalize(secondLocale),
-    );
+    await expect(
+      page.getByTestId('navbar').getByTestId('locale-switcher-trigger'),
+    ).toHaveText(capitalize(secondLocale));
   });
 });

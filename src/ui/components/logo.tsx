@@ -30,11 +30,11 @@ export default function Logo({ className, priority = false }: Readonly<Props>) {
           alt={t('alt', { app: app.title })}
           fill
           priority={priority}
-          sizes="2.5rem"
+          sizes="3.25rem"
           className="object-contain"
         />
       </div>
-      <span className="font-heading truncate text-base font-medium tracking-tight text-zinc-700 dark:text-zinc-400">
+      <span className="font-heading truncate text-base font-medium tracking-tight text-zinc-700 dark:text-zinc-200">
         {app.title}
       </span>
     </div>
