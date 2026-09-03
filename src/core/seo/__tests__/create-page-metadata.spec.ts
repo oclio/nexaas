@@ -126,6 +126,18 @@ describe('createPageMetadata', () => {
     expect(metadata.openGraph?.url).toBe(`${env.NEXT_PUBLIC_APP_URL}/fr/login`);
   });
 
+  it('passes app title to the description translation', async () => {
+    await createPageMetadata({
+      locale: 'en',
+      namespace: 'pages.landing',
+      path: '',
+    });
+
+    expect(translationMock).toHaveBeenCalledWith('description', {
+      app: app.title,
+    });
+  });
+
   it('sets openGraph title and description to translated values', async () => {
     const metadata = await createPageMetadata({
       locale: 'en',

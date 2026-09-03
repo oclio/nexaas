@@ -53,9 +53,11 @@ export async function createPageMetadata({
     ...new Set([...app.keywords, ...layoutKeywords, ...pageKeywords]),
   ];
 
+  const description = t('description', { app: app.title });
+
   return {
     title: t('title'),
-    description: t('description'),
+    description,
     keywords,
     alternates: {
       canonical: `/${locale}${path}`,
@@ -69,12 +71,12 @@ export async function createPageMetadata({
       locale: ogLocaleMap[locale] ?? ogLocaleMap[routing.defaultLocale],
       url: `${env.NEXT_PUBLIC_APP_URL}/${locale}${path}`,
       title: t('title'),
-      description: t('description'),
+      description,
     },
     twitter: {
       card: 'summary_large_image',
       title: t('title'),
-      description: t('description'),
+      description,
     },
   };
 }
