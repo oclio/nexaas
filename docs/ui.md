@@ -11,26 +11,18 @@ The `src/ui/` directory contains the presentation layer of saaskip. It is built 
 
 ```text
 src/ui/
-  components/
-    shadcn/         → shadcn/ui primitives (Button, DropdownMenu, …)
-    dev/            → development-only tools (ScreenSize, …)
-    theme-toggle.tsx
+  components/       → app components (theme-toggle, shadcn primitives, dev tools)
   helpers/          → cn() class merge utility
   hooks/            → reusable hooks (useIsMounted, …)
-  icons/            → Hugeicons registry
   fonts/            → Next.js font definitions
   styles/           → globals.css (Tailwind + CSS variables)
 ```
 
+Icons live in `src/config/icons.tsx` — see [Icons](#icons) below.
+
 ## Component system
 
 Components are built on [shadcn/ui](https://ui.shadcn.com) using the **base-lyra** style, with [Base UI](https://base-ui.com) as the headless primitive layer. Unlike traditional component libraries, shadcn components are copied into the project — they live in `src/ui/components/shadcn/` and are fully owned by the codebase.
-
-### Available components
-
-| Component | Path                            |
-| --------- | ------------------------------- |
-| Button    | `@/ui/components/shadcn/button` |
 
 To add a new shadcn component:
 
@@ -107,9 +99,7 @@ import { icon } from '@/config/icons';
 
 To add a new icon, import it from `@hugeicons/core-free-icons`, add it to the `ICONS` registry, then call `icon('myIcon', ...)` everywhere.
 
-### Swapping icon library
-
-To swap from Hugeicons to another library (Lucide, Heroicons, Radix), change only `src/config/icons.tsx` — the `ICONS` registry and the `icon()` function. No component or test needs to change.
+To swap icon library, see [Onboarding → Icons](../getting-started/onboarding#icons-optional).
 
 ## Hooks
 
