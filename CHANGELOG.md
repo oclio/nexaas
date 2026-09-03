@@ -1,5 +1,11 @@
 # saaskip
 
+## 0.14.1
+
+### Patch Changes
+
+- b94ab47: Interpolate app name in page descriptions via `{app}` placeholder instead of hardcoded string, and move rich text rendering helpers to the i18n module.
+
 ## 0.14.0
 
 ### Minor Changes
