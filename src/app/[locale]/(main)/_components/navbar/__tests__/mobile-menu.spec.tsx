@@ -151,7 +151,7 @@ vi.mock('@hugeicons/react', () => ({
   ),
 }));
 
-vi.mock('@/ui/icons', () => ({
+vi.mock('@/config/icons', () => ({
   ICONS: { menu: 'menu-icon', cancel: 'cancel-icon' },
 }));
 

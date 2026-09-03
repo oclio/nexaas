@@ -5,9 +5,9 @@ import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import { type ComponentProps } from 'react';
 
+import { ICONS } from '@/config/icons';
 import { Button } from '@/ui/components/shadcn/button';
 import { useIsMounted } from '@/ui/hooks/use-is-mounted';
-import { ICONS } from '@/ui/icons';
 
 export default function ThemeToggle({
   className,

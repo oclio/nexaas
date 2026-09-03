@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ComponentProps, useState } from 'react';
 
+import { ICONS } from '@/config/icons';
 import { navigation } from '@/config/navigation';
 import LocaleSwitcher from '@/core/i18n/components/locale-switcher';
 import Logo from '@/ui/components/logo';
@@ -17,7 +18,6 @@ import {
   SheetTrigger,
 } from '@/ui/components/shadcn/sheet';
 import ThemeToggle from '@/ui/components/theme-toggle';
-import { ICONS } from '@/ui/icons';
 
 import { NavLink } from '../nav-link';
 
