@@ -29,6 +29,7 @@ const config = {
     'oclio',
     'oklch',
     'pgvector',
+    'prerendering',
     'saaskip',
     'sonarqube',
     'srcs',
