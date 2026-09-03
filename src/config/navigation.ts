@@ -1,178 +1,183 @@
-import {
-  Facebook02Icon,
-  InstagramIcon,
-  Linkedin02Icon,
-  NewTwitterIcon,
-  ThreadsIcon,
-  TiktokIcon,
-} from '@hugeicons/core-free-icons';
 import { IconSvgElement } from '@hugeicons/react';
 
+import { ICONS } from '@/config/icons';
+
 export interface NavigationItem {
-  label: string;
-  href: string;
-  location: ('navbar' | 'footer' | 'mobileMenu')[];
-  category?: string;
+  label: string; // i18n key resolved via t(label)
+  href: string; // internal path or anchor (#section)
+  location: ('navbar' | 'footer' | 'mobileMenu')[]; // where the link renders
+  category?: string; // matches a NavigationCategory key for footer grouping
 }
 
 interface SocialLink {
-  name: string;
-  icon: IconSvgElement;
-  href: string;
+  name: string; // platform name, used in aria-label
+  icon: IconSvgElement; // pulled from the ICONS registry
+  href: string; // profile URL
 }
 
 export interface NavigationCategory {
-  title: string;
-  key: string;
+  title: string; // i18n key for the footer column heading
+  key: string; // referenced by NavigationItem.category
 }
 
+/**
+Footer column headings — each groups navigation items by category.
+*/
 export const navigationCategories: NavigationCategory[] = [
   {
-    title: 'components.footer.categories.product',
-    key: 'product',
-  },
-  {
-    title: 'components.footer.categories.help',
-    key: 'help',
-  },
-  {
-    title: 'components.footer.categories.company',
     key: 'company',
+    title: 'components.footer.categories.company',
   },
   {
-    title: 'components.footer.categories.legal',
+    key: 'help',
+    title: 'components.footer.categories.help',
+  },
+  {
     key: 'legal',
+    title: 'components.footer.categories.legal',
+  },
+  {
+    key: 'product',
+    title: 'components.footer.categories.product',
   },
 ];
 
+/**
+ * Navigation links — each item declares where it renders (navbar, footer,
+ * mobile menu) and which footer category it belongs to. Labels are i18n
+ * keys, not display text.
+ */
 export const navigation: NavigationItem[] = [
   {
-    label: 'pages.landing.features.title',
-    href: '/#features-section',
-    location: ['navbar', 'footer', 'mobileMenu'],
-    category: 'product',
-  },
-  {
-    label: 'pages.landing.pricing.title',
-    href: '/#pricing-section',
-    location: ['navbar', 'footer', 'mobileMenu'],
-    category: 'product',
-  },
-  {
-    label: 'pages.faq.shortTitle',
-    href: '/#faq-section',
-    location: ['navbar', 'mobileMenu', 'footer'],
-    category: 'help',
-  },
-  {
-    label: 'pages.whatIsIncluded.title',
-    href: '/#what-is-included-section',
-    location: ['navbar', 'footer', 'mobileMenu'],
-    category: 'product',
-  },
-  {
-    label: 'pages.landing.cta.title',
-    href: '/#cta-section',
-    location: ['navbar', 'mobileMenu'],
-    category: 'product',
-  },
-  {
-    label: 'pages.help.shortTitle',
+    category: 'company',
     href: '#',
-    location: ['footer'],
-    category: 'help',
-  },
-  {
-    label: 'pages.documentation.title',
-    href: '#',
-    location: ['footer', 'mobileMenu'],
-    category: 'help',
-  },
-  {
-    label: 'pages.contact.title',
-    href: '/contact',
-    location: ['footer', 'mobileMenu'],
-    category: 'help',
-  },
-  {
     label: 'pages.about.title',
-    href: '#',
     location: ['footer'],
-    category: 'company',
   },
   {
+    category: 'company',
+    href: '#',
     label: 'pages.careers.title',
-    href: '#',
     location: ['footer'],
-    category: 'company',
   },
   {
+    category: 'company',
+    href: '#',
     label: 'pages.partners.title',
-    href: '#',
     location: ['footer'],
-    category: 'company',
   },
   {
+    category: 'company',
+    href: '#',
     label: 'pages.press.title',
+    location: ['footer'],
+  },
+  {
+    category: 'help',
     href: '#',
-    location: ['footer'],
-    category: 'company',
+    label: 'pages.documentation.title',
+    location: ['footer', 'mobileMenu'],
   },
   {
-    label: 'pages.terms.shortTitle',
-    href: '/terms-of-service',
+    category: 'help',
+    href: '#',
+    label: 'pages.help.shortTitle',
     location: ['footer'],
+  },
+  {
+    category: 'help',
+    href: '/#faq-section',
+    label: 'pages.faq.shortTitle',
+    location: ['footer', 'mobileMenu', 'navbar'],
+  },
+  {
+    category: 'help',
+    href: '/contact',
+    label: 'pages.contact.title',
+    location: ['footer', 'mobileMenu'],
+  },
+  {
     category: 'legal',
-  },
-  {
-    label: 'pages.privacy.shortTitle',
-    href: '/privacy-policy',
-    location: ['footer'],
-    category: 'legal',
-  },
-  {
-    label: 'pages.cookies.shortTitle',
     href: '/cookie-policy',
+    label: 'pages.cookies.shortTitle',
     location: ['footer'],
-    category: 'legal',
   },
   {
-    label: 'pages.license.title',
-    href: '/license',
-    location: ['footer'],
     category: 'legal',
+    href: '/license',
+    label: 'pages.license.title',
+    location: ['footer'],
+  },
+  {
+    category: 'legal',
+    href: '/privacy-policy',
+    label: 'pages.privacy.shortTitle',
+    location: ['footer'],
+  },
+  {
+    category: 'legal',
+    href: '/terms-of-service',
+    label: 'pages.terms.shortTitle',
+    location: ['footer'],
+  },
+  {
+    category: 'product',
+    href: '/#cta-section',
+    label: 'pages.landing.cta.title',
+    location: ['mobileMenu', 'navbar'],
+  },
+  {
+    category: 'product',
+    href: '/#features-section',
+    label: 'pages.landing.features.title',
+    location: ['footer', 'mobileMenu', 'navbar'],
+  },
+  {
+    category: 'product',
+    href: '/#pricing-section',
+    label: 'pages.landing.pricing.title',
+    location: ['footer', 'mobileMenu', 'navbar'],
+  },
+  {
+    category: 'product',
+    href: '/#what-is-included-section',
+    label: 'pages.whatIsIncluded.title',
+    location: ['footer', 'mobileMenu', 'navbar'],
   },
 ];
 
+/**
+Social profile links rendered in the footer — icons come from the ICONS registry.
+*/
 export const socialLinks: SocialLink[] = [
   {
-    name: 'X/Twitter',
-    icon: NewTwitterIcon,
     href: '#',
-  },
-  {
-    name: 'Linkedin',
-    icon: Linkedin02Icon,
-    href: '#',
-  },
-  {
+    icon: ICONS.socialFacebook,
     name: 'Facebook',
-    icon: Facebook02Icon,
-    href: '#',
   },
   {
-    name: 'Threads',
-    icon: ThreadsIcon,
     href: '#',
-  },
-  {
+    icon: ICONS.socialInstagram,
     name: 'Instagram',
-    icon: InstagramIcon,
-    href: '#',
   },
   {
-    name: 'Tiktok',
-    icon: TiktokIcon,
     href: '#',
+    icon: ICONS.socialLinkedin,
+    name: 'Linkedin',
+  },
+  {
+    href: '#',
+    icon: ICONS.socialThreads,
+    name: 'Threads',
+  },
+  {
+    href: '#',
+    icon: ICONS.socialTiktok,
+    name: 'Tiktok',
+  },
+  {
+    href: '#',
+    icon: ICONS.socialTwitter,
+    name: 'X/Twitter',
   },
 ];
