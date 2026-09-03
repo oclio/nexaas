@@ -21,7 +21,7 @@ describe('Logo', () => {
 
   describe('rendering', () => {
     it.each([
-      { attr: 'src', expected: app.logo },
+      { attr: 'src', expected: '/images/logo.svg' },
       { attr: 'alt', expected: `${app.title} logo` },
     ])('image has $attr set correctly', ({ attr, expected }) => {
       render(<Logo />);

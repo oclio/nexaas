@@ -6,17 +6,4 @@ export const app = {
     url: 'https://oclio.dev',
     twitter: '@oclio',
   },
-  keywords: [
-    'boilerplate',
-    'nextjs',
-    'production-ready',
-    'react',
-    'saas',
-    'saas boilerplate',
-    'saas starter',
-    'starter kit',
-    'tailwindcss',
-    'typescript',
-  ],
-  logo: '/images/logo.svg',
 };

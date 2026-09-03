@@ -189,7 +189,7 @@ describe('createPageMetadata', () => {
     expect(translationMock.raw).toHaveBeenNthCalledWith(1, 'keywords');
     expect(translationMock.raw).toHaveBeenNthCalledWith(2, 'keywords');
     expect(metadata.keywords).toEqual(
-      expect.arrayContaining([...app.keywords, ...pageKeywords]),
+      expect.arrayContaining([...pageKeywords]),
     );
   });
 
@@ -206,9 +206,7 @@ describe('createPageMetadata', () => {
     expect(translationMock.raw).toHaveBeenNthCalledWith(1, 'keywords');
     const layoutKeywords = (messagesMock.meta as { keywords: string[] })
       .keywords;
-    expect(metadata.keywords).toEqual([
-      ...new Set([...app.keywords, ...layoutKeywords]),
-    ]);
+    expect(metadata.keywords).toEqual([...new Set(layoutKeywords)]);
   });
 
   it('calls getTranslations with locale and meta namespace for layout keywords', async () => {

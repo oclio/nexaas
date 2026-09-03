@@ -49,9 +49,7 @@ export async function createPageMetadata({
 
   const metaT = await getTranslations({ locale, namespace: 'meta' });
   const layoutKeywords = metaT.raw('keywords') as string[];
-  const keywords = [
-    ...new Set([...app.keywords, ...layoutKeywords, ...pageKeywords]),
-  ];
+  const keywords = [...new Set([...layoutKeywords, ...pageKeywords])];
 
   const description = t('description', { app: app.title });
 

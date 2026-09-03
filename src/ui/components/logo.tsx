@@ -26,7 +26,7 @@ export default function Logo({ className, priority = false }: Readonly<Props>) {
     <div className={cn('flex items-center gap-1.5', className)}>
       <div className="relative size-(--logo-size,1.25rem) shrink-0">
         <Image
-          src={app.logo}
+          src="/images/logo.svg"
           alt={t('alt', { app: app.title })}
           fill
           priority={priority}

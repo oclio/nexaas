@@ -42,9 +42,7 @@ export async function createLayoutMetadata({
     authors: [{ name: app.author.name, url: app.author.url }],
     creator: app.author.name,
     publisher: app.title,
-    keywords: [
-      ...new Set([...app.keywords, ...(t.raw('keywords') as string[])]),
-    ],
+    keywords: [...new Set(t.raw('keywords') as string[])],
     appleWebApp: {
       capable: true,
       statusBarStyle: 'default',

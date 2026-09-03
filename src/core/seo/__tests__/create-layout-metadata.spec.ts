@@ -57,15 +57,12 @@ describe('createLayoutMetadata', () => {
     expect(metadata.twitter?.description).toBe(translationMock('description'));
   });
 
-  it('merges app.keywords and meta keywords without duplicates', async () => {
+  it('returns meta keywords deduplicated', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
 
     const keywords = metadata.keywords as string[];
     expect(keywords).toEqual([
-      ...new Set([
-        ...app.keywords,
-        ...(translationMock.raw('keywords') as string[]),
-      ]),
+      ...new Set(translationMock.raw('keywords') as string[]),
     ]);
   });
 
