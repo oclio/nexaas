@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ComponentProps, ReactNode } from 'react';
 
-import { cn } from './index';
+import { cn } from '@/ui/helpers';
 
 export function renderLink(
   props: ComponentProps<typeof Link> &
