@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import * as nextIntl from 'next-intl';
 
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 import { translationMock } from '@/tests/unit/mocks/intl';
 import Logo from '@/ui/components/logo';
 
@@ -10,7 +10,7 @@ describe('Logo', () => {
     vi.clearAllMocks();
     vi.spyOn(nextIntl, 'useTranslations');
     translationMock.mockImplementation((key: string) => {
-      if (key === 'alt') return `${app.title} logo`;
+      if (key === 'alt') return `${brand.title} logo`;
       return key;
     });
   });
@@ -21,8 +21,8 @@ describe('Logo', () => {
 
   describe('rendering', () => {
     it.each([
-      { attr: 'src', expected: app.logo },
-      { attr: 'alt', expected: `${app.title} logo` },
+      { attr: 'src', expected: '/images/logo.svg' },
+      { attr: 'alt', expected: `${brand.title} logo` },
     ])('image has $attr set correctly', ({ attr, expected }) => {
       render(<Logo />);
 
@@ -33,7 +33,7 @@ describe('Logo', () => {
     it('renders the app title in a span', () => {
       render(<Logo />);
 
-      expect(screen.getByText(app.title)).toBeInTheDocument();
+      expect(screen.getByText(brand.title)).toBeInTheDocument();
     });
 
     it('calls useTranslations with the components.logo namespace', () => {
@@ -45,7 +45,9 @@ describe('Logo', () => {
     it('passes the translated alt text with app title to the image', () => {
       render(<Logo />);
 
-      expect(translationMock).toHaveBeenCalledWith('alt', { app: app.title });
+      expect(translationMock).toHaveBeenCalledWith('alt', {
+        brand: brand.title,
+      });
     });
   });
 

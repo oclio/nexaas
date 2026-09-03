@@ -93,10 +93,10 @@ cn('px-2 py-1', condition && 'bg-red-500', 'px-4');
 
 ## Icons
 
-Icons are centralized in `src/ui/icons/index.ts` via the `ICONS` registry. The goal is consistency: every component imports from the same registry instead of referencing icon objects directly. This ensures the same icon is reused across the app and can be swapped in one place without touching component code.
+Icons are centralized in `src/config/icons.ts` via the `ICONS` registry. The goal is consistency: every component imports from the same registry instead of referencing icon objects directly. This ensures the same icon is reused across the app and can be swapped in one place without touching component code.
 
 ```ts
-import { ICONS } from '@/ui/icons';
+import { ICONS } from '@/config/icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 
 <HugeiconsIcon icon={ICONS.themeDark} />

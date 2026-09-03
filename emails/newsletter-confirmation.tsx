@@ -1,6 +1,6 @@
 import { Button, Link, Section, Tailwind, Text } from '@react-email/components';
 
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 import EmailBody from '@/emails/_components/email-body';
 
 interface Properties {
@@ -25,11 +25,11 @@ export default function NewsletterConfirmation({
     preview: 'Confirm your subscription',
     title: 'Newsletter Subscription',
     greeting: 'Hello,',
-    content: `Thank you for your interest in ${app.title}! Please confirm your email address to finalize your subscription:`,
+    content: `Thank you for your interest in ${brand.title}! Please confirm your email address to finalize your subscription:`,
     button: 'Confirm my subscription',
     disclaimer:
       'If you did not sign up for this newsletter, you can safely ignore this email.',
-    footnote: `The ${app.title} team`,
+    footnote: `The ${brand.title} team`,
   },
 }: Readonly<Properties>) {
   return (

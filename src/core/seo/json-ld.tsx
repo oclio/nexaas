@@ -1,5 +1,5 @@
 import meta from '@/../messages/en/meta';
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 import { env } from '@/core/env';
 
 export function websiteJsonLd() {
@@ -8,12 +8,12 @@ export function websiteJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: app.title,
+    name: brand.title,
     url: baseUrl,
     description: meta.description,
     publisher: {
       '@type': 'Organization',
-      name: app.title,
+      name: brand.title,
       url: baseUrl,
     },
   };
@@ -25,11 +25,11 @@ export function organizationJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: app.title,
+    name: brand.title,
     url: baseUrl,
     logo: `${baseUrl}/images/logo-512.png`,
-    email: app.author.email,
-    sameAs: [app.author.url, `https://twitter.com/${app.author.twitter}`],
+    email: brand.author.email,
+    sameAs: [brand.author.url, `https://twitter.com/${brand.author.twitter}`],
   };
 }
 

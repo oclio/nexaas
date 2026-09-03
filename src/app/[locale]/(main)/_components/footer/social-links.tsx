@@ -4,8 +4,8 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
-import { app } from '@/config';
-import { socialLinks } from '@/navigation';
+import { brand } from '@/config/brand';
+import { socialLinks } from '@/config/navigation';
 
 export default function SocialLinks() {
   const t = useTranslations('components.footer');
@@ -16,7 +16,7 @@ export default function SocialLinks() {
         <Link
           href={link.href}
           aria-label={t('appOn', {
-            app: app.title,
+            brand: brand.title,
             platform: link.name,
           })}
           key={link.name}

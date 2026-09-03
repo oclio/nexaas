@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 import { env } from '@/core/env';
 import { routing, supportedLocales } from '@/core/i18n/routing';
 
@@ -49,11 +49,9 @@ export async function createPageMetadata({
 
   const metaT = await getTranslations({ locale, namespace: 'meta' });
   const layoutKeywords = metaT.raw('keywords') as string[];
-  const keywords = [
-    ...new Set([...app.keywords, ...layoutKeywords, ...pageKeywords]),
-  ];
+  const keywords = [...new Set([...layoutKeywords, ...pageKeywords])];
 
-  const description = t('description', { app: app.title });
+  const description = t('description', { brand: brand.title });
 
   return {
     title: t('title'),

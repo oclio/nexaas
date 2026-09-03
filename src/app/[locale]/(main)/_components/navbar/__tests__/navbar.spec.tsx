@@ -53,7 +53,7 @@ vi.mock('@/app/[locale]/(main)/_components/use-landing-nav', () => ({
   useLandingNav: (links: unknown[]) => navHookMock(links),
 }));
 
-vi.mock('@/navigation', () => ({
+vi.mock('@/config/navigation', () => ({
   navigation: [
     {
       label: 'pages.landing.features.title',

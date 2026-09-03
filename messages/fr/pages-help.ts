@@ -10,7 +10,7 @@ export default {
   },
   faq: {
     description:
-      'Trouvez les réponses aux questions fréquentes sur {app} : fonctionnalités, tarifs, déploiement, personnalisation et support.',
+      'Trouvez les réponses aux questions fréquentes sur {brand} : fonctionnalités, tarifs, déploiement, personnalisation et support.',
     keywords: ['aide', 'faq', 'questions', 'support'],
     shortTitle: 'FAQ',
     title: 'Questions posées fréquemment',

@@ -4,9 +4,9 @@ import { Dialog as SheetPrimitive } from '@base-ui/react/dialog';
 import { HugeiconsIcon } from '@hugeicons/react';
 import * as React from 'react';
 
+import { ICONS } from '@/config/icons';
 import { Button } from '@/ui/components/shadcn/button';
 import { cn } from '@/ui/helpers/index';
-import { ICONS } from '@/ui/icons';
 
 function Sheet({ ...props }: SheetPrimitive.Root.Props) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />;

@@ -1,5 +1,5 @@
 import meta from '@/../messages/en/meta';
-import { app } from '@/config';
+import { brand } from '@/config/brand';
 
 import manifest from '../manifest';
 
@@ -7,8 +7,8 @@ describe('manifest', () => {
   it('uses the app title as name and short_name', () => {
     const result = manifest();
 
-    expect(result.name).toBe(app.title);
-    expect(result.short_name).toBe(app.title);
+    expect(result.name).toBe(brand.title);
+    expect(result.short_name).toBe(brand.title);
   });
 
   it('uses the english meta description', () => {

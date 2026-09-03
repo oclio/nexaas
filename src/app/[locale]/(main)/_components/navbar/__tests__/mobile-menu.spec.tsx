@@ -22,7 +22,7 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-vi.mock('@/navigation', () => ({
+vi.mock('@/config/navigation', () => ({
   navigation: [
     {
       label: 'pages.landing.features.title',
@@ -151,7 +151,7 @@ vi.mock('@hugeicons/react', () => ({
   ),
 }));
 
-vi.mock('@/ui/icons', () => ({
+vi.mock('@/config/icons', () => ({
   ICONS: { menu: 'menu-icon', cancel: 'cancel-icon' },
 }));
 

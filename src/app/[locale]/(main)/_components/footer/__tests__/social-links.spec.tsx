@@ -55,11 +55,11 @@ vi.mock('@hugeicons/react', () => ({
   ),
 }));
 
-vi.mock('@/config', () => ({
-  app: { title: 'Saaskip' },
+vi.mock('@/config/brand', () => ({
+  brand: { title: 'Saaskip' },
 }));
 
-vi.mock('@/navigation', () => ({
+vi.mock('@/config/navigation', () => ({
   socialLinks: [
     { name: 'X/Twitter', icon: 'icon-twitter', href: 'https://x.com/saaskip' },
     {
@@ -110,11 +110,11 @@ describe('SocialLinks', () => {
     const links = screen.getAllByTestId('social-link');
     expect(links[0]).toHaveAttribute(
       'aria-label',
-      'appOn:{"app":"Saaskip","platform":"X/Twitter"}',
+      'appOn:{"brand":"Saaskip","platform":"X/Twitter"}',
     );
     expect(links[1]).toHaveAttribute(
       'aria-label',
-      'appOn:{"app":"Saaskip","platform":"Linkedin"}',
+      'appOn:{"brand":"Saaskip","platform":"Linkedin"}',
     );
   });
 

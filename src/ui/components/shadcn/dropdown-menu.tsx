@@ -4,8 +4,8 @@ import { Menu as MenuPrimitive } from '@base-ui/react/menu';
 import { HugeiconsIcon } from '@hugeicons/react';
 import * as React from 'react';
 
+import { ICONS } from '@/config/icons';
 import { cn } from '@/ui/helpers';
-import { ICONS } from '@/ui/icons';
 
 function DropdownMenu({ ...props }: MenuPrimitive.Root.Props) {
   return <MenuPrimitive.Root data-slot="dropdown-menu" {...props} />;

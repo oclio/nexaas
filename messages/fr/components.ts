@@ -4,7 +4,7 @@ import type { TranslationSchema } from '../types';
 export default {
   footer: {
     allRightsReserved: 'Tous droits réservés.',
-    appOn: '{app} sur {platform}',
+    appOn: '{brand} sur {platform}',
     categories: {
       company: 'Compagnie',
       help: 'Aide',
@@ -18,7 +18,7 @@ export default {
     ariaLabel: 'Changer de langue',
   },
   logo: {
-    alt: '{app} logo',
+    alt: '{brand} logo',
   },
   themeToggle: {
     toggleDark: 'Basculer en mode sombre',
