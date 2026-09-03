@@ -19,13 +19,21 @@ describe('WhatIsIncludedPage', () => {
 
   describe('generateMetadata', () => {
     it('delegates to createPageMetadata with the whatIsIncluded namespace', async () => {
-      await generateMetadata();
+      await generateMetadata({
+        params: Promise.resolve({ locale: 'en' }),
+      });
 
-      expect(createPageMetadata).toHaveBeenCalledWith('pages.whatIsIncluded');
+      expect(createPageMetadata).toHaveBeenCalledWith({
+        locale: 'en',
+        namespace: 'pages.whatIsIncluded',
+        path: '/what-is-included',
+      });
     });
 
     it('returns the metadata from createPageMetadata', async () => {
-      const result = await generateMetadata();
+      const result = await generateMetadata({
+        params: Promise.resolve({ locale: 'en' }),
+      });
 
       expect(result).toEqual({
         title: 'mock-title',

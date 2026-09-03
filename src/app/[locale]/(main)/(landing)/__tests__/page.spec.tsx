@@ -18,13 +18,21 @@ describe('LandingPage', () => {
 
   describe('generateMetadata', () => {
     it('delegates to createPageMetadata with the landing namespace', async () => {
-      await generateMetadata();
+      await generateMetadata({
+        params: Promise.resolve({ locale: 'en' }),
+      });
 
-      expect(createPageMetadata).toHaveBeenCalledWith('pages.landing');
+      expect(createPageMetadata).toHaveBeenCalledWith({
+        locale: 'en',
+        namespace: 'pages.landing',
+        path: '',
+      });
     });
 
     it('returns the metadata from createPageMetadata', async () => {
-      const result = await generateMetadata();
+      const result = await generateMetadata({
+        params: Promise.resolve({ locale: 'en' }),
+      });
 
       expect(result).toEqual({
         title: 'mock-title',
