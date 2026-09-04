@@ -54,7 +54,10 @@ export async function logSessionCreated(
     ipAddress?: null | string;
     userAgent?: null | string;
   },
-  context: { path?: string; params?: Record<string, string> } | null,
+  context: {
+    path?: string;
+    params?: Record<string, string | undefined>;
+  } | null,
 ) {
   const path = context?.path ?? '';
 
