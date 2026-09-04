@@ -37,3 +37,19 @@ vi.mock('next/error', () => ({
     <div data-testid="next-error" data-status-code={statusCode} />
   ),
 }));
+
+vi.mock('next/link', () => ({
+  default: ({
+    href,
+    children,
+    ...props
+  }: {
+    href: string;
+    children: React.ReactNode;
+    [key: string]: unknown;
+  }) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+}));

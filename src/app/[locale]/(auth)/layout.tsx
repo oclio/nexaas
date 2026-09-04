@@ -39,7 +39,7 @@ export default async function AuthLayout({ children }: Readonly<Props>) {
       </header>
 
       <main className="flex flex-1 items-center justify-center">
-        <div className="w-96">{children}</div>
+        <div className="w-full max-w-sm">{children}</div>
       </main>
 
       <footer className="text-muted-foreground mx-auto w-full max-w-md text-center text-xs text-balance">
@@ -48,7 +48,10 @@ export default async function AuthLayout({ children }: Readonly<Props>) {
           Object.fromEntries(
             ['terms', 'privacy', 'cookies'].map((key) => [
               key,
-              renderLink({ href: `/${key}`, ...legalLinkProps }),
+              renderLink(
+                { href: `/${key}`, ...legalLinkProps },
+                <span className="sr-only">{t('labels.opensInNewTab')}</span>,
+              ),
             ]),
           ),
         )}

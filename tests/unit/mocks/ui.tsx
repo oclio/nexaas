@@ -36,4 +36,11 @@ vi.mock('next-themes', () => ({
   useTheme: () => ({ theme: themeReference.current, setTheme: setThemeMock }),
 }));
 
+vi.mock('@/config/icons', () => ({
+  ICONS: {},
+  icon: vi.fn((_name: string, props: Record<string, unknown>) => (
+    <span data-testid="mock-icon" {...props} />
+  )),
+}));
+
 export { setThemeMock, themeReference as themeRef };

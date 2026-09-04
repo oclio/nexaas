@@ -44,6 +44,22 @@ describe('renderLink', () => {
     expect(link).toHaveAttribute('class', 'text-primary');
     expect(link).toHaveTextContent('click here');
   });
+
+  it('renders a suffix after the chunks when provided', () => {
+    const renderFunction = renderLink(
+      { href: 'https://example.com', 'data-testid': 'test-link' },
+      <span className="sr-only">(opens in new tab)</span>,
+    );
+
+    const { getByTestId } = render(<>{renderFunction('click here')}</>);
+
+    const link = getByTestId('test-link');
+    expect(link).toHaveTextContent('click here(opens in new tab)');
+    expect(link.querySelector('.sr-only')).not.toBeNull();
+    expect(link.querySelector('.sr-only')).toHaveTextContent(
+      '(opens in new tab)',
+    );
+  });
 });
 
 describe('renderStrong', () => {
