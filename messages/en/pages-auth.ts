@@ -1,7 +1,7 @@
 export default {
   authLayout: {
     byContinuing:
-      'By continuing, you agree to our <terms-of-service>Terms of Service</terms-of-service>, our <privacy-policy>Privacy Policy</privacy-policy> and our <cookie-policy>Cookie Policy</cookie-policy>.',
+      'By continuing, you agree to our <terms>Terms of Service</terms>, our <privacy>Privacy Policy</privacy> and our <cookies>Cookie Policy</cookies>.',
   },
   login: {
     description:

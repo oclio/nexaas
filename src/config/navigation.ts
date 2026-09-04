@@ -23,20 +23,20 @@ Footer column headings — each groups navigation items by category.
 */
 export const navigationCategories: NavigationCategory[] = [
   {
-    key: 'company',
-    title: 'components.footer.categories.company',
+    key: 'product',
+    title: 'components.footer.categories.product',
   },
   {
     key: 'help',
     title: 'components.footer.categories.help',
   },
   {
-    key: 'legal',
-    title: 'components.footer.categories.legal',
+    key: 'company',
+    title: 'components.footer.categories.company',
   },
   {
-    key: 'product',
-    title: 'components.footer.categories.product',
+    key: 'legal',
+    title: 'components.footer.categories.legal',
   },
 ];
 
@@ -96,7 +96,7 @@ export const navigation: NavigationItem[] = [
   },
   {
     category: 'legal',
-    href: '/cookie-policy',
+    href: '/cookies',
     label: 'pages.cookies.shortTitle',
     location: ['footer'],
   },
@@ -108,13 +108,13 @@ export const navigation: NavigationItem[] = [
   },
   {
     category: 'legal',
-    href: '/privacy-policy',
+    href: '/privacy',
     label: 'pages.privacy.shortTitle',
     location: ['footer'],
   },
   {
     category: 'legal',
-    href: '/terms-of-service',
+    href: '/terms',
     label: 'pages.terms.shortTitle',
     location: ['footer'],
   },

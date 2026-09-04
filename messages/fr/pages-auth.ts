@@ -4,7 +4,7 @@ import type { TranslationSchema } from '../types';
 export default {
   authLayout: {
     byContinuing:
-      "En poursuivant, vous acceptez nos <terms-of-service>Conditions Générales d'Utilisation</terms-of-service>, notre <privacy-policy>Politique de Confidentialité</privacy-policy> et notre <cookie-policy>Politique de Cookies</cookie-policy>.",
+      "En poursuivant, vous acceptez nos <terms>Conditions Générales d'Utilisation</terms>, notre <privacy>Politique de Confidentialité</privacy> et notre <cookies>Politique de Cookies</cookies>.",
   },
   login: {
     description:

@@ -10,10 +10,9 @@ import ThemeToggle from '@/ui/components/theme-toggle';
 import { cn } from '@/ui/helpers';
 
 const legalLinkProps = {
-  className: 'text-muted-foreground hover:text-foreground',
+  className: 'hover:text-foreground',
   target: '_blank',
   rel: 'noopener noreferrer',
-  'data-soon': true,
 };
 
 interface Props {
@@ -40,19 +39,17 @@ export default async function AuthLayout({ children }: Readonly<Props>) {
       </header>
 
       <main className="flex flex-1 items-center justify-center">
-        <div className="w-95">{children}</div>
+        <div className="w-96">{children}</div>
       </main>
 
       <footer className="text-muted-foreground mx-auto w-full max-w-md text-center text-xs text-balance">
         {t.rich(
           'pages.authLayout.byContinuing',
           Object.fromEntries(
-            ['terms-of-service', 'privacy-policy', 'cookie-policy'].map(
-              (key) => [
-                key,
-                renderLink({ href: `/${key}`, ...legalLinkProps }),
-              ],
-            ),
+            ['terms', 'privacy', 'cookies'].map((key) => [
+              key,
+              renderLink({ href: `/${key}`, ...legalLinkProps }),
+            ]),
           ),
         )}
       </footer>
