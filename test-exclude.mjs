@@ -25,6 +25,7 @@ const exclude = [
   'src/proxy-stack.ts',
   'src/ui/components/shadcn/**',
   'src/ui/fonts/index.ts',
+  'src/core/auth/helpers/index.ts',
 ];
 
 export default exclude;
