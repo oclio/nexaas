@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ReactNode } from 'react';
+import { Toaster } from 'sonner';
 
 import { routing } from '@/core/i18n/routing';
 import { WebVitals } from '@/core/observability/axiom/components/web-vitals';
@@ -66,6 +67,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <NextIntlClientProvider messages={messages} locale={locale}>
             {children}
+            <Toaster closeButton />
           </NextIntlClientProvider>
         </ThemeProvider>
         <WebVitals />
