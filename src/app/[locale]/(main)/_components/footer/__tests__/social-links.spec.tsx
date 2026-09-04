@@ -82,36 +82,48 @@ describe('SocialLinks', () => {
     expect(useTranslations).toHaveBeenCalledWith('components.footer');
   });
 
-  it('passes the href to each link', () => {
+  it.each([
+    { index: 0, href: 'https://x.com/saaskip' },
+    { index: 1, href: 'https://linkedin.com/saaskip' },
+  ])('passes the href to link #$index', ({ index, href }) => {
     render(<SocialLinks />);
 
     const links = screen.getAllByTestId('social-link');
-    expect(links[0]).toHaveAttribute('href', 'https://x.com/saaskip');
-    expect(links[1]).toHaveAttribute('href', 'https://linkedin.com/saaskip');
+    expect(links[index]).toHaveAttribute('href', href);
   });
 
-  it('sets target=_blank and rel=noopener noreferrer on each link', () => {
-    render(<SocialLinks />);
+  it.each([
+    { index: 0, href: 'https://x.com/saaskip' },
+    { index: 1, href: 'https://linkedin.com/saaskip' },
+  ])(
+    'sets target=_blank and rel=noopener noreferrer on link #$index',
+    ({ index }) => {
+      render(<SocialLinks />);
 
-    for (const link of screen.getAllByTestId('social-link')) {
+      const link = screen.getAllByTestId('social-link')[index];
       expect(link).toHaveAttribute('target', '_blank');
       expect(link).toHaveAttribute('rel', 'noopener noreferrer');
-    }
-  });
+    },
+  );
 
-  it('renders an aria-label with the app title and platform name', () => {
-    render(<SocialLinks />);
+  it.each([
+    {
+      index: 0,
+      expected: 'appOn:{"brand":"Saaskip","platform":"X/Twitter"}',
+    },
+    {
+      index: 1,
+      expected: 'appOn:{"brand":"Saaskip","platform":"Linkedin"}',
+    },
+  ])(
+    'renders the aria-label with app title and platform on link #$index',
+    ({ index, expected }) => {
+      render(<SocialLinks />);
 
-    const links = screen.getAllByTestId('social-link');
-    expect(links[0]).toHaveAttribute(
-      'aria-label',
-      'appOn:{"brand":"Saaskip","platform":"X/Twitter"}',
-    );
-    expect(links[1]).toHaveAttribute(
-      'aria-label',
-      'appOn:{"brand":"Saaskip","platform":"Linkedin"}',
-    );
-  });
+      const link = screen.getAllByTestId('social-link')[index];
+      expect(link).toHaveAttribute('aria-label', expected);
+    },
+  );
 
   it('renders an icon for each social link', () => {
     render(<SocialLinks />);
@@ -119,5 +131,6 @@ describe('SocialLinks', () => {
     const icons = screen.getAllByTestId('social-icon');
     expect(icons).toHaveLength(2);
     expect(icons[0]).toHaveAttribute('aria-hidden', 'true');
+    expect(icons[0].dataset.class).not.toBe('');
   });
 });

@@ -29,7 +29,7 @@ describe('instrumentation', () => {
       async ({ runtime, loaded, notLoaded }) => {
         vi.stubEnv('NEXT_RUNTIME', runtime);
 
-        const { register } = await import('../instrumentation');
+        const { register } = await import('@/instrumentation');
         await register();
 
         expect(loaded).toHaveBeenCalled();
@@ -40,17 +40,32 @@ describe('instrumentation', () => {
     it('does nothing when NEXT_RUNTIME is not set', async () => {
       vi.stubEnv('NEXT_RUNTIME', '');
 
-      const { register } = await import('../instrumentation');
+      const { register } = await import('@/instrumentation');
       await register();
 
       expect(sentryServerConfigLoaded).not.toHaveBeenCalled();
       expect(sentryEdgeConfigLoaded).not.toHaveBeenCalled();
     });
+
+    it('imports axiom server module during register', async () => {
+      vi.stubEnv('NEXT_RUNTIME', 'nodejs');
+
+      const axiomLoaded = vi.fn();
+      vi.doMock('@/core/observability/axiom/server', () => {
+        axiomLoaded();
+        return { logger: axiomLoggerMock };
+      });
+
+      const { register } = await import('@/instrumentation');
+      await register();
+
+      expect(axiomLoaded).toHaveBeenCalled();
+    });
   });
 
   describe('onRequestError', () => {
     it('captures error in Sentry and logs to Axiom then flushes', async () => {
-      const { onRequestError } = await import('../instrumentation');
+      const { onRequestError } = await import('@/instrumentation');
 
       const error = new Error('Something broke');
       const request = { method: 'POST', path: '/api/webhook' } as never;
@@ -77,7 +92,7 @@ describe('instrumentation', () => {
     it('rejects when logger.flush rejects', async () => {
       axiomLoggerMock.flush.mockRejectedValueOnce(new Error('flush failed'));
 
-      const { onRequestError } = await import('../instrumentation');
+      const { onRequestError } = await import('@/instrumentation');
 
       const error = new Error('Something broke');
       const request = { method: 'GET', path: '/' } as never;

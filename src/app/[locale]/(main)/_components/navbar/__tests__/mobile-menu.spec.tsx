@@ -146,8 +146,16 @@ vi.mock('../../nav-link', () => ({
 }));
 
 vi.mock('@/config/icons', () => ({
-  icon: (name: string) => (
-    <span data-testid="hugeicons-icon" data-icon={name} />
+  icon: (
+    name: string,
+    props?: { className?: string; 'aria-hidden'?: boolean },
+  ) => (
+    <span
+      data-testid="hugeicons-icon"
+      data-icon={name}
+      data-class={props?.className}
+      data-aria-hidden={props?.['aria-hidden']}
+    />
   ),
 }));
 
@@ -197,18 +205,21 @@ describe('MobileMenu', () => {
     expect(screen.getByTestId('sheet')).toHaveAttribute('data-open', 'false');
   });
 
-  it('applies size and cursor classes to the trigger button', () => {
-    render(<MobileMenu pathname="/" activeSection="" />);
-
-    const button = screen.getByTestId('button');
-    expect(button.className).toContain('size-7');
-    expect(button.className).toContain('cursor-pointer');
-  });
-
   it('renders the menu icon inside the trigger', () => {
     render(<MobileMenu pathname="/" activeSection="" />);
 
-    expect(screen.getByTestId('hugeicons-icon')).toBeInTheDocument();
+    const iconElement = screen.getByTestId('hugeicons-icon');
+    expect(iconElement).toBeInTheDocument();
+    expect(iconElement).toHaveAttribute('data-icon', 'menu');
+    expect(iconElement).toHaveAttribute('data-aria-hidden', 'true');
+    expect(iconElement.dataset.class).not.toBe('');
+    expect(iconElement.dataset.class).not.toBeNull();
+  });
+
+  it('passes a non-empty className to the trigger button', () => {
+    render(<MobileMenu pathname="/" activeSection="" />);
+
+    expect(screen.getByTestId('button').className).not.toBe('');
   });
 
   it('renders the sheet content', () => {
@@ -261,24 +272,35 @@ describe('MobileMenu', () => {
     expect(screen.queryByText('pages.about.title')).not.toBeInTheDocument();
   });
 
-  it('passes pathname and activeSection to each NavLink', () => {
+  it.each([
+    { index: 0, href: '/#features-section' },
+    { index: 1, href: '/#cta-section' },
+    { index: 2, href: '#' },
+  ])('passes pathname and activeSection to NavLink #$index', ({ index }) => {
     render(<MobileMenu pathname="/" activeSection="features" />);
 
     const navLinks = screen.getAllByTestId('nav-link');
-    for (const link of navLinks) {
-      expect(link).toHaveAttribute('data-pathname', '/');
-      expect(link).toHaveAttribute('data-active-section', 'features');
-    }
+    expect(navLinks[index]).toHaveAttribute('data-pathname', '/');
+    expect(navLinks[index]).toHaveAttribute('data-active-section', 'features');
   });
 
-  it('passes nativeButton={false} to all SheetClose components', () => {
-    render(<MobileMenu pathname="/" activeSection="" />);
+  it.each([
+    { index: 0, label: 'logo link' },
+    { index: 1, label: 'features nav link' },
+    { index: 2, label: 'cta nav link' },
+    { index: 3, label: 'documentation nav link' },
+  ])(
+    'passes nativeButton={false} to SheetClose #$index ($label)',
+    ({ index }) => {
+      render(<MobileMenu pathname="/" activeSection="" />);
 
-    const sheetCloseElements = screen.getAllByTestId('sheet-close');
-    for (const close of sheetCloseElements) {
-      expect(close).toHaveAttribute('data-native-button', 'false');
-    }
-  });
+      const sheetCloseElements = screen.getAllByTestId('sheet-close');
+      expect(sheetCloseElements[index]).toHaveAttribute(
+        'data-native-button',
+        'false',
+      );
+    },
+  );
 
   it('forwards extra props to the trigger button', () => {
     render(

@@ -1,8 +1,9 @@
 import { parsePathname } from '@/core/i18n/parse-pathname';
+import { routing } from '@/core/i18n/routing';
 
 describe('parsePathname', () => {
   it.each([
-    { pathname: '/', expectedLocale: 'en', expectedPath: '/' },
+    { pathname: '/', expectedLocale: routing.defaultLocale, expectedPath: '/' },
     { pathname: '/en', expectedLocale: 'en', expectedPath: '/' },
     { pathname: '/fr', expectedLocale: 'fr', expectedPath: '/' },
     { pathname: '/en/faq', expectedLocale: 'en', expectedPath: '/faq' },
@@ -12,10 +13,14 @@ describe('parsePathname', () => {
       expectedLocale: 'en',
       expectedPath: '/what-is-included',
     },
-    { pathname: '/about', expectedLocale: 'en', expectedPath: '/about' },
+    {
+      pathname: '/about',
+      expectedLocale: routing.defaultLocale,
+      expectedPath: '/about',
+    },
     {
       pathname: '/xyz/about',
-      expectedLocale: 'en',
+      expectedLocale: routing.defaultLocale,
       expectedPath: '/xyz/about',
     },
   ])(
@@ -34,7 +39,7 @@ describe('parsePathname', () => {
     const result = parsePathname(null);
 
     expect(result).toMatchObject({
-      locale: 'en',
+      locale: routing.defaultLocale,
       path: '/',
     });
   });

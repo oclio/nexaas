@@ -85,35 +85,25 @@ describe('DrizzleLogger', () => {
     vi.resetModules();
   });
 
-  it('logs queries to the axiom logger at debug level', async () => {
-    await import('../index');
+  it.each([
+    { query: 'SELECT * FROM users', params: [1, 'alice'] },
+    { query: 'SELECT 1', params: [] },
+  ])(
+    'logs queries to the axiom logger at debug level',
+    async ({ query, params }) => {
+      await import('../index');
 
-    const config = drizzleCalls.config[0];
-    const loggerInstance = config.logger as {
-      logQuery: (query: string, parameters: unknown[]) => void;
-    };
+      const config = drizzleCalls.config[0];
+      const loggerInstance = config.logger as {
+        logQuery: (query: string, parameters: unknown[]) => void;
+      };
 
-    loggerInstance.logQuery('SELECT * FROM users', [1, 'alice']);
+      loggerInstance.logQuery(query, params);
 
-    expect(axiomLoggerMock.debug).toHaveBeenCalledWith('Drizzle SQL Query', {
-      query: 'SELECT * FROM users',
-      params: [1, 'alice'],
-    });
-  });
-
-  it('logs queries with empty parameters', async () => {
-    await import('../index');
-
-    const config = drizzleCalls.config[0];
-    const loggerInstance = config.logger as {
-      logQuery: (query: string, parameters: unknown[]) => void;
-    };
-
-    loggerInstance.logQuery('SELECT 1', []);
-
-    expect(axiomLoggerMock.debug).toHaveBeenCalledWith('Drizzle SQL Query', {
-      query: 'SELECT 1',
-      params: [],
-    });
-  });
+      expect(axiomLoggerMock.debug).toHaveBeenCalledWith('Drizzle SQL Query', {
+        query,
+        params,
+      });
+    },
+  );
 });

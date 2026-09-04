@@ -5,7 +5,11 @@ import {
   renderLink,
   renderSmall,
   renderStrong,
-} from '../helpers/render-rich';
+} from '../render-rich';
+
+vi.mock('@/ui/helpers', () => ({
+  cn: (...inputs: unknown[]) => inputs.filter(Boolean).join(' '),
+}));
 
 vi.mock('next/link', () => ({
   default: ({

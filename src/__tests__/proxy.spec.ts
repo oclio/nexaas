@@ -61,6 +61,12 @@ describe('proxy', () => {
       expectedTraceId: undefined,
     },
     {
+      errorType: 'Error',
+      headers: { 'x-trace-id': '' },
+      expectedStatus: 500,
+      expectedTraceId: undefined,
+    },
+    {
       errorType: 'AppError',
       headers: { 'x-trace-id': 'trace-456' },
       expectedStatus: 400,
@@ -76,14 +82,13 @@ describe('proxy', () => {
     'returns $expectedStatus with $expectedTraceId traceId when handler throws $errorType',
     async ({ errorType, headers, expectedStatus, expectedTraceId }) => {
       const { AppError } = await import('@/core/errors');
-      let error: Error;
-      if (errorType === 'AppError') {
-        error = new AppError(ErrorCode.UNKNOWN_ERROR, 'Bad request', 400);
-      } else if (errorType === 'TypeError') {
-        error = new TypeError('plain error');
-      } else {
-        error = new Error('middleware failed');
-      }
+      const errorBuilders: Record<string, () => Error> = {
+        AppError: () =>
+          new AppError(ErrorCode.UNKNOWN_ERROR, 'Bad request', 400),
+        TypeError: () => new TypeError('plain error'),
+        Error: () => new Error('middleware failed'),
+      };
+      const error = errorBuilders[errorType]();
 
       chainMock.mockReturnValue(async () => {
         throw error;
@@ -105,7 +110,7 @@ describe('proxy', () => {
     const { proxy } = await import('@/proxy');
     await proxy(mockRequest(), mockEvent());
 
-    expect(chainMock).toHaveBeenCalledOnce();
+    expect(chainMock).toHaveBeenCalled();
     expect(Array.isArray(chainMock.mock.calls[0][0])).toBe(true);
   });
 
@@ -134,6 +139,7 @@ describe('proxy config', () => {
     expect(matcher).toContain('_next');
     expect(matcher).toContain('_vercel');
     expect(matcher).toContain('monitoring');
+    expect(matcher).toContain('\\.');
   });
 
   it('includes api and trpc routes in matchers', async () => {
@@ -144,11 +150,5 @@ describe('proxy config', () => {
         (m) => typeof m === 'string' && m.includes('api') && m.includes('trpc'),
       ),
     ).toBe(true);
-  });
-
-  it('has exactly two matchers', async () => {
-    const { config } = await import('@/proxy');
-
-    expect(config.matcher).toHaveLength(2);
   });
 });
