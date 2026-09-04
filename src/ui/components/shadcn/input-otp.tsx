@@ -1,10 +1,10 @@
 'use client';
 
-import { cn } from 'cn';
 import { OTPInput, OTPInputContext } from 'input-otp';
 import * as React from 'react';
 
 import { icon } from '@/config/icons';
+import { cn } from '@/ui/helpers';
 
 function InputOTP({
   className,

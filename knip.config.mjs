@@ -8,8 +8,6 @@ const knipConfig = {
     'src/core/i18n/**',
     'src/core/mailer/index.ts',
     'src/core/mailer/types.ts',
-    'src/ui/components/forms/countdown-button.tsx',
-    'src/ui/components/forms/pending-button.tsx',
     'src/ui/components/shadcn/dropdown-menu.tsx',
     'src/ui/components/shadcn/field.tsx',
     'src/ui/components/shadcn/input-otp.tsx',
@@ -24,6 +22,7 @@ const knipConfig = {
     '@axe-core/cli',
     '@commitlint/config-conventional',
     'gitleaks',
+    'input-otp',
   ],
   tags: ['-lintignore'],
 };

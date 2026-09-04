@@ -1,7 +1,8 @@
 'use client';
 
-import { cn } from 'cn';
 import * as React from 'react';
+
+import { cn } from '@/ui/helpers';
 
 function Label({ className, ...props }: React.ComponentProps<'label'>) {
   return (
