@@ -137,10 +137,21 @@ describe('createLayoutMetadata', () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });
 
     const languages = metadata.alternates?.languages as Record<string, string>;
-    for (const locale of supportedLocales) {
-      expect(languages[locale.code]).toBe(`/${locale.code}`);
-    }
+    expect(Object.keys(languages)).toHaveLength(supportedLocales.length + 1);
   });
+
+  it.each(supportedLocales)(
+    'includes $code in alternates.languages',
+    async (locale) => {
+      const metadata = await createLayoutMetadata({ locale: 'en' });
+
+      const languages = metadata.alternates?.languages as Record<
+        string,
+        string
+      >;
+      expect(languages[locale.code]).toBe(`/${locale.code}`);
+    },
+  );
 
   it('includes x-default pointing to default locale', async () => {
     const metadata = await createLayoutMetadata({ locale: 'en' });

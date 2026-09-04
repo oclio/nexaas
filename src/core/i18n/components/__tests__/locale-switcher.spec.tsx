@@ -154,27 +154,30 @@ describe('LocaleSwitcher', () => {
       expect(inactiveItem).toHaveAttribute('aria-current', 'false');
     });
 
-    it('sets aria-label on each locale item', async () => {
-      render(<LocaleSwitcher />);
-      await openMenu();
+    it.each(supportedLocales)(
+      'sets aria-label on the $code locale item',
+      async (lang) => {
+        render(<LocaleSwitcher />);
+        await openMenu();
 
-      for (const item of screen.getAllByRole('menuitem')) {
+        const item = screen.getByTestId(`locale-switcher-item-${lang.code}`);
         expect(item).toHaveAttribute(
           'aria-label',
           translateLocaleSwitcher('ariaLabel'),
         );
-      }
-    });
+      },
+    );
 
-    it('sets data-testid with locale code on each item', async () => {
-      render(<LocaleSwitcher />);
-      await openMenu();
+    it.each(supportedLocales)(
+      'sets data-testid with locale code on the $code item',
+      async (lang) => {
+        render(<LocaleSwitcher />);
+        await openMenu();
 
-      for (const lang of supportedLocales) {
         expect(
           screen.getByTestId(`locale-switcher-item-${lang.code}`),
         ).toBeInTheDocument();
-      }
-    });
+      },
+    );
   });
 });

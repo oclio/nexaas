@@ -86,10 +86,25 @@ describe('createPageMetadata', () => {
     });
     const languages = metadata.alternates?.languages as Record<string, string>;
 
-    for (const locale of supportedLocales) {
-      expect(languages[locale.code]).toBe(`/${locale.code}/login`);
-    }
+    expect(Object.keys(languages)).toHaveLength(supportedLocales.length + 1);
   });
+
+  it.each(supportedLocales)(
+    'includes $code with path in alternates.languages',
+    async (locale) => {
+      const metadata = await createPageMetadata({
+        locale: 'en',
+        namespace: 'pages.login',
+        path: '/login',
+      });
+      const languages = metadata.alternates?.languages as Record<
+        string,
+        string
+      >;
+
+      expect(languages[locale.code]).toBe(`/${locale.code}/login`);
+    },
+  );
 
   it('includes x-default with default locale and path', async () => {
     const metadata = await createPageMetadata({

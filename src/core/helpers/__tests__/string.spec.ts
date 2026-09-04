@@ -41,11 +41,10 @@ describe('toSentence', () => {
     expect(toSentence(input)).toBe(expected);
   });
 
-  it('throws TypeError for null input', () => {
-    expect(() => toSentence(null as unknown as string)).toThrow(TypeError);
-  });
-
-  it('throws TypeError for undefined input', () => {
-    expect(() => toSentence(undefined as unknown as string)).toThrow(TypeError);
+  it.each([
+    { name: 'null input', input: null as unknown as string },
+    { name: 'undefined input', input: undefined as unknown as string },
+  ])('throws TypeError for $name', ({ input }) => {
+    expect(() => toSentence(input)).toThrow(TypeError);
   });
 });

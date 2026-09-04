@@ -24,11 +24,19 @@ describe('filterRecipients', () => {
     const result = filterRecipients(recipients);
 
     expect(result).toHaveLength(recipients.length);
-    for (const r of recipients) {
-      expect(result).toContain(r);
-    }
     expect(axiomLoggerMock.warn).not.toHaveBeenCalled();
   });
+
+  it.each(['a@example.com', 'b@example.com'])(
+    'includes $recipient in the result when authorized',
+    (recipient) => {
+      isAuthorizedEmailMock.mockReturnValue(true);
+
+      const result = filterRecipients([recipient]);
+
+      expect(result).toContain(recipient);
+    },
+  );
 
   it('wraps a single string into an array', () => {
     isAuthorizedEmailMock.mockReturnValue(true);

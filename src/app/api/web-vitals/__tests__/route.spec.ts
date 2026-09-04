@@ -87,37 +87,33 @@ describe('POST /api/web-vitals', () => {
     expect(flushMock).toHaveBeenCalled();
   });
 
-  it('returns 500 when ingest throws', async () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    vi.stubEnv('AXIOM_TOKEN', 'test-token');
-    vi.stubEnv('AXIOM_DATASET', 'test-dataset');
-    const ingestMock = vi.fn().mockRejectedValue(new Error('network failure'));
-    const flushMock = vi.fn();
-    axiomClientReference.value = { ingest: ingestMock, flush: flushMock };
+  it.each([
+    { rejectingMock: 'ingest' as const, message: 'network failure' },
+    { rejectingMock: 'flush' as const, message: 'flush failure' },
+  ])(
+    'returns 500 when $rejectingMock throws',
+    async ({ rejectingMock, message }) => {
+      vi.stubEnv('NODE_ENV', 'production');
+      vi.stubEnv('AXIOM_TOKEN', 'test-token');
+      vi.stubEnv('AXIOM_DATASET', 'test-dataset');
+      const ingestMock =
+        rejectingMock === 'ingest'
+          ? vi.fn().mockRejectedValue(new Error(message))
+          : vi.fn().mockResolvedValue(undefined);
+      const flushMock =
+        rejectingMock === 'flush'
+          ? vi.fn().mockRejectedValue(new Error(message))
+          : vi.fn();
+      axiomClientReference.value = { ingest: ingestMock, flush: flushMock };
 
-    const response = await POST(mockRequest({ name: 'CLS', value: 0.1 }));
-    const body = await response.json();
+      const response = await POST(mockRequest({ name: 'CLS', value: 0.1 }));
+      const body = await response.json();
 
-    expect(response.status).toBe(500);
-    expect(body.status).toBe('error');
-    expect(body.error).toMatch(/network failure/i);
-  });
-
-  it('returns 500 when flush throws', async () => {
-    vi.stubEnv('NODE_ENV', 'production');
-    vi.stubEnv('AXIOM_TOKEN', 'test-token');
-    vi.stubEnv('AXIOM_DATASET', 'test-dataset');
-    const ingestMock = vi.fn().mockResolvedValue(undefined);
-    const flushMock = vi.fn().mockRejectedValue(new Error('flush failure'));
-    axiomClientReference.value = { ingest: ingestMock, flush: flushMock };
-
-    const response = await POST(mockRequest({ name: 'CLS', value: 0.1 }));
-    const body = await response.json();
-
-    expect(response.status).toBe(500);
-    expect(body.status).toBe('error');
-    expect(body.error).toMatch(/flush failure/i);
-  });
+      expect(response.status).toBe(500);
+      expect(body.status).toBe('error');
+      expect(body.error).toMatch(new RegExp(message, 'i'));
+    },
+  );
 
   it('returns 500 when request.json() throws', async () => {
     vi.stubEnv('NODE_ENV', 'production');

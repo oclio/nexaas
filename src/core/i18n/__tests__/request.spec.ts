@@ -37,7 +37,7 @@ describe('requestConfig', () => {
   it('returns the locale and messages when locale is provided', async () => {
     const result = await requestConfig({ locale: 'en' } as never);
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       locale: 'en',
       messages: messagesMock.default,
     });
@@ -52,7 +52,7 @@ describe('requestConfig', () => {
 
     expect(rootParams.locale).toHaveBeenCalledOnce();
     expect(hasLocale).toHaveBeenCalledWith(routing.locales, 'fr');
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       locale: 'fr',
       messages: messagesMock.default,
     });

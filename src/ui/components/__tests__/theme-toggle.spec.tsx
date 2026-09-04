@@ -27,10 +27,13 @@ describe('ThemeToggle', () => {
       );
     });
 
-    it('renders both dark and light icons', () => {
+    it('renders both dark and light icons with aria-hidden', () => {
       const { container } = render(<ThemeToggle />);
 
-      expect(container.querySelectorAll('svg')).toHaveLength(2);
+      const svgs = container.querySelectorAll('svg');
+      expect(svgs).toHaveLength(2);
+      expect(svgs[0].getAttribute('aria-hidden')).toBe('true');
+      expect(svgs[1].getAttribute('aria-hidden')).toBe('true');
     });
 
     it('merges custom className with the default classes', () => {
