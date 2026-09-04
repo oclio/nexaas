@@ -1,4 +1,5 @@
 import {
+  Alert02Icon,
   ArrowDownLeft01Icon,
   ArrowDownRight01Icon,
   ArrowLeftBigIcon,
@@ -6,11 +7,16 @@ import {
   ArrowUpLeft01Icon,
   ArrowUpRight01Icon,
   Cancel01Icon,
+  CheckmarkCircle02Icon,
   Facebook02Icon,
+  InformationCircleIcon,
   InstagramIcon,
   Linkedin02Icon,
+  Loading03Icon,
   Menu01Icon,
+  MinusSignIcon,
   Moon02Icon,
+  MultiplicationSignCircleIcon,
   NewTwitterIcon,
   SquareIcon,
   Sun02Icon,
@@ -29,10 +35,16 @@ import type { ComponentProps } from 'react';
  * component code.
  */
 export const ICONS = {
+  alert: Alert02Icon, // sonner warning
   back: ArrowLeftBigIcon,
   cancel: Cancel01Icon,
+  checkCircle: CheckmarkCircle02Icon, // sonner success
   chevronRight: ArrowRight01Icon,
+  errorCircle: MultiplicationSignCircleIcon, // sonner error
+  infoCircle: InformationCircleIcon, // sonner info
+  loading: Loading03Icon, // sonner loading
   menu: Menu01Icon,
+  minus: MinusSignIcon, // input-otp separator
   screenBottomLeft: ArrowDownLeft01Icon, // screen-size dev tool
   screenBottomRight: ArrowDownRight01Icon,
   screenSquare: SquareIcon,
