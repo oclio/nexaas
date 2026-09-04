@@ -1,6 +1,7 @@
 import {
   ArrowDownLeft01Icon,
   ArrowDownRight01Icon,
+  ArrowLeftBigIcon,
   ArrowRight01Icon,
   ArrowUpLeft01Icon,
   ArrowUpRight01Icon,
@@ -28,6 +29,7 @@ import type { ComponentProps } from 'react';
  * component code.
  */
 export const ICONS = {
+  back: ArrowLeftBigIcon,
   cancel: Cancel01Icon,
   chevronRight: ArrowRight01Icon,
   menu: Menu01Icon,
