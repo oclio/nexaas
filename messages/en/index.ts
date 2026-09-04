@@ -1,5 +1,6 @@
 import components from './components';
 import dashboard from './dashboard';
+import emails from './emails';
 import labels from './labels';
 import meta from './meta';
 import pages from './pages';
@@ -7,6 +8,7 @@ import pages from './pages';
 const en = {
   components,
   dashboard,
+  emails,
   labels,
   meta,
   pages,
