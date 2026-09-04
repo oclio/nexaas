@@ -47,28 +47,34 @@ export const navigationCategories: NavigationCategory[] = [
  */
 export const navigation: NavigationItem[] = [
   {
-    category: 'company',
-    href: '#',
-    label: 'pages.about.title',
-    location: ['footer'],
+    category: 'product',
+    href: '/#features-section',
+    label: 'pages.landing.features.title',
+    location: ['footer', 'mobileMenu', 'navbar'],
   },
   {
-    category: 'company',
-    href: '#',
-    label: 'pages.careers.title',
-    location: ['footer'],
+    category: 'product',
+    href: '/#pricing-section',
+    label: 'pages.landing.pricing.title',
+    location: ['footer', 'mobileMenu', 'navbar'],
   },
   {
-    category: 'company',
-    href: '#',
-    label: 'pages.partners.title',
-    location: ['footer'],
+    category: 'help',
+    href: '/#faq-section',
+    label: 'pages.faq.shortTitle',
+    location: ['footer', 'mobileMenu', 'navbar'],
   },
   {
-    category: 'company',
-    href: '#',
-    label: 'pages.press.title',
-    location: ['footer'],
+    category: 'product',
+    href: '/#what-is-included-section',
+    label: 'pages.whatIsIncluded.title',
+    location: ['footer', 'mobileMenu', 'navbar'],
+  },
+  {
+    category: 'product',
+    href: '/#cta-section',
+    label: 'pages.landing.cta.title',
+    location: ['mobileMenu', 'navbar'],
   },
   {
     category: 'help',
@@ -84,15 +90,33 @@ export const navigation: NavigationItem[] = [
   },
   {
     category: 'help',
-    href: '/#faq-section',
-    label: 'pages.faq.shortTitle',
-    location: ['footer', 'mobileMenu', 'navbar'],
-  },
-  {
-    category: 'help',
     href: '/contact',
     label: 'pages.contact.title',
     location: ['footer', 'mobileMenu'],
+  },
+  {
+    category: 'company',
+    href: '#',
+    label: 'pages.about.title',
+    location: ['footer'],
+  },
+  {
+    category: 'company',
+    href: '#',
+    label: 'pages.blog.title',
+    location: ['footer'],
+  },
+  {
+    category: 'company',
+    href: '#',
+    label: 'pages.partners.title',
+    location: ['footer'],
+  },
+  {
+    category: 'company',
+    href: '#',
+    label: 'pages.press.title',
+    location: ['footer'],
   },
   {
     category: 'legal',
@@ -117,30 +141,6 @@ export const navigation: NavigationItem[] = [
     href: '/terms',
     label: 'pages.terms.shortTitle',
     location: ['footer'],
-  },
-  {
-    category: 'product',
-    href: '/#cta-section',
-    label: 'pages.landing.cta.title',
-    location: ['mobileMenu', 'navbar'],
-  },
-  {
-    category: 'product',
-    href: '/#features-section',
-    label: 'pages.landing.features.title',
-    location: ['footer', 'mobileMenu', 'navbar'],
-  },
-  {
-    category: 'product',
-    href: '/#pricing-section',
-    label: 'pages.landing.pricing.title',
-    location: ['footer', 'mobileMenu', 'navbar'],
-  },
-  {
-    category: 'product',
-    href: '/#what-is-included-section',
-    label: 'pages.whatIsIncluded.title',
-    location: ['footer', 'mobileMenu', 'navbar'],
   },
 ];
 
