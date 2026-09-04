@@ -1,5 +1,11 @@
 # saaskip
 
+## 0.16.1
+
+### Patch Changes
+
+- 8999e4e: Harden test suite with parametrized assertions and icon attribute coverage
+
 ## 0.16.0
 
 ### Minor Changes
