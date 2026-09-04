@@ -311,6 +311,72 @@ describe('ScreenSize', () => {
         expect(hasClass).toBe(true);
       },
     );
+
+    it.each(['Small', 'Medium', 'Large'])(
+      'sets aria-hidden=true on icon for $label size option',
+      (label) => {
+        render(<ScreenSize />);
+
+        fireEvent.click(screen.getByRole('button'));
+
+        const item = screen.getByRole('menuitemcheckbox', {
+          name: new RegExp(label),
+        });
+        const svgs = item.querySelectorAll('svg');
+        const hasAriaHidden = [...svgs].some(
+          (svg) => svg.getAttribute('aria-hidden') === 'true',
+        );
+        expect(hasAriaHidden).toBe(true);
+      },
+    );
+  });
+
+  describe('position option icon attributes', () => {
+    it.each([
+      { label: 'Bottom Left' },
+      { label: 'Bottom Right' },
+      { label: 'Top Right' },
+      { label: 'Top Left' },
+    ])(
+      'renders text-muted-foreground class on icon for $label',
+      ({ label }) => {
+        render(<ScreenSize />);
+
+        fireEvent.click(screen.getByRole('button'));
+
+        const item = screen.getByRole('menuitemcheckbox', {
+          name: new RegExp(label),
+        });
+        const svgs = item.querySelectorAll('svg');
+        const hasClass = [...svgs].some((svg) =>
+          svg.getAttribute('class')?.includes('text-muted-foreground'),
+        );
+        expect(hasClass).toBe(true);
+      },
+    );
+
+    it.each([
+      { label: 'Bottom Left' },
+      { label: 'Bottom Right' },
+      { label: 'Top Right' },
+      { label: 'Top Left' },
+    ])(
+      'sets aria-hidden=true on icon for $label position option',
+      ({ label }) => {
+        render(<ScreenSize />);
+
+        fireEvent.click(screen.getByRole('button'));
+
+        const item = screen.getByRole('menuitemcheckbox', {
+          name: new RegExp(label),
+        });
+        const svgs = item.querySelectorAll('svg');
+        const hasAriaHidden = [...svgs].some(
+          (svg) => svg.getAttribute('aria-hidden') === 'true',
+        );
+        expect(hasAriaHidden).toBe(true);
+      },
+    );
   });
 
   describe('className prop', () => {
