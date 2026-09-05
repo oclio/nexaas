@@ -38,7 +38,6 @@ export default {
       signInWith: 'Se connecter avec {provider}',
     },
     title: 'Se connecter',
-    title: 'Se connecter',
     verifyCode: 'Vérifier le code',
   },
 } as const satisfies TranslationSchema<typeof enPagesAuth>;

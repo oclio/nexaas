@@ -11,7 +11,6 @@ import OtpField from '@/ui/components/forms/otp-field';
 import PendingButton from '@/ui/components/forms/pending-button';
 import { Button } from '@/ui/components/shadcn/button';
 import { FieldGroup } from '@/ui/components/shadcn/field';
-import { Separator } from '@/ui/components/shadcn/separator';
 
 export default function StepOtpVerification({
   goTo,
@@ -28,15 +27,13 @@ export default function StepOtpVerification({
 
   return (
     <form onSubmit={otpForm.handleSubmit(handleSubmit)} noValidate={true}>
-      <FieldGroup className="gap-4">
-        <div className="flex flex-col gap-2">
-          <p className="text-muted-foreground text-center text-sm">
-            {t.rich('pages.login.codeSent.description', {
-              email,
-              strong: renderStrong(),
-            })}
-          </p>
-        </div>
+      <FieldGroup className="gap-3">
+        <p className="text-muted-foreground text-center text-sm">
+          {t.rich('pages.login.codeSent.description', {
+            email,
+            strong: renderStrong(),
+          })}
+        </p>
 
         <OtpField
           name="code"
@@ -52,12 +49,9 @@ export default function StepOtpVerification({
           pending={isPending}
           disabled={!otpForm.formState.isValid || isSubmitted || isPending}
           pendingLabel={t('pages.login.verifyCode')}
-          className="mx-auto w-fit"
         >
           {t('pages.login.verifyCode')}
         </PendingButton>
-
-        <Separator />
 
         <div className="flex flex-col items-center gap-2">
           <CountdownButton
@@ -66,6 +60,7 @@ export default function StepOtpVerification({
             onAction={handleResendOtp}
             label={t('pages.login.resendCode')}
             disabled={isPending || isSubmitted}
+            className="w-full"
           />
 
           <Button
@@ -73,7 +68,7 @@ export default function StepOtpVerification({
             size="sm"
             disabled={isPending || isSubmitted}
             onClick={() => goTo('login')}
-            className="text-muted-foreground"
+            className="text-muted-foreground pt-2"
           >
             {t('pages.login.backToEmail')}
           </Button>

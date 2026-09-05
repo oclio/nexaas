@@ -360,8 +360,12 @@ describe('useSignIn', () => {
     });
 
     it('recreates handleSignInProvider when a dependency changes between renders', () => {
-      const t1 = vi.fn((key: string) => key);
-      const t2 = vi.fn((key: string) => key);
+      const t1 = vi.fn((key: string) => key) as unknown as ReturnType<
+        typeof useTranslations
+      >;
+      const t2 = vi.fn((key: string) => key) as unknown as ReturnType<
+        typeof useTranslations
+      >;
       vi.mocked(useTranslations)
         .mockReturnValueOnce(t1)
         .mockReturnValueOnce(t2);
