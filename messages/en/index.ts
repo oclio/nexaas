@@ -2,6 +2,7 @@ import components from './components';
 import dashboard from './dashboard';
 import emails from './emails';
 import forms from './forms';
+import hooks from './hooks';
 import labels from './labels';
 import meta from './meta';
 import pages from './pages';
@@ -11,6 +12,7 @@ const en = {
   dashboard,
   emails,
   forms,
+  hooks,
   labels,
   meta,
   pages,

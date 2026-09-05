@@ -15,6 +15,7 @@ import {
   InstagramIcon,
   Linkedin02Icon,
   Loading03Icon,
+  Logout01Icon,
   Menu01Icon,
   MinusSignIcon,
   Moon02Icon,
@@ -45,6 +46,7 @@ export const ICONS = {
   errorCircle: MultiplicationSignCircleIcon, // sonner error
   infoCircle: InformationCircleIcon, // sonner info
   loading: Loading03Icon, // sonner loading
+  logout: Logout01Icon,
   menu: Menu01Icon,
   minus: MinusSignIcon, // input-otp separator
   screenBottomLeft: ArrowDownLeft01Icon, // screen-size dev tool
