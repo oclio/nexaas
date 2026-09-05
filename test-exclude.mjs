@@ -8,7 +8,7 @@ const exclude = [
   'src/**/db-schemas/**',
   'src/**/types.ts',
   'src/**/types/**',
-  'src/app/api/auth/[...all]/route.ts',
+  'src/app/api/auth/\\[...all\\]/route.ts',
   'src/config/**',
   'src/core/auth/client.ts',
   'src/core/auth/helpers/index.ts',

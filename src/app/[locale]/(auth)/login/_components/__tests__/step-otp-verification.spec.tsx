@@ -91,6 +91,7 @@ vi.mock('@/ui/components/forms/countdown-button', () => ({
       seconds,
     }: ComponentProps<typeof CountdownButton>) => (
       <button
+        type="button"
         data-testid="countdown-button"
         disabled={disabled}
         onClick={onAction}
@@ -112,6 +113,7 @@ vi.mock('@/ui/components/shadcn/button', () => ({
       size,
     }: ComponentProps<typeof Button>) => (
       <button
+        type="button"
         data-testid="back-button"
         disabled={disabled}
         onClick={onClick}
