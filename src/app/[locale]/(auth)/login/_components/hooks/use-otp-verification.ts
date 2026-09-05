@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 
-import { useLoginFormStore } from '@/app/[locale]/(auth)/login/_components/store/login-form.store';
+import { useLoginFormStore } from '@/app/[locale]/(auth)/login/_components/login-form.store';
 import { authClient } from '@/core/auth/client';
 import { renderStrong } from '@/core/i18n/helpers/render-rich';
 import { useZodForm } from '@/ui/hooks/use-zod-form';

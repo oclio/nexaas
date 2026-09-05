@@ -7,8 +7,8 @@ import { toast } from 'sonner';
 import { z } from 'zod';
 import { useShallow } from 'zustand/react/shallow';
 
-import type { ProviderType } from '@/app/[locale]/(auth)/login/_components/store/login-form.store';
-import { useLoginFormStore } from '@/app/[locale]/(auth)/login/_components/store/login-form.store';
+import type { ProviderType } from '@/app/[locale]/(auth)/login/_components/login-form.store';
+import { useLoginFormStore } from '@/app/[locale]/(auth)/login/_components/login-form.store';
 import { brand } from '@/config/brand';
 import { authClient } from '@/core/auth/client';
 import { useZodForm } from '@/ui/hooks/use-zod-form';

@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Controller } from 'react-hook-form';
 
 import { useSignIn } from '@/app/[locale]/(auth)/login/_components/hooks/use-sign-in';
-import type { ProviderType } from '@/app/[locale]/(auth)/login/_components/store/login-form.store';
+import type { ProviderType } from '@/app/[locale]/(auth)/login/_components/login-form.store';
 import { brand } from '@/config/brand';
 import { icon } from '@/config/icons';
 import HorizontalDivider from '@/ui/components/card-divider';

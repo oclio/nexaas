@@ -5,9 +5,9 @@ import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useLoginFormStore } from '@/app/[locale]/(auth)/login/_components/login-form.store';
 import StepLogin from '@/app/[locale]/(auth)/login/_components/step-login';
 import StepOtpVerification from '@/app/[locale]/(auth)/login/_components/step-otp-verification';
-import { useLoginFormStore } from '@/app/[locale]/(auth)/login/_components/store/login-form.store';
 import { brand } from '@/config/brand';
 import { MultiStepForm } from '@/ui/components/forms/multi-step-form';
 
