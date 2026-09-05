@@ -6,7 +6,6 @@ import { notFound } from 'next/navigation';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { ReactNode } from 'react';
-import { Toaster } from 'sonner';
 
 import { routing } from '@/core/i18n/routing';
 import { WebVitals } from '@/core/observability/axiom/components/web-vitals';
@@ -18,6 +17,7 @@ import {
   websiteJsonLd,
 } from '@/core/seo';
 import ScreenSize from '@/ui/components/dev/screen-size';
+import { Toaster } from '@/ui/components/shadcn/sonner';
 import { ThemeProvider } from '@/ui/components/theme-provider';
 import { fontHeading, fontSans } from '@/ui/fonts';
 import { cn } from '@/ui/helpers';

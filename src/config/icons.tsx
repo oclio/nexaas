@@ -9,6 +9,8 @@ import {
   Cancel01Icon,
   CheckmarkCircle02Icon,
   Facebook02Icon,
+  GithubIcon,
+  GoogleIcon,
   InformationCircleIcon,
   InstagramIcon,
   Linkedin02Icon,
@@ -51,6 +53,8 @@ export const ICONS = {
   screenTopLeft: ArrowUpLeft01Icon,
   screenTopRight: ArrowUpRight01Icon,
   socialFacebook: Facebook02Icon, // footer social links
+  socialGithub: GithubIcon, // login provider
+  socialGoogle: GoogleIcon, // login provider
   socialInstagram: InstagramIcon,
   socialLinkedin: Linkedin02Icon,
   socialThreads: ThreadsIcon,
